@@ -33,6 +33,7 @@
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\WRP}{\mathsf{WRP}}
 \newcommand{\RR}{\mathsf{RR}}
+% The printed notation follows the scalar rank sort fragment name sRR_1.
 \newcommand{\SWR}{\mathsf{sRR}_1}
 \newcommand{\TDFT}{\mathsf{2DFT}}
 \newcommand{\MSO}{\mathsf{MSO}}
@@ -97,16 +98,16 @@ a direct explanation: no explicit, uniform, semilength-preserving bijection is
 known that swaps $\area$ and $\dinv$ on every Dyck path.
 
 Polyregular maps from automata theory provide a natural computational starting
-point, but we prove that $\zeta$ is not polyregular.  The missing mechanism is a
-global ordering by numerical levels whose range grows with the input.  We call
-its general form a \emph{rank sort} and introduce \emph{weighted-rank
-polyregular maps} ($\WRP$), which extend polyregular maps by one such sort.
-The class contains $\zeta$ and the classical height-sweep bijection witnessing
-the Narayana symmetry, yet is a proper subclass of deterministic logspace.
-We prove that $\zeta^{-1}$ lies outside $\WRP$ and that no $\WRP$ map can
-realise a semilength-preserving area--dinv swap.  Thus, the rank-sorting
-strategy behind $\zeta$ cannot be extended within $\WRP$ to a full exchange of
-the two statistics.
+point, but we prove that neither $\zeta$ nor the classical height-sweep
+bijection witnessing the Narayana symmetry is polyregular.  The missing
+mechanism is a global ordering by numerical levels whose range grows with the
+input.  We call its general form a \emph{rank sort} and introduce
+\emph{weighted-rank polyregular maps} ($\WRP$), which extend polyregular maps
+by one such sort and contain both bijections.  The class is nevertheless a
+proper subclass of deterministic logspace.  We prove that $\zeta^{-1}$ lies
+outside $\WRP$ and that no $\WRP$ map can realise a semilength-preserving
+area--dinv swap.  Thus, the rank-sorting strategy behind $\zeta$ cannot be
+extended within $\WRP$ to a full exchange of the two statistics.
 \end{abstract}
 
 \section{Introduction}
@@ -239,11 +240,11 @@ $Z(P)=\zeta(P)$ for every $P\in\D$.
 No polyregular map agrees with $\zeta$ on every Dyck path.
 \end{theorem}
 
-A second positive result places a classical height-sweep bijection inside the
-model.  This bijection is known to exchange two natural local statistics on
-Dyck paths, the numbers of valleys and double rises.  Our contribution here is
-to show that the same map is realised by the particularly simple fragment
-$\SWR$ of $\WRP$.
+A second classification result concerns a classical height-sweep bijection.
+This bijection is known to exchange two natural local statistics on Dyck
+paths, the numbers of valleys and double rises.  We show both that the map is
+realised by the particularly simple fragment $\SWR$ of $\WRP$ and that no
+polyregular map realises it on all Dyck paths.
 \begin{theorem}[A classical Narayana bijection in $\WRP$]
 \label{thm:intro-narayana-sweep}
 Let $\val(P)$ and $\dr(P)$ denote, respectively, the number of valleys
@@ -253,6 +254,7 @@ map}, such that, for every $n$, the restriction of $H$ to $\D_n$ is a
 bijection from $\D_n$ onto $\D_n$ satisfying
 $\dr(H(P))=\val(P)$ and $\val(H(P))=\dr(P)$ for every
 $P\in\D_n$.
+No polyregular map agrees with $H$ on every Dyck path.
 Consequently, $H$ realises the bivariate Narayana
 symmetry
 \[
@@ -262,11 +264,12 @@ symmetry
 \]
 \end{theorem}
 
-These positive results show that $\WRP$ captures a recurring Catalan mechanism
-rather than a single isolated construction.  We next ask whether its
-rank-sorting mechanism is powerful enough to produce a uniform bijection
-explaining the full $q,t$-Catalan symmetry.  Our central theorem gives a
-negative answer.
+Thus, both $\zeta$ and $H$ require the rank-sort mechanism beyond
+polyregularity.  These two independent examples show that $\WRP$ captures a
+recurring Catalan mechanism rather than a single isolated construction.  We
+next ask whether its rank-sorting mechanism is powerful enough to produce a
+uniform bijection explaining the full $q,t$-Catalan symmetry.  Our central
+theorem gives a negative answer.
 \begin{theorem}[No $\WRP$ area--dinv swap]
 \label{thm:intro-no-swap}
 There is no $\WRP$ map $T$ on words over $\{U,D\}$ that sends every Dyck path
@@ -293,10 +296,10 @@ $\WRP$ map.
 
 The no-swap and inverse-zeta theorems are the paper's two principal lower
 bounds on what $\WRP$ itself can realise.  The first rules out every $\WRP$
-realisation of an area--dinv swap.  The second shows that $\WRP$ is not closed
-under inversion: $\zeta$ belongs to $\WRP$, whereas $\zeta^{-1}$, for which
-Thomas and Williams~\cite{ThomasWilliams2018} gave an explicit construction,
-does not.
+realisation of an area--dinv swap.  The second shows that, under the
+realisation convention, $\WRP$-realisability is not preserved by inversion:
+$\zeta$ belongs to $\WRP$, whereas $\zeta^{-1}$, for which Thomas and
+Williams~\cite{ThomasWilliams2018} gave an explicit construction, does not.
 
 Both lower bounds exploit the same restriction on $\WRP$ maps.  We evaluate a
 hypothetical map on specially chosen Dyck paths and associate with each output
@@ -317,10 +320,9 @@ realise a full area--dinv swap or compute $\zeta^{-1}$.
 
 The proof compares two descriptions of the same set.  Suppose that a $\WRP$
 map $T$ swaps area and dinv while preserving semilength, and apply $T$ to
-\begin{equation}
-\label{eq:zigzag-family}
+\[
    W_n=U(UD)^nD,\qquad n\ge 1,
-\end{equation}
+\]
 and write $Q_n=T(W_n)$.  From each output we extract its \emph{first-ascent
 pair} $(\fas(Q_n),\tailU(Q_n))$, where the two coordinates count the $U$-steps
 before and after the first $D$, respectively.  Let
@@ -404,17 +406,18 @@ maps in the resulting hierarchy.  The longer structural proofs are deferred
 to Appendix~\ref{app:wrp-structural-proofs}.  Section~\ref{sec:zeta} then
 determines the position of $\zeta$ in the hierarchy.
 Section~\ref{sec:narayana-sweep} places the classical height-sweep bijection
-$H$, which realises the bivariate Narayana symmetry, inside $\SWR$ and hence
-inside $\WRP$.  A self-contained proof of its known combinatorial properties
+$H$, which realises the bivariate Narayana symmetry, in
+$\SWR\setminus\polyreg$ and hence inside $\WRP$.  A self-contained proof of
+its known combinatorial properties
 is given in Appendix~\ref{app:narayana-sweep-proof}.
 Sections~\ref{sec:slice-semilinearity} and~\ref{sec:wrapped-flat} develop the
 semilinearity method and use it to prove the no-swap theorem.
 Section~\ref{sec:inverse-zeta} studies $\zeta^{-1}$ using a related argument.
 Section~\ref{sec:discussion} places the results in the related
 algebraic-combinatorial and automata-theoretic literatures.  Finally,
-Section~\ref{sec:lean} describes a machine-checked formalisation of the
-paper's results in the Lean proof assistant, and the small axiomatic base on
-which it rests.
+Section~\ref{sec:lean} describes the scope and status of the paper's
+machine-checked Lean formalisation, including its small axiomatic base and
+the new height-sweep lower-bound chain that remains to be formalised.
 
 
 \section{Dyck paths, statistics, and named bijections}\label{sec:dyck}
@@ -478,7 +481,7 @@ $\defc(P)=\coarea(P)-\dinv(P)$.
 A path with $\defc(P)=0$ is called \emph{deficit-zero}.
 \end{definition}
 
-\begin{example}\label{ex:UUDDUD}
+\begin{example}
 The $U$-steps of $P=UUDDUD\in\D_3$ occur at positions $1,2,5$ and begin at
 heights $0,1,0$.  Thus, $a(P)=(0,1,0)$, $\area(P)=1$, and
 $\coarea(P)=\binom32-1=2$.
@@ -659,7 +662,7 @@ set of position tuples
 on each input word $w$.  The transduction definitions below use such selected
 tuples to construct output words.
 
-\begin{example}[Peaks and parity in $\MSO$]\label{ex:mso-peak}
+\begin{example}[Peaks and parity in $\MSO$]
 The formula $\mathrm{succ}(x,y):=x<y\wedge\neg\exists z\,(x<z\wedge z<y)$ says
 ``$y$ is the position immediately after $x$''.  Using it,
 \[
@@ -803,7 +806,6 @@ emits $u$.  Thus, the three components of the transition value specify the new
 state, the head movement, and the emitted word, respectively.
 
 \begin{definition}[Configuration, run, and output]
-\label{def:2dft-run}
 Fix a 2DFT $T=(Q,\Sigma,\Gamma,q_0,F,\eta)$.  For an input
 $w=a_1\cdots a_n$, put $a_0=\vdash$ and $a_{n+1}=\dashv$.  A
 \emph{configuration of $T$ on $w$} is a pair
@@ -920,7 +922,7 @@ The two descriptions compute the same map.  Theorem~\ref{thm:eh} says that
 every 2DFT has an equivalent logical description of this kind, and conversely.
 \end{example}
 
-\subsection{Polyregular maps}\label{sec:polyreg}
+\subsection{Polyregular maps}
 
 Polyregular maps form a standard extension of regular/2DFT word transformations
 in automata theory~\cite{Bojanczyk2018}.  The class includes
@@ -945,7 +947,7 @@ a fixed \emph{arity} $k_c\ge 1$.  A potential atom is now a pair
 $(c,\bar i)$ with $\bar i\in\mathrm{Pos}(w)^{k_c}$.  A polyregular
 presentation consists of the following finite data:
 \begin{enumerate}[label=(\roman*)]
-\item a finite set $C$ of \emph{copy names}, each with an \emph{arity}
+\item a nonempty finite set $C$ of \emph{copy names}, each with an \emph{arity}
 $k_c\ge 1$;
 \item a sentence $\varphi_{\mathrm{dom}}$ specifying the domain;
 \item for each $c\in C$, a \emph{selection formula}
@@ -980,7 +982,7 @@ presentation is $\max_c k_c$, and the class of all polyregular maps is denoted
 $\polyreg$.
 \end{definition}
 
-\begin{example}[A quadratic Dyck-path map]\label{ex:dyck-squaring}
+\begin{example}[A quadratic Dyck-path map]
 For a word $w\in\{U,D\}^*$, let $u(w)$ be the number of its $U$'s and set
 $\mathrm{Sq}(w)=w^{u(w)}$, where the exponent means repeated concatenation.
 This map has a particularly
@@ -1268,7 +1270,6 @@ increasing integer atom rank and breaks atom-rank ties by scan order.  We have
 \end{definition}
 
 \begin{example}[A two-dimensional atom rank combining two positions]
-\label{ex:two-coordinate-rank}
 Classical sweep maps attach one additive level to each input
 position~\cite{ArmstrongLoehrWarrington2015,
 ArmstrongLoehrWarrington2016}.  To show how a prefix-additive rank function can
@@ -1380,7 +1381,7 @@ contribute to the atom rank, and both components of the atom rank affect the
 output order.
 \end{example}
 
-\begin{remark}[The scalar scan-order case]\label{rem:swr}
+\begin{remark}[The scalar scan-order case]
 The stable-sort description above becomes especially concrete for $\SWR$.
 An $\SWR$ map produces only a bounded number of selected atoms at each input
 position, gives each atom a single integer atom rank, and uses a scan order to
@@ -1600,7 +1601,7 @@ The general algorithm favours space over time: it emits one output letter per
 round, and each round recomputes, from the atom emitted last, its successor in
 the output order.  Under the word-cost convention above, this takes
 $O(n^{2k+1})$ time: there are $O(n^k)$ output rounds, each round scans the
-$O(n^k)$ potential atoms once while retaining the best candidate seen so far,
+$O(n^k)$ potential atoms once while retaining the best atom seen so far,
 and each selection test or atom comparison may require an $O(n)$ scan of the
 input.  Thus, even at arity $1$, this generic bound is $O(n^3)$.
 
@@ -1666,7 +1667,6 @@ formal argument appears in
 Appendix~\ref{app:wrp-structural-proofs}.
 
 \subsection{Two boundaries of the rank-sort layer}
-\label{sec:wrp-boundaries}
 
 The rank sort gives $\WRP$ its additional expressive power, but it also marks
 a precise boundary.  For deterministic $\MSO$ and polyregular maps, a regular
@@ -1699,8 +1699,8 @@ Postcomposition by $S$ adds exactly such a stage: $S$ reads the sorted output
 of $D$ and acts on what it sees.  The theorem shows that this later inspection
 cannot always be absorbed into a new $\WRP$ presentation.  Thus, the failure of
 composition is a structural consequence of allowing one rank-sort layer, not
-an accidental defect of the definition.  Closure under functional inversion
-is a separate question: later we prove that $\zeta\in\WRP$ but
+an accidental defect of the definition.  Inversion under the realisation
+convention is a separate question: later we prove that $\zeta\in\WRP$ but
 $\zeta^{-1}\notin\WRP$ (Section~\ref{sec:inverse-zeta}).
 
 There is a second, independent boundary, concerning the range of the prefix ranks
@@ -1732,19 +1732,21 @@ pairs of possible values.  Appendix~\ref{app:wrp-structural-proofs} gives the fu
 argument.
 
 \begin{corollary}[Unbounded prefix rank needed]\label{cor:rank-necessary}
-The map $\zeta$ admits no $\WRP$ presentation in which every rank source is
-uniformly bounded.  Equivalently, every $\WRP$ presentation of $\zeta$ uses at
-least one rank source whose prefix ranks are unbounded on Dyck inputs.
+The map $\zeta$ admits no $\WRP$ realisation whose presentation has every rank
+source uniformly bounded on the domain of the realising map.  Equivalently,
+every $\WRP$ presentation realising $\zeta$ uses at least one rank source whose
+prefix ranks are unbounded on that domain.
 \end{corollary}
 
-Indeed, a presentation in which every rank source were uniformly bounded
-would be polyregular by the theorem, contradicting
+Indeed, if a $\WRP$ map realising $\zeta$ had a presentation in which every
+rank source were uniformly bounded on its domain, that map would be
+polyregular by the theorem, contradicting
 Theorem~\ref{thm:zeta-not-polyregular}.  The usual height-rank presentation
 visibly uses an unbounded source: heights on
 $\D_n$ can reach $n$.  Thus, the finite-state case in which every numerical
 source has a fixed finite range cannot separate $\WRP$ from polyregularity;
-any $\WRP$ presentation of $\zeta$ must have access to an unbounded numerical
-source.
+any $\WRP$ presentation realising $\zeta$ must have access, somewhere on its
+domain, to an unbounded numerical source.
 
 
 \subsection{A computational roadmap of the Catalan examples}
@@ -1794,10 +1796,10 @@ Zeta $\zeta$ &
   Thm.~\ref{thm:zeta-not-polyregular}) &
   $\area(\zeta(P))=\dinv(P)$. \\
 Height sweep $H$ &
-  $H\in\SWR\subseteq\WRP$; its $\polyreg$ status is not determined here. &
+  $H\in\SWR\subseteq\WRP$, but $H\notin\polyreg$. &
   Section~\ref{sec:narayana-sweep}
   (Prop.~\ref{prop:alw-sweep-swr} and
-  Thm.~\ref{thm:narayana-sweep}) &
+  Thms.~\ref{thm:narayana-sweep} and~\ref{thm:H-not-polyregular}) &
   $\dr(H(P))=\val(P)$, $\val(H(P))=\dr(P)$. \\
 Zeta inverse $\zeta^{-1}$ &
   $\zeta^{-1}\notin\WRP$; an explicit combinatorial inverse is known. &
@@ -1823,16 +1825,15 @@ scan.  To realise reverse-complement, the 2DFT of
 Example~\ref{ex:rc-two-ways} first reaches the end of the input and then emits
 letters while moving back from right to left.  Both maps therefore belong to
 $\TDFT/\MSO$, and hence also to $\polyreg$ and $\WRP$.
-\item Zeta and $H$ are the positive rank-sort examples.  Both
-belong to the particularly simple fragment $\SWR$: they sort atoms by one
-additive integer atom rank and use a scan order to break ties.  For $\zeta$, the
-lower bound $\zeta\notin\polyreg$ shows that this rank sort cannot be replaced
-by any polyregular mechanism.  Together with the $\SWR$ presentation, this
-places $\zeta$ in $\WRP\setminus\polyreg$ and witnesses the strict inclusion
-$\polyreg\subsetneq\WRP$.  We do not prove a corresponding lower bound for
-$H$; its membership in $\SWR$ is an upper bound, not a claim that $H$ lies
-outside $\polyreg$.  The bijectivity and statistic exchange of $H$ are
-classical; the classification supplied here is its membership in $\SWR$.
+\item Zeta and $H$ are the positive rank-sort examples.  Both belong to the
+particularly simple fragment $\SWR$: they sort atoms by one additive integer
+atom rank and use a scan order to break ties.  The lower bounds
+$\zeta\notin\polyreg$ and $H\notin\polyreg$ show in each case that this rank
+sort cannot be replaced by any polyregular mechanism.  Together with their
+$\SWR$ presentations, either map independently witnesses the strict inclusion
+$\polyreg\subsetneq\WRP$.  The two witnesses have different combinatorial
+roles: zeta transports area and dinv, while the classical bijection $H$
+exchanges valleys and double rises.
 \item The last two entries are the negative results about what $\WRP$ itself
 can realise.  The inverse
 $\zeta^{-1}$ is a well-defined, explicitly computable bijection, but one $\WRP$
@@ -1853,7 +1854,7 @@ $\zeta$ is not polyregular and hence not realisable by a deterministic 2DFT.
 Together, the two results give $\zeta\in\WRP\setminus\polyreg$.
 
 \subsection[Upper bound: zeta orders selected atoms by height]
-{Upper bound: $\zeta$ orders selected atoms by height}\label{sec:zeta-positive}
+{Upper bound: $\zeta$ orders selected atoms by height}
 
 We make the positive half of Theorem~\ref{thm:intro-zeta-classification}
 explicit in the $\WRP$ formalism.
@@ -1972,6 +1973,54 @@ transduction.  The argument uses a single two-pyramid probe.
 For $m,n\ge 1$, put $P_{m,n}=U^m D^m U^n D^n$.
 \end{definition}
 
+The following criterion isolates the lower-bound argument.  It will be used
+for both $\zeta$ and the height sweep $H$.
+
+\begin{proposition}[Two-pyramid criterion]
+\label{prop:two-pyramid-criterion}
+Let $f\colon\D\to\{U,D\}^*$ satisfy
+$|f(P_{m,n})|=O(|P_{m,n}|)$, and let
+$K\subseteq\{U,D\}^*$ be a regular language.  If
+\[
+   \{a^m\#b^n:m,n\ge1,\ f(P_{m,n})\in K\}
+\]
+is not regular, then no polyregular map realises $f$ on every Dyck path.
+\end{proposition}
+
+\begin{proof}
+Suppose, for contradiction, that a polyregular map $T$ realises $f$ on
+$\D$.  Let $a,b,\#$ be three distinct input symbols, with $\#$ serving as a
+separator, and let
+\[
+   E\colon\{a,b,\#\}^*\longrightarrow\{U,D\}^*
+\]
+be the elementary 2DFT whose action on the inputs used below is
+\[
+   E(a^m\#b^n)=U^mD^mU^nD^n=P_{m,n},\qquad m,n\ge1.
+\]
+Such an $E$ is obtained by four finite-state passes: output the $a$-block as
+$U$'s, output it again as $D$'s, and then do the same for the $b$-block.
+
+Let $S=\{a^m\#b^n:m,n\ge1\}$, which is a regular language.  A 2DFT is
+polyregular, and polyregular maps are closed under composition
+\cite{Bojanczyk2018}.  Restricting $T\circ E$ to $S$ therefore gives a
+polyregular map $g$ with domain $S$ and
+\[
+   g(a^m\#b^n)=f(P_{m,n}),\qquad
+   |g(a^m\#b^n)|=O(m+n)=O(|a^m\#b^n|).
+\]
+The linear-growth collapse
+(Theorem~\ref{thm:polyregular-linear-collapse}) makes $g$ a deterministic
+$\MSO$ string transduction, equivalently a deterministic 2DFT.  A 2DFT has
+regular inverse images of regular languages
+\cite{EngelfrietHoogeboom2001}, so $g^{-1}(K)$ is regular.  By construction,
+however,
+\[
+   g^{-1}(K)=\{a^m\#b^n:m,n\ge1,\ f(P_{m,n})\in K\},
+\]
+contrary to the hypothesis.
+\end{proof}
+
 \begin{lemma}[Two-pyramid formula]\label{lem:zeta-two-pyramid}
 For $m,n\ge 1$,
 \[
@@ -2017,7 +2066,7 @@ exactly this even/odd distinction.
 
 \begin{lemma}[Regular probe]\label{lem:zeta-probe}
 Let $R = \{\,UU(DU)^{2q}DD(UD)^s : q,s\ge 0\,\}\subseteq\{U,D\}^*$.
-Then, $R$ is regular. Also, for all $m,n\ge 1$,
+Then $R$ is regular, and for all $m,n\ge 1$,
 $\zeta(P_{m,n})\in R$ if and only if $m\le n$.
 \end{lemma}
 
@@ -2031,7 +2080,10 @@ it reads zero or more $UD$ pairs.  It accepts only when the input ends at the
 boundary between complete pairs.  On any unexpected letter, the automaton
 enters a nonaccepting state and remains there for the rest of the input, so the
 word is rejected.  Thus, $R$ is regular by
-Definition~\ref{def:regular-language}.  By
+Definition~\ref{def:regular-language}.  This description also makes the
+factorisation unique: the first $DD$ after the initial $UU$ is the central
+separator, since every $D$ in the preceding $(DU)$ block is followed by a
+$U$, and it determines the exponent of $DU$.  By
 Lemma~\ref{lem:zeta-two-pyramid}, if $m\le n$, then the exponent of $DU$
 before the central $DD$ is $2m-2$, which is even; if $m>n$, it is
 $2n-1$, which is odd.  Hence $\zeta(P_{m,n})\in R$ if and only if the relevant
@@ -2044,50 +2096,16 @@ under the step-word encoding.
 \end{theorem}
 
 \begin{proof}
-Suppose, for contradiction, that some polyregular map $T$ realises $\zeta$ on
-$\D$.  Let $a,b,\#$ be three distinct input symbols, with $\#$ serving as a
-separator, and let
-\[
-   E\colon\{a,b,\#\}^*\longrightarrow\{U,D\}^*
-\]
-be the elementary 2DFT whose action on inputs of the form $a^m\#b^n$ is
-\[
-   E(a^m\#b^n)=U^mD^mU^nD^n=P_{m,n},\qquad m,n\ge 1.
-\]
-Its behaviour on other inputs is immaterial.  Such an $E$ is obtained by four
-finite-state passes: output the $a$-block as $U$'s, output it again as $D$'s,
-then do the same for the $b$-block.  Each $P_{m,n}$ is a Dyck path, so $T$
-agrees with $\zeta$ on the image of $E$ that we use below.
-
 Let
 \[
-   S=\{a^m\#b^n:m,n\ge 1\},
-   \qquad
    L=\{a^m\#b^n:m,n\ge 1,\ m\le n\}.
 \]
-We use the standard facts that $S$ is regular, that regular languages are
-closed under intersection, and that $L$ is not regular; see, for example,
-Sipser~\cite[Chapter~1]{Sipser2013}.
-
-A 2DFT is polyregular and $\polyreg$ is closed under composition
-\cite{Bojanczyk2018}, so $T\circ E$ is polyregular.  Since $S$ is regular, its
-membership condition is $\MSO$-definable.  Conjoining that condition with the
-domain sentence in a polyregular presentation therefore gives a polyregular
-map $g$ with domain $S$ and
-\[
-   g(a^m\#b^n)=T(P_{m,n})=\zeta(P_{m,n}),\qquad
-   |g(a^m\#b^n)|=2(m+n)\le 2\,|a^m\#b^n|.
-\]
-Thus, $g$ has linear output growth \emph{on its domain}, so the linear-growth
-collapse (Theorem~\ref{thm:polyregular-linear-collapse}) applies to $g$: it is
-a deterministic $\MSO$ string transduction, equivalently computed by a
-deterministic 2DFT\@.  A 2DFT has regular inverse images of regular languages
-\cite{EngelfrietHoogeboom2001}, so $g^{-1}(R)$ is regular for the language $R$
-of Lemma~\ref{lem:zeta-probe}.  But
-\[
-   g^{-1}(R)=\{a^m\#b^n:m,n\ge 1,\ \zeta(P_{m,n})\in R\}=L,
-\]
-contradicting the nonregularity of $L$.
+This language is not regular by the standard pumping argument; see, for
+example, Sipser~\cite[Chapter~1]{Sipser2013}.  Lemma~\ref{lem:zeta-probe}
+identifies $L$ with
+$\{a^m\#b^n:m,n\ge1,\ \zeta(P_{m,n})\in R\}$.  Since $\zeta$ preserves
+length, Proposition~\ref{prop:two-pyramid-criterion}, applied with $f=\zeta$
+and $K=R$, gives the result.
 \end{proof}
 
 \begin{corollary}[Zeta beyond $\MSO$]\label{cor:zeta-not-regular}
@@ -2110,11 +2128,11 @@ realisation convention (Definition~\ref{def:relative}), a polyregular $T$
 realising $\zeta$ is unconstrained on non-Dyck inputs, where it may grow
 superlinearly, so the hypothesis of
 Theorem~\ref{thm:polyregular-linear-collapse} need not hold on
-$\mathrm{dom}(T)$.  The proof of Theorem~\ref{thm:zeta-not-polyregular}
-sidesteps this by collapsing the linear-growth restriction $g$, whose
-domain is the regular language $\{a^m\#b^n:m,n\ge 1\}$.  On this domain, the
-linear-growth hypothesis genuinely holds, so the conclusion is correspondingly
-the strong one, that \emph{no} polyregular map realises $\zeta$.
+$\mathrm{dom}(T)$.  Proposition~\ref{prop:two-pyramid-criterion} sidesteps
+this by collapsing the linear-growth restriction $g$, whose domain is
+$\{a^m\#b^n:m,n\ge 1\}$; this language is regular.  On this domain, the
+linear-growth hypothesis genuinely holds, so the conclusion is the strong
+one, that \emph{no} polyregular map realises $\zeta$.
 \end{remark}
 
 \begin{remark}[First separation in the hierarchy]
@@ -2122,18 +2140,19 @@ Together, Theorem~\ref{thm:zeta-wrp} and
 Theorem~\ref{thm:zeta-not-polyregular} give the first strict inclusion of the
 paper: $\WRP\supsetneq\polyreg$.  The witness, $\zeta$, has \emph{linear}
 output growth; the separation is not about output growth at all but about the
-ability to sort by an unbounded integer rank.
+ability to sort by an unbounded integer rank.  Section~\ref{sec:narayana-sweep}
+will give $H$ as a second witness with a different statistic exchange.
 \end{remark}
 
 \section{The height sweep and the Narayana symmetry}
 \label{sec:narayana-sweep}
 
-As a second positive example for $\WRP$, consider the starting-height,
+As a second classification example for $\WRP$, consider the starting-height,
 increasing-level, right-to-left member of the sweep family studied by
 Armstrong, Loehr, and Warrington~\cite{ArmstrongLoehrWarrington2015,
 ArmstrongLoehrWarrington2016}.  We denote it by $H$.  Its bijectivity and
-statistic exchange are known; our computational result is that
-Proposition~\ref{prop:alw-sweep-swr} places it in $\SWR\subseteq\WRP$.
+statistic exchange are known.  Our computational results place it in
+$\SWR\subseteq\WRP$ and outside $\polyreg$.
 
 Two local statistics of a Dyck word $w=w_1\cdots w_{2n}$ are the number of
 \emph{valleys}
@@ -2189,7 +2208,7 @@ decreasing position (the right-to-left tie-order), then reading their labels,
    \end{array}
 \]
 gives $H(P)=U\cdot DU\cdot DU\cdot D=UDUDUD$.  The mountain, with two double
-rises and no valley, is sent to the zigzag $UDUDUD$, with $\val=2$ and $\dr=0$:
+rises and no valleys, is sent to the zigzag $UDUDUD$, with $\val=2$ and $\dr=0$:
 the two statistics are exchanged.  The tie-order is what does this.  With the
 left-to-right convention of Example~\ref{ex:height-sweep}, the same additive
 level sort would give $UUDUDD$, which has $\val=\dr=1$ and does not exchange the
@@ -2217,9 +2236,130 @@ $\Nar_n(q,t)=\Nar_n(t,q)$.
 \end{theorem}
 
 A self-contained proof in the present conventions is given in
-Appendix~\ref{app:narayana-sweep-proof}.  Combined with
-Proposition~\ref{prop:alw-sweep-swr}, Theorem~\ref{thm:narayana-sweep}
-establishes the introduction-level statement,
+Appendix~\ref{app:narayana-sweep-proof}.
+
+The two-pyramid criterion also gives a lower bound for $H$.  The required
+closed form mirrors Lemma~\ref{lem:zeta-two-pyramid}.
+
+\begin{lemma}[Two-pyramid formula for the height sweep]
+\label{lem:H-two-pyramid}
+For $m,n\ge1$,
+\[
+H(P_{m,n})=
+\begin{cases}
+   UU(DU)^{2n-2}DD(UD)^{m-n}, & n\le m,\\[1mm]
+   UU(DU)^{2m-1}DD(UD)^{n-m-1}, & n>m.
+\end{cases}
+\]
+\end{lemma}
+
+\begin{proof}
+Index the $2m+2n$ steps of $P_{m,n}$ by their positions.  Reading off the
+starting heights of the four runs gives the following table.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}llll@{}}
+\toprule
+run & steps & starting heights & position of the step at height $h$\\
+\midrule
+$U^m$ & positions $1,\ldots,m$ &
+   $0,1,\ldots,m-1$ & $U_1$ at $h+1$ \hfill($0\le h\le m-1$)\\
+$D^m$ & positions $m+1,\ldots,2m$ &
+   $m,m-1,\ldots,1$ & $D_1$ at $2m-h+1$ \hfill($1\le h\le m$)\\
+$U^n$ & positions $2m+1,\ldots,2m+n$ &
+   $0,1,\ldots,n-1$ & $U_2$ at $2m+h+1$ \hfill($0\le h\le n-1$)\\
+$D^n$ & positions $2m+n+1,\ldots,2m+2n$ &
+   $n,n-1,\ldots,1$ & $D_2$ at $2m+2n-h+1$ \hfill($1\le h\le n$)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At level $0$, only $U_1$ at position $1$ and $U_2$ at position $2m+1$ start
+at height $0$.  Decreasing position lists $U_2$ and then $U_1$, so this level
+contributes $UU$.
+
+For every level $h\ge1$, the order of the steps that exist is obtained by
+deleting the absent members from $D_2,U_2,D_1,U_1$.  Indeed,
+\[
+  \underbrace{2m+2n-h+1}_{D_2}>\underbrace{2m+h+1}_{U_2}
+  \iff h<n,
+  \qquad
+  \underbrace{2m+h+1}_{U_2}>\underbrace{2m-h+1}_{D_1}
+  \iff h>0,
+\]
+\[
+  \underbrace{2m-h+1}_{D_1}>\underbrace{h+1}_{U_1}
+  \iff h<m.
+\]
+The first inequality holds whenever $U_2$ exists, the second for every
+$h\ge1$, and the third whenever $U_1$ exists.  Thus, the surviving letters at
+each positive level occur in the order $D,U,D,U$.
+
+Suppose first that $n\le m$.  The levels $1\le h\le n-1$ each contain all
+four steps and together contribute $(DU)^{2n-2}$.  At level $n$, the letters
+are $DDU$ if $n<m$ and $DD$ if $n=m$.  The levels
+$n+1\le h\le m-1$ each contribute $DU$, and level $m$ contributes $D$.
+When $n<m$, the resulting word is
+\[
+   UU(DU)^{2n-2}DD\,U(DU)^{m-1-n}D
+   =UU(DU)^{2n-2}DD(UD)^{m-n}.
+\]
+The same formula holds when $n=m$, with an empty tail.
+
+Now suppose that $n>m$.  The levels $1\le h\le m-1$ together contribute
+$(DU)^{2m-2}$.  Level $m$ contributes $DUD$, the levels
+$m+1\le h\le n-1$ each contribute $DU$, and level $n$ contributes $D$.
+Hence
+\[
+\begin{aligned}
+   H(P_{m,n})
+   &=UU(DU)^{2m-2}DUD(DU)^{n-1-m}D\\
+   &=UU(DU)^{2m-1}DD(UD)^{n-m-1},
+\end{aligned}
+\]
+where the tail is empty when $n=m+1$.  This proves both cases.
+\end{proof}
+
+\begin{lemma}[Regular probe for the height sweep]
+\label{lem:H-probe}
+For all $m,n\ge1$, $H(P_{m,n})\in R$ if and only if $n\le m$, where $R$ is
+the regular language of Lemma~\ref{lem:zeta-probe}.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:H-two-pyramid}, the exponent of $DU$ before the central
+$DD$ is the even number $2n-2$ if $n\le m$ and the odd number $2m-1$ if
+$n>m$.  Membership in $R$ is therefore equivalent to $n\le m$.
+\end{proof}
+
+\begin{theorem}[The height sweep is beyond $\polyreg$]
+\label{thm:H-not-polyregular}
+The map $H$ is not realised by any polyregular map under the step-word
+encoding.  Consequently, $H\in\SWR\setminus\polyreg$, and $H$ is not
+realisable by any deterministic 2DFT.
+\end{theorem}
+
+\begin{proof}
+Let
+\[
+   L'=\{a^m\#b^n:m,n\ge1,\ n\le m\}.
+\]
+This language is not regular by the pumping lemma: if $p$ were a pumping
+length, pumping down a nonempty initial block of $a$'s in $a^p\#b^p$ would
+produce $a^{p-t}\#b^p$ for some $t>0$, which violates $n\le m$.  By
+Lemma~\ref{lem:H-probe}, it is
+$\{a^m\#b^n:m,n\ge1,\ H(P_{m,n})\in R\}$.  The map $H$ preserves length, so
+Proposition~\ref{prop:two-pyramid-criterion}, applied with $f=H$ and $K=R$,
+shows that no polyregular map realises $H$ on every Dyck path.  The membership
+$H\in\SWR$ follows from Proposition~\ref{prop:alw-sweep-swr}, and every
+deterministic 2DFT is polyregular.
+\end{proof}
+
+Proposition~\ref{prop:alw-sweep-swr} and
+Theorems~\ref{thm:narayana-sweep} and~\ref{thm:H-not-polyregular} together
+establish the introduction-level statement,
 Theorem~\ref{thm:intro-narayana-sweep}.
 
 \section[Regular-slice semilinearity for WRP]{Regular-slice semilinearity for $\WRP$}\label{sec:slice-semilinearity}
@@ -2260,12 +2400,12 @@ This incompatibility is the obstruction used in the next section.
 To prove the semilinearity statement, we use the logical language of
 Presburger arithmetic.  Its formulas describe integer tuples using addition,
 order comparisons, and congruence conditions, together with the usual logical
-connectives and quantifiers.  A set of integer tuples is called
-\emph{Presburger-definable} if membership in the set can be expressed by such a
-formula.  A condition on integer variables is called
-\emph{Presburger-definable} if it can be expressed by such a formula.  The
-Presburger-definable sets are precisely the semilinear sets.  We
-use two technical ingredients.  First, on a repeated-block slice, the
+connectives and quantifiers.  We call a set of integer tuples
+\emph{Presburger-definable} when membership in it can be expressed by such a
+formula, and likewise call a condition on integer variables
+\emph{Presburger-definable} when it can.  The Presburger-definable sets are
+precisely the semilinear sets.  We
+use two technical ingredients.  First, on a regular slice, the
 conditions governing selection, labelling, atom-rank comparisons, and
 tie-orders in a $\WRP$ presentation can be expressed by Presburger formulas in
 $n$ and the relevant \emph{repetition indices}, which record the copies of the
@@ -2794,7 +2934,7 @@ quasi-polynomial is a polynomial in $x_1,\ldots,x_p$ whose coefficients depend o
 $x$ only through the residues of its entries modulo a fixed integer $M$;
 equivalently, it is a finite list of ordinary polynomials, one selected by the
 residue class of $x$ modulo $M$.  This piecewise quasi-polynomiality is the
-parametric Presburger counting theorem of Woods~\cite{Woods2015}, which
+Presburger counting theorem of Woods~\cite[Theorem~1.10]{Woods2015}, which
 generalises classical integer-point counting results such as Ehrhart's
 theorem~\cite{Ehrhart1962}.
 Since a quasi-polynomial agrees with an ordinary polynomial on each residue
@@ -2876,8 +3016,9 @@ $\tailU$ is the number of later up-steps.  We call
 $(\fas(y),\tailU(y))$ the \emph{first-ascent pair} of $y$.  Thus, for the
 counts introduced at the beginning of this section,
 $a_n=\fas(T(W_n))$ and $b_n=\tailU(T(W_n))$.
-The theorem below asserts that, if $T\in\WRP$ and $|T(W_n)|=O(n)$, these
-first-ascent pairs form a semilinear set as $n\ge1$ varies.
+The theorem below asserts that, if $T\in\WRP$ is defined on every $W_n$ and
+$|T(W_n)|=O(n)$, these first-ascent pairs form a semilinear set as $n\ge1$
+varies.
 
 We now explain how the two preceding ingredients yield this conclusion.  Fix a
 $\WRP$ map $T$ and the family $W_n=U(UD)^nD$ from the beginning of this
@@ -2896,7 +3037,8 @@ the desired semilinear set of first-ascent pairs.
 
 \begin{theorem}[First-ascent semilinearity]
 \label{thm:wrp-slice-semilinearity}
-Consider $T\in\WRP$.  Assume $|T(W_n)|=O(n)$.  Then, the set
+Let $T\in\WRP$ with $W_n\in\operatorname{dom}(T)$ for every $n\ge1$, and
+suppose $|T(W_n)|=O(n)$.  Then, the set
 $S_T=\{(\fas(T(W_n)),\tailU(T(W_n))):n\ge 1\}\subseteq\N^2$
 is semilinear.
 \end{theorem}
@@ -3017,9 +3159,10 @@ $\dinv\le\coarea$ (Lemma~\ref{lem:dinv-coarea}), so any swap must land on
 deficit-zero targets.
 \item \emph{Deficit zero pins down the pair.}  Equality $\dinv=\coarea$ is
 rigid: a deficit-zero path is forced to be a near-staircase
-(Lemma~\ref{lem:deficit-zero-targets}), so its first-ascent pair $(\fas,\tailU)$ is
-confined to one explicit set $S_{\mathrm{tri}}\subseteq\N^2$, the ``triangular''
-region defined in Corollary~\ref{cor:forced-triangular-pairs}.  As $n$ grows,
+(Lemma~\ref{lem:deficit-zero-targets}), so the first-ascent pairs arising as
+$n$ varies form exactly the explicit set
+$S_{\mathrm{tri}}\subseteq\N^2$, the ``triangular'' region defined in
+Corollary~\ref{cor:forced-triangular-pairs}.  As $b$ grows,
 $S_{\mathrm{tri}}$ has a quadratically curving lower boundary and is \emph{not}
 semilinear (Lemma~\ref{lem:triangular-not-semilinear}).
 \end{enumerate}
@@ -3343,7 +3486,27 @@ $b$ for all sufficiently large such $b$.  This contradiction shows
 $S_{\mathrm{tri}}$ is not semilinear.
 \end{proof}
 
-The no-swap theorem now follows.
+The combinatorial part of the obstruction can now be stated without reference
+to a computational model.
+
+\begin{corollary}[Model-free form of the obstruction]
+\label{cor:model-free-obstruction}
+Let $F\colon\D\to\D$ be semilength-preserving and satisfy
+$\area(F(P))=\dinv(P)$ and $\dinv(F(P))=\area(P)$ for every $P\in\D$.  Then,
+\[
+   \{(\fas(F(W_n)),\tailU(F(W_n))):n\ge1\}
+\]
+is not semilinear.
+\end{corollary}
+
+\begin{proof}
+Corollary~\ref{cor:forced-triangular-pairs} identifies the displayed set with
+$S_{\mathrm{tri}}$, which is not semilinear by
+Lemma~\ref{lem:triangular-not-semilinear}.
+\end{proof}
+
+The no-swap theorem follows by combining this model-free obstruction with the
+regular-slice semilinearity theorem.
 
 \begin{theorem}[No $\WRP$ area--dinv swap]\label{thm:wrp-no-swap}
 There is no $\WRP$ map $T$ that realises a
@@ -3355,15 +3518,15 @@ semilength-preserving \emph{bijection} of $\D$ swapping $\area$ and $\dinv$.
 
 \begin{proof}
 Assume such a $T$ exists.  For the Dyck input $W_n=U(UD)^nD$, the output
-is $F(W_n)\in\D_{n+1}$, so $|T(W_n)|=2(n+1)=O(n)$.  By
+is $F(W_n)\in\D_{n+1}$.  Since $T$ realises $F$, every $W_n$ lies in the
+domain of $T$, and $|T(W_n)|=2(n+1)=O(n)$.  By
 Theorem~\ref{thm:wrp-slice-semilinearity}, the set of first-ascent pairs
 \[
    \{(\fas(T(W_n)),\tailU(T(W_n))):n\ge 1\}
 \]
-is semilinear.  But $T(W_n)=F(W_n)$, and
-Corollary~\ref{cor:forced-triangular-pairs} identifies the same set
-with $S_{\mathrm{tri}}$, which is not semilinear by
-Lemma~\ref{lem:triangular-not-semilinear}.  Contradiction.
+is semilinear.  But $T(W_n)=F(W_n)$, so
+Corollary~\ref{cor:model-free-obstruction} says that the same set is not
+semilinear.  Contradiction.
 \end{proof}
 
 This proves the introduction-level statement, Theorem~\ref{thm:intro-no-swap}.
@@ -3382,12 +3545,13 @@ simultaneously for all $n$.
 \label{sec:inverse-zeta}
 
 The no-swap theorem shows that $\WRP$ cannot supply the full
-$q,t$-symmetry.  We now turn to a different structural question: is $\WRP$
-closed under taking inverses?  The zeta map provides a counterexample: it is a
+$q,t$-symmetry.  We now turn to a different structural question under the
+realisation convention: is $\WRP$-realisability of a Dyck-path bijection
+preserved under inversion?  The zeta map provides a counterexample: it is a
 semilength-preserving bijection in $\WRP$ (Theorem~\ref{thm:zeta-wrp}), whereas we
-prove below that $\zeta^{-1}$ does not belong to $\WRP$.  Thus, $\WRP$ is not
-closed under taking inverses, even among semilength-preserving bijections of Dyck
-paths.
+prove below that $\zeta^{-1}$ does not belong to $\WRP$.  Thus,
+$\WRP$-realisability is not preserved under inversion, even among
+semilength-preserving bijections of Dyck paths.
 
 The proof follows the three-step pattern of the no-swap theorem, now on the
 two-parameter family
@@ -3397,7 +3561,8 @@ two-parameter family
 of Definition~\ref{def:two-parameter-family}.  Its subfamily with $m=1$ and $n\ge1$ is
 the family $(W_n)_{n\ge1}$ studied in
 Section~\ref{sec:wrapped-flat}.  Suppose, for a contradiction, that
-$\zeta^{-1}\in\WRP$.  First, since $\zeta^{-1}$ is semilength-preserving,
+$\zeta^{-1}\in\WRP$.  Then, it is defined on every $W_{m,n}$.  Since
+$\zeta^{-1}$ is semilength-preserving,
 Theorem~\ref{thm:two-parameter-semilinearity} implies that
 \[
    S_{\zeta^{-1}}
@@ -3429,8 +3594,9 @@ the two-parameter family $(W_{m,n})_{m\ge1,\,n\ge0}$ and show that, as in
 Section~\ref{sec:slice-semilinearity}, the selection, labelling, and ordering
 conditions of a fixed $\WRP$ presentation are Presburger-definable on this
 family.  Bounded counting then implies that,
-for any $T\in\WRP$ with $|T(W_{m,n})|=O(m+n)$, its first-ascent pairs,
-recorded together with $m$ and $n$, form a semilinear set
+for any $T\in\WRP$ defined on every $W_{m,n}$ with
+$|T(W_{m,n})|=O(m+n)$, its first-ascent pairs, recorded together with $m$ and
+$n$, form a semilinear set
 (Theorem~\ref{thm:two-parameter-semilinearity}).
 
 \begin{definition}[The family $W_{m,n}$]\label{def:two-parameter-family}
@@ -3732,7 +3898,9 @@ settles (c).
 
 \begin{theorem}[Semilinearity on the two-parameter family]
 \label{thm:two-parameter-semilinearity}
-Let $T\in\WRP$ be fixed and suppose $|T(W_{m,n})|=O(m+n)$.  Then,
+Let $T\in\WRP$ be fixed, with
+$W_{m,n}\in\operatorname{dom}(T)$ for all $m\ge1$ and $n\ge0$, and suppose
+$|T(W_{m,n})|=O(m+n)$.  Then,
 \[
    S_T=\bigl\{(m,n,\fas(T(W_{m,n})),\tailU(T(W_{m,n}))):m\ge 1,\ n\ge 0\bigr\}
    \subseteq\N^4
@@ -4056,8 +4224,8 @@ encoding, does not belong to $\WRP$.
 \begin{proof}
 Since $\zeta$ restricts to a bijection $\D_N\to\D_N$ for every $N$, its inverse
 preserves semilength.  Hence $|\zeta^{-1}(W_{m,n})|=2(m+n)=O(m+n)$.  If
-$\zeta^{-1}\in\WRP$, then Theorem~\ref{thm:two-parameter-semilinearity}
-makes
+$\zeta^{-1}\in\WRP$, then it is defined on every $W_{m,n}$, and
+Theorem~\ref{thm:two-parameter-semilinearity} makes
 \[
    S=\bigl\{(m,n,\fas(\zeta^{-1}(W_{m,n})),\tailU(\zeta^{-1}(W_{m,n}))):
               m\ge 1,\ n\ge 0\bigr\}
@@ -4072,10 +4240,11 @@ Contradiction.
 This proves the introduction-level statement,
 Theorem~\ref{thm:intro-inverse-zeta}.
 Together with Theorem~\ref{thm:zeta-wrp}, the corollary also shows that
-$\WRP$ is not closed under taking inverses, even for bijections of Dyck paths
-that preserve semilength.
+$\WRP$-realisability under the realisation convention is not preserved by
+inversion, even for bijections of Dyck paths that preserve semilength.
 
-\section{Related work}\label{sec:discussion}\label{sec:related-work}
+\section{Related work}% Both labels are used in cross-references.
+\label{sec:discussion}\label{sec:related-work}
 
 Garsia and Haiman introduced the algebraic $q,t$-Catalan
 sequence~\cite{GarsiaHaiman1996}.  Haglund gave the Catalan-word formula that
@@ -4113,7 +4282,9 @@ under the classical zeta map is reviewed by Sulzgruber and
 Thiel~\cite[Section~2.8]{SulzgruberThiel2018}.  Thus,
 Theorem~\ref{thm:narayana-sweep} recalls a known combinatorial result; its role
 here is to show that the small class $\SWR$, and hence $\WRP$, already realises
-this symmetry.
+this symmetry.  Theorem~\ref{thm:H-not-polyregular} is the new computational
+lower bound: it shows that the additive level sort used by this classical
+bijection cannot be replaced by a polyregular mechanism.
 
 The lower bounds also use the inequality $\dinv\le\coarea$ and uniqueness of
 its equality case at fixed semilength and common value.  Both appear in
@@ -4129,8 +4300,9 @@ the full problem remains open~\cite{AyyerSundaravaradan2025}.  Our question is
 more constrained: can a statistic exchange be realised by a prescribed
 word-transduction mechanism?  The class $\WRP$ isolates the single global
 additive rank sort used by zeta and $H$.  It contains both of these known
-bijections, but the lower bounds show that it cannot realise a full
-area--dinv exchange and is not closed under taking inverses.
+bijections, both of which lie outside $\polyreg$, but the lower bounds show
+that it cannot realise a full area--dinv exchange and, under the realisation
+convention, that realisability is not preserved by inversion.
 
 These Catalan statistics and sweep maps also extend beyond ordinary Dyck
 paths.  The rational $q,t$-symmetry follows from Mellit's proof of the rational
@@ -4217,11 +4389,34 @@ hence with a composition of toggles~\cite{Deutsch1999,HopkinsJoseph2022}.  The
 word-based models developed here do not formalise first-return recursion or
 toggle operations, and we do not classify these maps.
 
+\paragraph{Open problems.}
+The results leave several natural questions about the rank sort and its
+combinatorial scope.
+\begin{enumerate}[label=(\arabic*)]
+\item The class $\WRP$ permits one rank sort.  Is the hierarchy obtained by
+allowing a fixed number of successive rank sorts strict?  In particular, does
+a two-layer presentation suffice for $\zeta^{-1}$?
+\item Is equivalence of two $\WRP$ presentations decidable?  More generally,
+after fixing a finitely presented ambient transducer model, is it decidable
+whether a presented map admits a $\WRP$ presentation?
+\item Does the deficit-zero rigidity argument have an analogue for $\area$
+and $\bounce$, leading to a computational obstruction for an area--bounce
+exchange?
+\item Which additive level sorts are polyregular?  Unbounded levels alone do
+not force a lower bound: if $\nu(U)=\nu(D)=1$, then the level of position $i$
+is $i-1$, and $\Phi_\nu$ is the identity map.  A classification by the step
+weights and tie-order would separate such degenerate cases from examples such
+as $H$ and other mixed-sign sweep maps.
+\end{enumerate}
+
 \section{Machine-checked formalisation in Lean}\label{sec:lean}
 
-The results of this paper have been formalised and machine-checked in the
-Lean~4 proof assistant~\cite{DeMouraUllrich2021}, building on the Mathlib
-library~\cite{MathlibCommunity2020}.  The development was produced
+With the exception of the new height-sweep lower-bound chain
+(Lemmas~\ref{lem:H-two-pyramid} and~\ref{lem:H-probe} and
+Theorem~\ref{thm:H-not-polyregular}), the results of this paper have been
+formalised and machine-checked in the Lean~4 proof assistant
+\cite{DeMouraUllrich2021}, building on the Mathlib library
+\cite{MathlibCommunity2020}.  The development was produced
 automatically by the AI models Claude, Aristotle, and Codex, as recorded in
 the declaration of AI use at the end of the paper; since every proof is
 checked by Lean's kernel, the guarantees described in this section do not
@@ -4246,19 +4441,20 @@ transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
 functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
 (Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine
 models of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
-results of the paper: Table~\ref{tab:lean} lists the headline theorems with
-their Lean names, and the intermediate lemmas are formalised as well.  In
+formalised results of the paper: Table~\ref{tab:lean} lists the headline
+theorems with their Lean names or current status, and the intermediate lemmas
+supporting those results are formalised as well.  In
 particular, the deficit-zero analysis of Section~\ref{sec:main}, the
-first-ascent computations of Section~\ref{sec:inverse-zeta}, and the one-loop
-lemmas of Section~\ref{sec:slice-semilinearity} all have formal proofs, the
-last both instantiated at the family $W_n$ and verbatim over an arbitrary
-slice $u\,v^n z$.  Background results quoted from the literature, such as
+first-ascent computations of Section~\ref{sec:inverse-zeta}, and the
+regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
+proofs, the last both instantiated at the family $W_n$ and verbatim over an
+arbitrary slice $u\,v^n z$.  Background results quoted from the literature, such as
 Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
 enter through the admitted axioms below.  The worked examples of the paper
 are certified by Lean's executable decision procedures.  Two documentation
-files in the repository map every numbered statement of the paper to its
-formal counterpart, section by section; Table~\ref{tab:lean} cites Lean names
-without their namespace prefixes.
+files in the repository map the formalised numbered statements of the paper to
+their formal counterparts, section by section; Table~\ref{tab:lean} cites Lean
+names without their namespace prefixes.
 
 \begin{table}[t]
 \centering
@@ -4279,7 +4475,7 @@ Thm.~\ref{thm:wrp-strict-over-poly} (above $\polyreg$) &
 Thm.~\ref{thm:wrp-logspace} (logspace evaluation) &
   \texttt{wrp\_isLogspaceMH}, \texttt{wrp\_isLogspaceTM},
   \texttt{wrp\_logspace\_polytime}, \texttt{wrp\_logspaceTM\_polytime} &
-  (i) \\
+  none \\
 Cor.~\ref{cor:srr-quadratic} (quadratic evaluation) &
   \texttt{srr\_quadratic} & (i) \\
 Thm.~\ref{thm:wrp-strict-below-logspace} (below logspace) &
@@ -4304,6 +4500,8 @@ Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
   \texttt{heightSweep\_bijOn},
   \texttt{valleys\_heightSweep\_eq\_doubleRises},
   \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
+Thm.~\ref{thm:H-not-polyregular} (height sweep beyond $\polyreg$) &
+  not yet formalised & pending \\
 Thm.~\ref{thm:wrp-slice-semilinearity} (first-ascent semilinearity) &
   \texttt{wrp\_slice\_profile\_semilinear} & (i) \\
 Thm.~\ref{thm:wrp-no-swap} (no area--dinv swap) &
@@ -4317,21 +4515,23 @@ Cor.~\ref{cor:inverse-zeta-not-wrp} (general arity) &
   \texttt{inverse\_zeta\_not\_wrp} & (i)--(iv) \\
 \bottomrule
 \end{tabularx}
-\caption{The headline results and their Lean counterparts.  The last column
-lists the admitted axioms (i)--(vi), described in the text, on which the Lean
-proof depends beyond the kernel; ``none'' marks results proved with no
-admitted axiom.  Lean names are cited without namespace prefixes; the
-repository documentation maps every numbered statement of the paper,
-including the intermediate lemmas, to its formal counterpart.}
+\caption{The headline results and their Lean status.  The last column lists
+the admitted axioms (i)--(vi), described in the text, on which each completed
+Lean proof depends beyond the kernel; ``none'' marks results proved with no
+admitted axiom, and ``pending'' marks the new theorem not yet added to the
+development.  Lean names are cited without namespace prefixes; the repository
+documentation maps the formalised statements of the paper, including their
+intermediate lemmas, to their formal counterparts.}
 \label{tab:lean}
 \end{table}
 
 \paragraph{Trust base.}
-Every result is proved from Lean's kernel primitives plus exactly six
-explicitly admitted axioms.  Each axiom is a standard fact from the
-literature, and none of them mentions a notion introduced in this paper: they
-speak only about $\MSO$, finite automata, semilinear sets, and polyregular
-maps.
+The completed development is built from Lean's kernel primitives plus exactly
+six explicitly admitted axioms.  These axioms package standard external
+results or their consequences concerning $\MSO$, finite automata, semilinear
+sets, prefix-additive rank functions, and polyregular maps.  Some are stated
+using the development's own abstractions so that they can be applied directly
+to the formalised arguments below.
 \begin{enumerate}[label=(\roman*)]
 \item \texttt{buchi}: every $\MSO$-definable language over a finite alphabet
 is recognised by a DFA, the logic-to-automata direction of the
@@ -4359,8 +4559,8 @@ under a polyregular map is regular~\cite{Bojanczyk2018}.
 \end{enumerate}
 Axioms (iv) and (v) are the point at which the informal development also
 consumes an external input: Lemma~\ref{lem:presburger-counting} is derived in
-Section~\ref{sec:slice-semilinearity} from Woods' parametric Presburger
-counting theorem~\cite{Woods2015}, and the formalisation admits the two
+Section~\ref{sec:slice-semilinearity} from Woods' Presburger counting theorem
+\cite[Theorem~1.10]{Woods2015}, and the formalisation admits the two
 instances it uses rather than re-proving that counting machinery.  Which
 axioms each headline result uses is recorded in Table~\ref{tab:lean} and can
 be audited mechanically with Lean's \texttt{\#print axioms} command.  The
@@ -4383,10 +4583,10 @@ tie-order $\chi$ is itself a strict total order on the selected atoms, and
 every copy name has positive arity.  A working class asks only that the
 combined output order $\prec$, atom rank refined by $\chi$, totally order the
 selected atoms of each input word.  The working class admits more
-presentations, so the negative theorems, proved over it, are formally
-stronger; every headline theorem is also restated over the verbatim class
-with the same admitted axioms, and the positive memberships of $\zeta$, $H$,
-and the additive level sorts are proved in the verbatim class directly.
+presentations, so the negative theorems proved over it are formally stronger.
+Every formalised negative headline theorem is also restated over the verbatim
+class with the same admitted axioms, and the positive memberships of $\zeta$,
+$H$, and the additive level sorts are proved in the verbatim class directly.
 Theorem~\ref{thm:wrp-no-swap} is formalised in its map form: no bijectivity
 is assumed of the hypothetical swap.
 Corollary~\ref{cor:inverse-zeta-not-wrp} is rendered as left inversion: no
@@ -4629,9 +4829,10 @@ therefore uses $O(k\log n)$ bits.  The total number of potential atoms is
 $\sum_{c\in C}n^{k_c}=O(n^k)$.  With $\alpha$ on the work tape:
 \begin{itemize}
 \item \emph{selection and label} are decided by evaluating the fixed $\MSO$
-selection and label formulas on the input annotated with $\bar i$; a fixed
-$\MSO$ formula is checkable by a finite-state pass, in constant space beyond
-$\bar i$.
+selection and label formulas on the input annotated with $\bar i$.  During a
+scan, the stored indices in $\bar i$ determine the finite bit-vector marking
+which free variables occupy the current position.  The resulting marked word
+is tested by a fixed finite automaton, in constant space beyond $\bar i$.
 \item \emph{the atom rank} $\kappa_c(\bar i)\in\Z^d$ is a fixed constant plus a
 fixed sum of prefix-additive coordinate contributions
 (Definitions~\ref{def:prefix-rank} and~\ref{def:prefix-additive-rank});
@@ -4657,10 +4858,11 @@ atom $B$: the $\prec$-least selected atom seen so far with $L\prec B$.  For
 each potential atom $\alpha$, test whether $\alpha$ is selected and, if so,
 compare it against $L$ and $B$ with the recomputable comparison above,
 updating $B$ to $\alpha$ when $L\prec\alpha$ and $\alpha\prec B$ (or when no
-candidate has been recorded yet); when $B$ is updated, record its label as
-well.  At the end of the scan, emit the recorded label of $B$ and set $L:=B$;
-if the scan found no selected atom with $L\prec\alpha$, every selected atom
-has been emitted and the machine halts.  Because $\prec$ is a strict total
+eligible selected atom has been recorded yet); when $B$ is updated, record its
+label as well.  At the end of the scan, if no selected atom with
+$L\prec\alpha$ was found, every selected atom has been emitted and the machine
+halts.  Otherwise, emit the recorded label of $B$ and set $L:=B$.  Because
+$\prec$ is a strict total
 order on the finitely many selected atoms, round $j$ emits exactly the
 $j$-th selected atom in $\prec$-order, so the concatenated labels are $T(w)$.
 
@@ -4724,9 +4926,9 @@ $L$ and $B$, and the tie-order) against $L$ and $B$, updating $B$ when
 $(c,i)\succ L$ and $(c,i)\prec B$; when $B$ is updated, cache its label as
 well.  The tie-comparison asks which of two positions comes first in the fixed
 scan direction and, when the positions coincide, uses the fixed order on
-the set $C$.  At the end of the scan emit the cached label of $B$ and set
-$L:=B$; if no selected atom was $\succ L$, the output is complete.  Because
-$\prec$ is a strict total order
+the set $C$.  At the end of the scan, if no selected atom was $\succ L$, halt:
+the output is complete.  Otherwise, emit the cached label of $B$ and set
+$L:=B$.  Because $\prec$ is a strict total order
 on the finitely many selected atoms, the rounds emit exactly the selected atoms
 in increasing $\prec$-order, which is the output of Definition~\ref{def:wrp}.
 
@@ -4885,15 +5087,17 @@ which proves the first claim.
 \noindent\emph{The left-to-right 2DFT and composition failure.}
 This is the same failure of regularity preservation under inverse image,
 expressed as a composition failure.
-Let $S$ be the deterministic 2DFT that reads $D(w)$ in one left-to-right pass,
-records in its finite control whether the first letter is $G$, skips the rest
-of block $0$ and the separator (advancing past the first $\#$), and then copies
-the remaining block-$2$ letters to its output if and only if that bit is set.
-Its finite control also records whether it is before or after the separator;
-every defined head transition moves right, and it halts acceptingly at the
-right end marker.  On
-input $w$ the composite $S\circ D$ outputs $w$ when $w\in L_{\ge 0}$ (first
-letter $G$, bit set, copy emitted) and $\varepsilon$ otherwise; that is,
+Let $S$ be the deterministic 2DFT that reads $D(w)$ in one left-to-right pass.
+It initialises a Boolean bit to $0$, records in that bit whether the first
+letter is $G$, skips the rest of block $0$ and the separator (advancing past
+the first $\#$), and then copies the remaining block-$2$ letters to its output
+if and only if the bit is $1$.  Its finite control also records whether it is
+before or after the separator; every defined head transition moves right, and
+it halts acceptingly at the right end marker.  On the empty input it therefore
+halts immediately with output $\varepsilon$; its behaviour on other malformed
+inputs, which are outside the range of $D$, may be fixed arbitrarily.  Hence,
+on input $w$ the composite $S\circ D$ outputs $w$ when $w\in L_{\ge 0}$ (first
+letter $G$, bit $1$, copy emitted) and $\varepsilon$ otherwise; that is,
 $S\circ D=F_{\ge 0}$, the map of
 Theorem~\ref{thm:wrp-strict-below-logspace}, which is not a $\WRP$
 map.  By Theorem~\ref{thm:eh} and
@@ -4903,13 +5107,14 @@ class is not closed under composition.
 \end{proof}
 
 \begin{remark}[Why this is a structural feature, not a defect]
-\label{rem:closure-boundary}
 Both $\TDFT/\MSO$ maps and $\polyreg$ maps have regular inverse
-images of regular languages: a polyregular presentation
-(Definition~\ref{def:polyregular}) is a tuple-based $\MSO$
-interpretation, and $\MSO$ interpretations admit backward translation
-of $\MSO$ formulas, so ``the output lies in $K$'' pulls back to an
-$\MSO$ sentence on the input.  $\WRP$ adds a rank-sort layer whose
+images of regular languages.  For deterministic $\MSO$ string transductions,
+this follows from ordinary backward translation.  For polyregular maps it is
+a nontrivial consequence of their equivalent pebble-transducer and
+string-to-string $\MSO$-interpretation characterisations
+\cite{Bojanczyk2018,BojanczykKieferLhote2019}.  Thus, in both classes, ``the
+output lies in $K$'' pulls back to an $\MSO$ sentence on the input.  $\WRP$
+adds a rank-sort layer whose
 output order is governed by an unbounded integer key, and ``the atom rank of
 one atom is less than that of another'' need not be $\MSO$-definable
 on the input.  This is precisely what breaks backward $\MSO$
@@ -4926,16 +5131,17 @@ is a second witness: by the probe of Section~\ref{sec:zeta-not-polyregular} the
 language $\zeta^{-1}(R)$ is not regular for a suitable regular $R$, although
 this route, unlike $D$, leans on the zeta lower bound.
 
-A distinct closure question, closure under functional \emph{inversion}, also
-fails: $\zeta\in\WRP$ while $\zeta^{-1}\notin\WRP$
-(Section~\ref{sec:inverse-zeta}).  Unlike the failure above, this is not the
-loss of a property the lower classes possess.  Polyregular maps are not closed
-under functional inverse either: the unary squaring map
-$s(a^n)=a^{n^2}$ is polyregular, but its inverse has domain
-$\{a^{n^2}:n\ge0\}$, which is not regular, whereas every partial polyregular
-presentation has an $\MSO$-definable, hence regular, domain.  The failure for
-$\WRP$ is a separate expression of the same directional nature of the
-rank-sort mechanism.
+There are two related inversion phenomena.  Under the realisation convention,
+$\WRP$-realisability of a Dyck-path bijection is not preserved by inversion:
+$\zeta\in\WRP$ while $\zeta^{-1}\notin\WRP$
+(Section~\ref{sec:inverse-zeta}).  Ordinary closure under functional inversion
+for partial maps also fails, already for the unary squaring map
+$s(a^n)=a^{n^2}$.  This map is polyregular and hence belongs to $\WRP$, but its
+inverse has domain $\{a^{n^2}:n\ge0\}$, which is not regular, whereas the
+domain of every partial polyregular or $\WRP$ map is $\MSO$-definable and hence
+regular.  Thus, $s^{-1}$ belongs to neither class.  These inversion failures
+are separate expressions of the directional nature of the underlying
+transduction mechanisms.
 \end{remark}
 
 \subsection{Bounded-prefix-rank collapse}
@@ -5002,11 +5208,12 @@ labels, and the same output order; so $T$ is a polyregular map.
 \end{proof}
 
 \begin{proof}[Proof of Corollary~\ref{cor:rank-necessary}]
-If every rank source in a $\WRP$ presentation of $\zeta$ were uniformly
-bounded, Theorem~\ref{thm:bounded-rank-collapse} would exhibit $\zeta$ as a
-polyregular map, contradicting Theorem~\ref{thm:zeta-not-polyregular}.
-Therefore every such presentation contains at least one source with unbounded
-prefix ranks on the Dyck domain.  In the usual presentation from
+Suppose that a $\WRP$ map realising $\zeta$ had a presentation in which every
+rank source was uniformly bounded on the map's domain.
+Theorem~\ref{thm:bounded-rank-collapse} would make that map polyregular,
+contradicting Theorem~\ref{thm:zeta-not-polyregular}.  Therefore every such
+presentation contains at least one source whose prefix ranks are unbounded on
+the domain of the realising map.  In the usual presentation from
 Theorem~\ref{thm:zeta-wrp}, this necessary unbounded source is the height
 source: its prefix rank is the path height, which on $\D_n$ can reach $n$.
 \end{proof}
@@ -5231,7 +5438,9 @@ Global equality in Lemma~\ref{lem:dinv-coarea} forces (i) and (ii) at every $j$.
 Now let $(a_1,\ldots,a_N)$ be an equality case, and let $r$ be the length of its
 initial staircase: $a_i=i-1$ for $1\le i\le r$, with either $r=N$ or
 $a_{r+1}<r$.  If $r=N$ the sequence is the full staircase $(0,1,\ldots,N-1)$ and
-$c=0$.  Otherwise, put $A=r-1$, so the earlier entries $a_1,\ldots,a_r$ are
+$c=0$, so $b=d=0$ and this is the required unique area sequence.  We may
+therefore assume that $r<N$.  Put $A=r-1$, so the earlier entries
+$a_1,\ldots,a_r$ are
 $0,1,\ldots,A$, one at each level.  Apply the condition at $j=r+1$.  Since
 $a_{r+1}\le A$, the top earlier entry $a_r=A$ is \emph{not} one of the low
 witnesses $0,\ldots,a_{r+1}-1$, so by~(ii) it must be counted, that is
@@ -5249,7 +5458,19 @@ reach all the way up to $A$.  Finally, an $A-1$ entry cannot occur before a late
 $A$ entry: at that later position $a_j=A$, the earlier $A-1$ would be a second
 occurrence of a level (namely $A-1$) already supplied by the staircase,
 violating~(i).  Thus, all the $A$'s precede all the $A-1$'s, the tail is
-of the required form $(A,\ldots,A,A-1,\ldots,A-1)$, and the number $d$ of trailing
-$A-1$'s is fixed by $c$.  The equality case is therefore unique.
+of the required form $(A,\ldots,A,A-1,\ldots,A-1)$.  Let $B=N-r$ be its
+length, and let $d$ be the number of trailing entries equal to $A-1$.  The
+same coarea calculation as in the existence part gives
+\[
+  c=\binom{B+1}{2}+d,\qquad 0\le d\le B.
+\]
+The intervals
+\[
+  \left[\binom{B+1}{2},\binom{B+2}{2}-1\right]\qquad(B\ge0)
+\]
+are pairwise disjoint and cover the nonnegative integers, so $c$ uniquely
+determines $B=b$ and $d$.  Consequently, $r=N-b=a$ and $A=a-1$, and the form
+and multiplicities just proved give exactly the area sequence in the
+statement.  The equality case is therefore unique.
 \end{proof}
 \end{document}
