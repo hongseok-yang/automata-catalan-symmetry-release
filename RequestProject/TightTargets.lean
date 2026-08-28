@@ -13,7 +13,7 @@ open Step
 
 /-! ## Tight paths -/
 
-/-- **`lem:deficit-zero-targets` (paper-full-new.tex).**
+/-- **`lem:deficit-zero-targets` (paper.tex).**
 A Dyck path is *tight* if `dinv(Q) = coarea(Q)`, the extreme case of
 the general inequality `dinv ≤ coarea`. -/
 noncomputable def IsTight (Q : List Step) : Prop :=
@@ -673,7 +673,7 @@ theorem areaSeq_of_tight (N : ℕ) (hN : N ≥ 1) (c : ℕ)
 
 /-! ## Lemma 7.3: Tight targets are rigid -/
 
-/-- **`lem:deficit-zero-targets` (paper-full-new.tex).**
+/-- **`lem:deficit-zero-targets` (paper.tex).**
 Fix `N ≥ 1` and `c ∈ {0, …, C(N,2)}`. There is a unique Dyck path
 `Γ_{N,c} ∈ D_N` satisfying `dinv(Γ_{N,c}) = coarea(Γ_{N,c}) = c`.
 Its area sequence is the staircase-plus-tail form described above. -/
@@ -872,7 +872,7 @@ theorem fas_tailU_of_tight (N c : ℕ) (hN : N ≥ 1) (hc : c ≤ N * (N - 1) / 
   rw [hQeq]
   exact ⟨firstAscent_canon a b d ha1 hdb hedge, tailU_canon a b d ha1 hdb hedge⟩
 
-/-- **`cor:forced-triangular-pairs` (paper-full-new.tex).**
+/-- **`cor:forced-triangular-pairs` (paper.tex).**
 If `F : D → D` is length-preserving and satisfies
 `area(F(P)) = dinv(P)` and `dinv(F(P)) = area(P)` for every Dyck path,
 then the first-ascent profile `{(fas(F(W_n)), tailU(F(W_n))) : n ≥ 1} = S_tri`.

@@ -3,7 +3,7 @@
 
 Formalisation of the revision's machine model of word-to-word computation
 ("A Computational Obstruction to Swapping Area and Dinv:
- An Automata-Theoretic View of the q,t-Catalan Symmetry", paper-full-new.tex):
+ An Automata-Theoretic View of the q,t-Catalan Symmetry", paper.tex):
 
 * `def:2dft` (line 781): a 2DFT `T = (Q, Σ, Γ, q₀, F, η)` with a **partial
   transition-output function**
@@ -45,7 +45,7 @@ inductive TapeSym (Alpha : Type*)
 end TwoDFT
 
 open TwoDFT in
-/-- **Definition (`def:2dft`, paper-full-new.tex).**  A deterministic
+/-- **Definition (`def:2dft`, paper.tex).**  A deterministic
 two-way finite-state transducer: finite states, initial state, accepting
 states, and a partial transition-output function subject to the end-marker
 discipline.  Direction encoding: `true = +1` (right), `false = -1` (left). -/

@@ -1,6 +1,6 @@
 # Status: paper ↔ Lean correspondence
 
-This file records, section by section, how `paper-full-new.tex` is rendered in
+This file records, section by section, how `paper.tex` is rendered in
 the Lean development, and the modelling conventions the rendering uses.  The
 build is complete: **0 `sorry`, 0 warnings, six project-agnostic axioms**
 (listed in [`README.md`](README.md), which also tables the headline results).
@@ -44,7 +44,7 @@ verbatim `WRP.IsWRPPaper`, see Conventions); the SWR fragment
 * `thm:bounded-rank-collapse` — `WRPBoundedRank.bounded_rank_collapse`,
   axiom-clean; `cor:rank-necessary` — `WRPBoundedRank.rank_necessary`.
 
-**§6 (zeta classification).**  `thm:zeta-wrp` — `zetaMap_realisedByWRP`
+**§5 (zeta classification).**  `thm:zeta-wrp` — `zetaMap_realisedByWRP`
 (`ZetaWRP.lean`) and `zetaSweep_isSRR1` (`SRR1.lean`);
 `prop:alw-sweep-swr` — `additiveSweep_isSRR1` (`AdditiveSweepWRP.lean`);
 `lem:zeta-two-pyramid` and `lem:zeta-probe` — `ZetaClassification.lean`
@@ -82,7 +82,7 @@ arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
 `CopiedTieSemilinear2.inverse_zeta_not_wrp` (general arity), built on the
 `Copied*` tower.
 
-**§10.2 (Narayana sweep).**  `thm:narayana-sweep` —
+**§6 (Narayana sweep).**  `thm:narayana-sweep` —
 `valleys_heightSweep_eq_doubleRises` / `doubleRises_heightSweep_eq_valleys`
 (`NarayanaSweep.lean`), the bijection `heightSweep_bijOn`
 (`NarayanaBijection.lean`), the WRP membership (`NarayanaWRP.lean`), and
@@ -142,10 +142,10 @@ arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
    presentation's MSO data is turned into automata (the slice tower, the
    evaluators, the separating witnesses).  The three semilinearity axioms
    enter only the general-arity §9 assembly, `thm:two-parameter-semilinearity`
-   and `OneLoopSlice.lean`.  `polyreg_regular_preimage` enters only the §6
+   and `OneLoopSlice.lean`.  `polyreg_regular_preimage` enters only the §5
    lower bounds (and hence `thm:wrp-strict-over-poly` and
-   `cor:rank-necessary`, which invoke them).  The combinatorial core (§2,
-   §8's lemmas, §10.2) and the machine simulations are axiom-clean, as are
+   `cor:rank-necessary`, which invoke them).  The combinatorial core (§2, §6,
+   §8's lemmas) and the machine simulations are axiom-clean, as are
    `thm:wrp-closures` and `thm:bounded-rank-collapse`.
 
 9. **Decidable examples.**  The paper's worked examples are verified by

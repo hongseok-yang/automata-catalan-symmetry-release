@@ -11,10 +11,10 @@ import RequestProject.DyckPath
 
 open Step
 
-/-! ## The Narayana polynomial (`sec:discussion`, paper-full-new.tex) -/
+/-! ## The Narayana polynomial (`sec:discussion`, paper.tex) -/
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 Elementary identity: `val(w) = pk(w) - 1` for any Dyck path of semilength ≥ 1.
 -/
 theorem valleys_eq_peaks_sub_one (w : List Step) (hw : IsDyckPath w)
@@ -55,7 +55,7 @@ theorem valleys_eq_peaks_sub_one (w : List Step) (hw : IsDyckPath w)
       grind
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 Elementary identity: `dr(w) = n - pk(w)` for a Dyck path of semilength n.
 -/
 theorem doubleRises_eq_semilength_sub_peaks (w : List Step) (hw : IsDyckPath w) :
@@ -96,7 +96,7 @@ theorem doubleRises_eq_semilength_sub_peaks (w : List Step) (hw : IsDyckPath w) 
       grind
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 `val(w) + dr(w) = n - 1` for a Dyck path of semilength n ≥ 1.
 -/
 theorem valleys_add_doubleRises (w : List Step) (hw : IsDyckPath w)
@@ -158,7 +158,7 @@ theorem valleys_add_doubleRises (w : List Step) (hw : IsDyckPath w)
         have := hw.2; simp_all +decide [ height_eq_count ] ;
         rw [ show w = List.replicate w.length U from List.ext_get ( by aesop ) ( by aesop ) ] at this ; simp_all +decide [ List.count_replicate ]
 
-/-! ## `thm:narayana-sweep`: Narayana sweep (`sec:narayana-sweep`, paper-full-new.tex) -/
+/-! ## `thm:narayana-sweep`: Narayana sweep (`sec:narayana-sweep`, paper.tex) -/
 
 /-! ### Normal form via a reflexive comparator proxy
 
@@ -456,7 +456,7 @@ theorem take_D_le_U (P : List Step) (hP : IsDyckPath P) (k : ℕ)
     _ = belowUpre P P.length t := (belowU_eq_atMostD P hP t ht_nn).symm
     _ ≤ (T.take k).countP (fun tr => tr.2.2 == U) := hcU
 
-/-- **`thm:narayana-sweep` (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **`thm:narayana-sweep` (`sec:narayana-sweep`, paper.tex).**
 The height sweep H (with right-to-left tie-breaking) preserves Dyck paths:
 if `P ∈ D_n` then `H(P) ∈ D_n`. -/
 theorem isDyckPath_heightSweep (P : List Step) (hP : IsDyckPath P) :
@@ -473,7 +473,7 @@ theorem isDyckPath_heightSweep (P : List Step) (hP : IsDyckPath P) :
   omega
 
 /-
-**`thm:narayana-sweep` (`sec:narayana-sweep`, paper-full-new.tex).**
+**`thm:narayana-sweep` (`sec:narayana-sweep`, paper.tex).**
 The height sweep preserves length.
 -/
 theorem length_heightSweep (P : List Step) :
@@ -1260,7 +1260,7 @@ theorem doubleRises_heightSweep_eq_valleys (P : List Step) (hP : IsDyckPath P)
     rw [valleys_heightSweep_eq_Uside P hP, Uside_card_eq_DD P hP, ← doubleRises_eq_DD P hP]
   omega
 
-/-- **`thm:narayana-sweep` (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **`thm:narayana-sweep` (`sec:narayana-sweep`, paper.tex).**
 The height sweep swaps valleys and double rises:
 `val(H(P)) = dr(P)` for any Dyck path P. -/
 theorem valleys_heightSweep_eq_doubleRises (P : List Step) (hP : IsDyckPath P)

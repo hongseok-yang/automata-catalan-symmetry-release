@@ -1,7 +1,7 @@
 /-
 # Zeta is not ordinary polyregular (`cor:zeta-not-polyregular`)
 
-Formalises the negative half of §6.2 (`thm:zeta-not-polyregular`, paper-full-new.tex): the Haglund
+Formalises the negative half of §6.2 (`thm:zeta-not-polyregular`, paper.tex): the Haglund
 zeta map is **not** realisable by any ordinary polyregular transduction on the
 Dyck domain, over the GENUINE semantic `Polyreg.IsPolyregular` (Def 3.8).
 
@@ -470,7 +470,7 @@ theorem not_regular_le_family
 
 /-! ## The separation -/
 
-/-- **Corollary `cor:zeta-not-polyregular` (`thm:zeta-not-polyregular`, paper-full-new.tex), genuine.**
+/-- **Corollary `cor:zeta-not-polyregular` (`thm:zeta-not-polyregular`, paper.tex), genuine.**
 No ordinary polyregular transduction realises the zeta map on the Dyck domain,
 over the real `Polyreg.IsPolyregular`.  Admits only `polyreg_regular_preimage`. -/
 theorem zetaMap_not_polyregular :
@@ -501,7 +501,7 @@ theorem zetaMap_not_polyregular :
     exact ⟨twoPyramid m n, encE_encWord m n, zetaMap (twoPyramid m n), hT2,
       (inRegularProbe_zetaMap_twoPyramid m n hm hn).mpr hmn⟩
 
-/-- **Theorem `thm:zeta-not-regular` (`cor:zeta-not-regular`, paper-full-new.tex), genuine.**  The
+/-- **Theorem `thm:zeta-not-regular` (`cor:zeta-not-regular`, paper.tex), genuine.**  The
 Haglund zeta map is not realisable, on the Dyck domain, by any deterministic MSO
 string transduction — equivalently (Engelfriet–Hoogeboom, the equivalence the
 paper invokes) by any deterministic two-way finite-state transducer.  This is the

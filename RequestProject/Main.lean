@@ -4,7 +4,7 @@
 Lean formalisation of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
-by Baek, Hwang, La, and Yang (`paper-full-new.tex`).
+by Baek, Hwang, La, and Yang (`paper.tex`).
 
 Importing this module elaborates every file of the development.  `lake build`
 succeeds with 0 `sorry` and 0 warnings.  The entire development admits exactly

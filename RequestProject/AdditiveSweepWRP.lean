@@ -2,7 +2,7 @@
 # Every additive sweep transduction is a stable one-dimensional rank sweep
 # (`prop:alw-sweep-swr`) — the GENUINE, axiom-clean theorem
 
-Formalises the paper's `prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper-full-new.tex): for
+Formalises the paper's `prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper.tex): for
 ARBITRARY integer step weights `ν : Step → ℤ` and a scan direction `dir`, the
 additive sweep transduction `Φ_ν` (`additiveSweep`, AdditiveSweep.lean line 22)
 is a stable one-dimensional rank sweep (`WRP.IsSRR1`), hence WRP.
@@ -39,7 +39,7 @@ def additiveLevel (nu : Step → ℤ) (w : List Step) (i : ℕ) : ℤ :=
 
 /-- The paper's one-state additive rank source with weights `ω(s) = ν(s)`
 (`def:rank-source`, the source of `prop:alw-sweep-swr`,
-paper-full-new.tex). -/
+paper.tex). -/
 def additiveSource (nu : Step → ℤ) : RankSource Step 1 where
   Q := Unit
   fintypeQ := inferInstance
@@ -418,7 +418,7 @@ theorem asPoly_isScanOrder (dir : Bool) : (asPoly dir).IsScanOrder := by
 
 /-! ## The main theorems -/
 
-/-- **`prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper-full-new.tex), genuine.**  Every
+/-- **`prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper.tex), genuine.**  Every
 additive sweep transduction `Φ_ν`, for ARBITRARY integer step weights `ν` and a
 scan direction `dir`, is a stable one-dimensional rank sweep (`WRP.IsSRR1`). -/
 theorem additiveSweep_isSRR1 (nu : Step → ℤ) (dir : Bool) :
@@ -430,7 +430,7 @@ theorem additiveSweep_isSRR1 (nu : Step → ℤ) (dir : Bool) :
         (isOutput_unique (asPres nu dir) (asPres_valid nu dir)
           (additiveSweep_isOutput nu dir w) hout)⟩⟩
 
-/-- **`prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper-full-new.tex), consequence.**  Every
+/-- **`prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper.tex), consequence.**  Every
 additive sweep transduction is WRP, via the inclusion chain `sRR₁ ⊆ RR ⊆ WRP`. -/
 theorem additiveSweep_isWRP (nu : Step → ℤ) (dir : Bool) :
     WRP.IsWRP (fun w : List Step => some (additiveSweep nu dir w)) :=

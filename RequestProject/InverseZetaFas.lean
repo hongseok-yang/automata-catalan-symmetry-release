@@ -2,7 +2,7 @@
 # Lemma 9.5 (`lem:inverse-zeta-fas`): first ascent of inverse zeta on the
 # copied slice — the honest bijectivity-free form
 
-Formalises paper Lemma 9.5 (`lem:inverse-zeta-fas`, paper-full-new.tex): rather than
+Formalises paper Lemma 9.5 (`lem:inverse-zeta-fas`, paper.tex): rather than
 `fas(ζ⁻¹(W_{m,n}))` (which presupposes that `ζ` is a bijection, nowhere
 formalised), we exhibit the EXPLICIT ζ-preimage — the row of `m + 1` balanced
 pyramids — and prove `zetaMap (pyramidRow m n) = copiedSlice m n` together with
@@ -591,7 +591,7 @@ theorem firstAscent_pyramidRow_ceilDiv (m n : ℕ) :
 
 /-! ## S10 — the packaging corollary -/
 
-/-- **`lem:inverse-zeta-fas` (paper-full-new.tex)** in its
+/-- **`lem:inverse-zeta-fas` (paper.tex)** in its
 honest bijectivity-free form: rather than `fas(ζ⁻¹(W_{m,n}))` (which
 presupposes that `ζ` is a bijection), an explicit ζ-preimage of the copied
 slice with first ascent `⌈(m+n)/(m+1)⌉`.  The hypothesis `m ≥ 1` mirrors the

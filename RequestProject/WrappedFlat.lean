@@ -14,7 +14,7 @@ open Step
 /-! ## Lemma 7.1: Statistics of W_n -/
 
 /-
-**`lem:wrapped-flat-stats` (paper-full-new.tex).**
+**`lem:wrapped-flat-stats` (paper.tex).**
 `W_n = U(UD)^n D` is a Dyck path, i.e., it lies in `D_{n+1}`.
 -/
 theorem isDyckPath_wrappedFlat (n : ℕ) : IsDyckPath (wrappedFlat n) := by
@@ -30,7 +30,7 @@ theorem isDyckPath_wrappedFlat (n : ℕ) : IsDyckPath (wrappedFlat n) := by
     induction n <;> simp_all +decide [ List.replicate ]
 
 /-
-**`lem:wrapped-flat-stats` (paper-full-new.tex).**
+**`lem:wrapped-flat-stats` (paper.tex).**
 The area sequence of `W_n` is `(0, 1, 1, …, 1)` with `n` ones.
 -/
 theorem areaSeq_wrappedFlat (n : ℕ) :
@@ -54,7 +54,7 @@ theorem areaSeq_wrappedFlat (n : ℕ) :
   simp [List.map_replicate]
 
 /-
-**`lem:wrapped-flat-stats` (paper-full-new.tex).**
+**`lem:wrapped-flat-stats` (paper.tex).**
 `area(W_n) = n`.
 -/
 theorem area_wrappedFlat (n : ℕ) : area (wrappedFlat n) = ↑n := by
@@ -62,7 +62,7 @@ theorem area_wrappedFlat (n : ℕ) : area (wrappedFlat n) = ↑n := by
   rw [ areaSeq_wrappedFlat ] ; norm_num
 
 /-
-**`lem:wrapped-flat-stats` (paper-full-new.tex).**
+**`lem:wrapped-flat-stats` (paper.tex).**
 `dinv(W_n) = n*(n-1)/2 = C(n, 2)`.
 The leading entry 0 forms no pair; the only contributing pairs are the
 equal pairs among the `n` entries equal to 1, of which there are C(n,2).
@@ -224,7 +224,7 @@ theorem sum_fin_areaSeq (Q : List Step) :
   exact List.map_getElem_finRange (areaSeq Q)
 
 open Finset in
-/-- **`lem:wrapped-flat-stats` (paper-full-new.tex).**
+/-- **`lem:wrapped-flat-stats` (paper.tex).**
 For every Dyck path `Q ∈ D_N`, `dinv(Q) ≤ coarea(Q)`.
 The proof fixes `j` and bounds the dinv pairs ending at `j` by `(j-1) - a_j`,
 then sums. -/

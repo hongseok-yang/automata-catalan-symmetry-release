@@ -1,7 +1,7 @@
 /-
 # `thm:wrp-not-closed` with paper-exact witnesses
 
-`thm:wrp-not-closed` (paper-full-new.tex) is existential — its
+`thm:wrp-not-closed` (paper.tex) is existential — its
 witnesses `D` and `S` must themselves lie in the paper's `def:wrp` class.  The
 Lean witnesses of `WRPCompWitness.lean` / `WRPNotClosedComp.lean` /
 `SMapWRP.lean` live in the deliberately larger `WRP.IsWRP` (deviation A2: the
@@ -12,7 +12,7 @@ theorem's three clauses with them:
 
 * **`χ`-total concatenation** (`ccOrdT`/`ccPolyT`/`ccPresT`): the concat
   tie-order refined by "earlier block first" — exactly the paper's (R2)
-  robustness construction (paper-full-new.tex).  The block-tag rank
+  robustness construction (paper.tex).  The block-tag rank
   coordinate separates blocks, so the combined order `≺` is unchanged
   (`ccPresT_wrpOrd_iff`) and the outputs are identical
   (`ccPresT_isOutput_iff`); the refined `χ` is a strict total order when the
@@ -649,7 +649,7 @@ theorem preimage_compDPos_eq_LnnPos :
         exact ⟨compD (x :: rest), rfl, (head_compD_eq_g_iff (x :: rest)).mpr hmem⟩
 
 /-- **`thm:wrp-not-closed`, claim 1, with the witness in the revision's
-`def:wrp` class** (paper-full-new.tex): a paper-exact WRP map `D`
+`def:wrp` class** (paper.tex): a paper-exact WRP map `D`
 and a regular `K` with `D⁻¹(K)` not regular.  Axiom-clean. -/
 theorem wrp_not_closed_preimage_comp_paper :
     ∃ (D : List Step → Option (List GBD)) (K : Set (List GBD)),

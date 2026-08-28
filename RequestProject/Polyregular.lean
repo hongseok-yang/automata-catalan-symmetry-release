@@ -26,7 +26,7 @@ namespace Polyreg
 
 variable {Alpha Gamma : Type*}
 
-/-- **`def:polyregular` (paper-full-new.tex).**  A polyregular presentation:
+/-- **`def:polyregular` (paper.tex).**  A polyregular presentation:
 copies `Fin K` with arities, an MSO-definable domain, selection predicate, label
 function, and ordering relation `χ`.  Each component carries its MSO-definability
 obligation as a field, which is what makes the class restrictive. -/

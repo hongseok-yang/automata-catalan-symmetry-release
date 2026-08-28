@@ -19,7 +19,7 @@ import Mathlib
 
 namespace MSO
 
-/-- **`sec:mso` (paper-full-new.tex).**  MSO formulas over words, *intrinsically
+/-- **`sec:mso` (paper.tex).**  MSO formulas over words, *intrinsically
 scoped*: `Formula Alpha nf ns` has `nf` free first-order (position) variables and `ns`
 free second-order (set) variables, addressed by de Bruijn indices `Fin nf` and
 `Fin ns`.  Under a quantifier the bound variable becomes index `0` and the

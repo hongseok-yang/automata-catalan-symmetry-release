@@ -2,7 +2,7 @@
 # Elementary closure properties of `WRP` (`thm:wrp-closures`)
 
 Formalisation of Theorem `thm:wrp-closures` (Elementary closure properties,
-paper-full-new.tex) of "A Computational Obstruction to Swapping Area and Dinv:
+paper.tex) of "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
 
@@ -156,7 +156,7 @@ theorem isWRP_some_of_domain {Alpha Gamma : Type*} {T : List Alpha → Option (L
 
 "Relabelling composes the label assignment with a fixed letter map, rewriting
 only the label formulas; ranks, tie-order, and arities are untouched."
-(`thm:wrp-closures`, paper-full-new.tex).
+(`thm:wrp-closures`, paper.tex).
 
 We post-compose `P`'s label with `ℓ : Γ → Γ'`.  The selection, rank, and order
 are unchanged, so the `≺`-sorted atom list is identical; the output is the old
@@ -239,7 +239,7 @@ theorem relabelPres_isOutput_map {Alpha Γ Γ' : Type*} [Fintype Γ] [DecidableE
   rw [List.map_map]
   rfl
 
-/-- **`thm:wrp-closures` (iv) — output relabelling** (`thm:wrp-closures`, paper-full-new.tex).
+/-- **`thm:wrp-closures` (iv) — output relabelling** (`thm:wrp-closures`, paper.tex).
 If `T` is `WRP` then so is its post-composition with a fixed letter map
 `ℓ : Γ → Γ'`.  (`Γ` finite, `Γ'` with decidable equality, so the per-letter label
 formula is a finite disjunction over the preimage of `ℓ`.) -/
@@ -269,7 +269,7 @@ theorem isWRP_relabel {Alpha Γ Γ' : Type*} [Fintype Γ] [DecidableEq Γ'] (ℓ
 
 "A regular language is MSO-definable; conjoin each selection formula `φ_c` with
 the MSO sentence asserting that the input lies in the regular set."
-(`thm:wrp-closures`, paper-full-new.tex).  Equivalently — and more economically, since the
+(`thm:wrp-closures`, paper.tex).  Equivalently — and more economically, since the
 domain is itself an MSO sentence — we conjoin the *domain* sentence with the
 language sentence: the result is `WRP` and its output is `T(w)` on the language,
 undefined off it.  We state the regular language directly as an arity-0
@@ -337,7 +337,7 @@ theorem restrictPres_isOutput {Alpha Γ : Type*}
       hpw.imp fun hh => (restrictPres_wrpOrd P L hL w _ _).mpr hh, hout⟩
 
 /-- **`thm:wrp-closures` (i) — restriction to a regular input language**
-(`thm:wrp-closures`, paper-full-new.tex).  If `T` is `WRP` and `L` is an MSO-definable
+(`thm:wrp-closures`, paper.tex).  If `T` is `WRP` and `L` is an MSO-definable
 (equivalently regular) input language, then `w ↦ if L w then T w else none` is
 `WRP`.  The construction conjoins `L` into the domain sentence. -/
 theorem isWRP_restrict {Alpha Γ : Type*}
@@ -367,7 +367,7 @@ converse, which is MSO-definable (swap the two atom arguments in the defining
 formula).  Negating every coordinate reverses the lexicographic order on `ℤ^d`,
 and the converse tie-order reverses the within-rank comparison, so the emission
 order is exactly reversed and the output is the reverse of `T(w)`."
-(`thm:wrp-logspace`, paper-full-new.tex). -/
+(`thm:wrp-logspace`, paper.tex). -/
 
 /-- The block-swap renaming `Fin (m + n) → Fin (n + m)` sending the first `m`
 variables to the *second* block and the last `n` to the *first* block. -/
@@ -518,7 +518,7 @@ theorem reversePres_isOutput_reverse {Alpha Γ : Type*} (P : WRP.Presentation Al
     refine hpw.imp fun {a b} hh => (reversePres_wrpOrd P w b a).mpr hh
   · rw [List.map_reverse]; rfl
 
-/-- **`thm:wrp-closures` (v) — output reversal** (`thm:wrp-logspace`, paper-full-new.tex).
+/-- **`thm:wrp-closures` (v) — output reversal** (`thm:wrp-logspace`, paper.tex).
 If `T` is `WRP` then so is its output-reversal `w ↦ (T w).map List.reverse`. -/
 theorem isWRP_reverse {Alpha Γ : Type*}
     {T : List Alpha → Option (List Γ)} (h : WRP.IsWRP T) :
@@ -546,7 +546,7 @@ theorem isWRP_reverse {Alpha Γ : Type*}
 "Take the disjoint union of the copy sets, each copy keeping its selection
 formula, rank, and label, the last now valued in the tagged alphabet
 `Γ₁ ⊎ Γ₂`; if the parts have different rank dimensions, embed both into a common
-`ℤ^d` by (R1), and take `χ` from (R2)." (`thm:wrp-closures`, paper-full-new.tex).
+`ℤ^d` by (R1), and take `χ` from (R2)." (`thm:wrp-closures`, paper.tex).
 
 We realise (R2) concretely through a dominant **block-index** rank coordinate (the
 same device as (iii) below), so the combined output is `f(w)` (tagged left) followed
@@ -1385,7 +1385,7 @@ theorem duPres_isOutput_append (w : List Alpha) (outf : List Γf) (outg : List �
       simp only [Function.comp_apply]; exact (labelOf_gAtom Wf Wg w b).symm
 
 /-- **`thm:wrp-closures` (ii) — disjoint union of output alphabets**
-(`thm:wrp-closures`, paper-full-new.tex).  For `WRP` transductions `f, g`, the combined
+(`thm:wrp-closures`, paper.tex).  For `WRP` transductions `f, g`, the combined
 transduction tagging `f`'s output `inl` and `g`'s output `inr` (and undefined where
 either is) is `WRP`. -/
 theorem isWRP_disjointUnion
@@ -1432,7 +1432,7 @@ end DisjointUnion
 `s` ... labelled `#`, and those of `g`.  ... coordinate `0` is a constant block
 index (`0` on `f`'s copies, `1` on `s`, `2` on `g`'s copies); ... Take `χ` from
 (R2) with the blocks ordered `f < s < g`.  ... The output is `f(w) # g(w)`."
-(`thm:wrp-closures`, paper-full-new.tex).
+(`thm:wrp-closures`, paper.tex).
 
 We realise the separator copy as an **arity-0** copy: always selected (its empty
 position tuple is vacuously valid), labelled `sep`, at block index `1`.  This is a
@@ -2131,7 +2131,7 @@ theorem ccPres_isOutput_append (w : List Alpha) (outf outg : List Γ)
     rw [hf', hg', ccLabelOf_sAtom, List.map_map, List.map_map, List.cons_append, List.nil_append]
 
 /-- **`thm:wrp-closures` (iii) — concatenation with a fixed separator**
-(`thm:wrp-closures`, paper-full-new.tex).  For `WRP` transductions `f, g` (common output alphabet
+(`thm:wrp-closures`, paper.tex).  For `WRP` transductions `f, g` (common output alphabet
 `Γ`, separator `sep : Γ`), the transduction `w ↦ f(w) ++ [sep] ++ g(w)` (undefined
 where either is) is `WRP`. -/
 theorem isWRP_concat

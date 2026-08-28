@@ -1,7 +1,7 @@
 /-
 # The no-swap theorem: no WRP transduction swaps area and dinv  (the real statement)
 
-Formalisation of the headline theorem (`thm:wrp-no-swap`, paper-full-new.tex) of
+Formalisation of the headline theorem (`thm:wrp-no-swap`, paper.tex) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -82,7 +82,7 @@ theorem wrp_slice_profile_affine (T : List Step → Option (List Step)) (hT : Is
   obtain ⟨P, hV, hPT⟩ := hT
   exact SliceFasAssemblyGA.wrp_slice_profile_affine_general T P hV hPT hgrow hne
 
-/-- **`thm:wrp-slice-semilinearity` (paper-full-new.tex).**
+/-- **`thm:wrp-slice-semilinearity` (paper.tex).**
 For a WRP transduction `T` with linear output growth on the wrapped-flat slice,
 the first-ascent profile set is semilinear.  Proved from the (now likewise
 proved) slice-analysis theorem `wrp_slice_profile_affine` together with the
@@ -95,7 +95,7 @@ theorem wrp_slice_profile_semilinear (T : List Step → Option (List Step)) (hT 
   rw [heq]
   exact SliceSemilinear.isSemilinear2_of_affineInPeriod g p m hp hm haff
 
-/-- **`thm:wrp-no-swap` (paper-full-new.tex).**  There is no
+/-- **`thm:wrp-no-swap` (paper.tex).**  There is no
 WRP transduction `T` realising a length-preserving Dyck-path map `F` that swaps
 `area` and `dinv`.
 

@@ -10,7 +10,7 @@ import Mathlib
 
 /-! ## Step alphabet -/
 
-/-- **`rmk:step-word` (paper-full-new.tex).**
+/-- **`rmk:step-word` (paper.tex).**
 The two-letter step alphabet `{U, D}` for encoding Dyck paths. -/
 inductive Step : Type where
   | U : Step
@@ -29,7 +29,7 @@ instance : LawfulBEq Step where
 
 /-! ## Height function -/
 
-/-- **`rmk:step-word` (paper-full-new.tex).**
+/-- **`rmk:step-word` (paper.tex).**
 The height `h_w(k)` after the first `k` letters of a step word `w`,
 defined as `#{1 ≤ i ≤ k : w_i = U} - #{1 ≤ i ≤ k : w_i = D}`. -/
 def height (w : List Step) (k : ℕ) : ℤ :=
@@ -115,7 +115,7 @@ theorem exists_uStep_at_height (P : List Step) :
 
 /-! ## Dyck paths -/
 
-/-- **`rmk:step-word` (paper-full-new.tex).**
+/-- **`rmk:step-word` (paper.tex).**
 A Dyck path of semilength `n` is a word `P ∈ {U, D}^{2n}` such that every
 prefix has at least as many U's as D's and the whole word has exactly `n` U's
 and `n` D's. `IsDyckPath P` asserts that `P` is a Dyck path. -/
@@ -210,7 +210,7 @@ theorem head?_uPositions_cons_U (w : List Step) :
   unfold uPositions
   simp [List.finRange_succ]
 
-/-- **`rmk:step-word` (paper-full-new.tex).**
+/-- **`rmk:step-word` (paper.tex).**
 The area sequence `a(P) = (a_1, …, a_n)` where `a_i = h_P(p_i)` with
 0-indexed positions. This equals the height just before the `i`-th U-step. -/
 def areaSeq (P : List Step) : List ℤ :=
@@ -331,7 +331,7 @@ theorem areaSeq_exists_lt_index (P : List Step)
 
 /-! ## Statistics: area, dinv, coarea -/
 
-/-- **`ex:UUDDUD` (paper-full-new.tex).**
+/-- **`ex:UUDDUD` (paper.tex).**
 `area(P) = Σ_{i=1}^{n} a_i`, the sum of the area sequence. -/
 def area (P : List Step) : ℤ :=
   (areaSeq P).sum
@@ -341,7 +341,7 @@ theorem area_nonneg (P : List Step) (hP : IsDyckPath P) : 0 ≤ area P := by
   unfold area
   exact List.sum_nonneg (areaSeq_nonneg P hP)
 
-/-- **`ex:UUDDUD` (paper-full-new.tex).**
+/-- **`ex:UUDDUD` (paper.tex).**
 `dinv(P) = #{(i,j) : 1 ≤ i < j ≤ n, a_i - a_j ∈ {0, 1}}`,
 counting the dinv pairs in the area sequence. -/
 def dinv (P : List Step) : ℕ :=
@@ -351,7 +351,7 @@ def dinv (P : List Step) : ℕ :=
     ((List.finRange n).filter fun ⟨i, hi⟩ =>
       i < j ∧ (a[i] - a[j] = 0 ∨ a[i] - a[j] = 1))).length
 
-/-- **`ex:UUDDUD` (paper-full-new.tex).**
+/-- **`ex:UUDDUD` (paper.tex).**
 `coarea(P) = C(n,2) - area(P)` where `n` is the semilength. -/
 noncomputable def coarea (P : List Step) : ℤ :=
   let n : ℤ := semilength P
@@ -359,7 +359,7 @@ noncomputable def coarea (P : List Step) : ℤ :=
 
 /-! ## Zeta map -/
 
-/-- **`def:zeta` (paper-full-new.tex).**
+/-- **`def:zeta` (paper.tex).**
 The Haglund zeta map. For each rank `r = 0, 1, …, max_i a_i + 1`, scan
 `a_1, …, a_n` left to right and at position `i` append:
 - U if `a_i = r`
@@ -376,20 +376,20 @@ def zetaMap (P : List Step) : List Step :=
 
 /-! ## Reverse complement -/
 
-/-- **Table 1 (`tab:named-bijections`, paper-full-new.tex).**
+/-- **Table 1 (`tab:named-bijections`, paper.tex).**
 `comp` swaps U ↔ D. -/
 def Step.comp : Step → Step
   | U => D
   | D => U
 
-/-- **Table 1 (`tab:named-bijections`, paper-full-new.tex).**
+/-- **Table 1 (`tab:named-bijections`, paper.tex).**
 The reverse-complement `rc(w) = comp(rev(w))`, a Catalan involution. -/
 def reverseComplement (w : List Step) : List Step :=
   (w.reverse).map Step.comp
 
 /-! ## Two-pyramid paths -/
 
-/-- **`lem:zeta-two-pyramid` (paper-full-new.tex).**
+/-- **`lem:zeta-two-pyramid` (paper.tex).**
 Two-pyramid paths: `P_{m,n} = U^m D^m U^n D^n`. -/
 def twoPyramid (m n : ℕ) : List Step :=
   List.replicate m U ++ List.replicate m D ++
@@ -397,19 +397,19 @@ def twoPyramid (m n : ℕ) : List Step :=
 
 /-! ## Wrapped-flat paths W_n -/
 
-/-- **§8, Lemma 8.1 (`lem:wrapped-flat-stats`, paper-full-new.tex).**
+/-- **§8, Lemma 8.1 (`lem:wrapped-flat-stats`, paper.tex).**
 The wrapped-flat path `W_n = U(UD)^n D`. -/
 def wrappedFlat (n : ℕ) : List Step :=
   [U] ++ (List.replicate n [U, D]).flatten ++ [D]
 
 /-! ## First ascent and tailU -/
 
-/-- **`sec:wrapped-flat` (paper-full-new.tex).**
+/-- **`sec:wrapped-flat` (paper.tex).**
 The first-ascent length `fas(P)`: the length of the maximal initial run of U's. -/
 def firstAscent (P : List Step) : ℕ :=
   P.takeWhile (· = U) |>.length
 
-/-- **`sec:wrapped-flat` (paper-full-new.tex).**
+/-- **`sec:wrapped-flat` (paper.tex).**
 `tailU(P)`: the number of U-steps after the first ascent, i.e., the total
 number of U-steps minus the first-ascent length. -/
 def tailU (P : List Step) : ℕ :=
@@ -463,19 +463,19 @@ theorem length_areaSeq_eq_semilength (P : List Step) (hP : IsDyckPath P) :
 
 /-! ## Local statistics: valleys, double rises, peaks -/
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 The number of valleys `val(w) = #{i : w_i w_{i+1} = DU}`. -/
 def valleys (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
     w[i]! = D ∧ w[i + 1]! = U
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 The number of double rises `dr(w) = #{i : w_i w_{i+1} = UU}`. -/
 def doubleRises (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
     w[i]! = U ∧ w[i + 1]! = U
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 The number of peaks `pk(w) = #{i : w_i w_{i+1} = UD}`. -/
 def peaks (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
@@ -483,14 +483,14 @@ def peaks (w : List Step) : ℕ :=
 
 /-! ## S_tri -/
 
-/-- **`cor:forced-triangular-pairs` (paper-full-new.tex).**
+/-- **`cor:forced-triangular-pairs` (paper.tex).**
 The triangular set `S_tri = {(a, b) ∈ ℕ² : b ≥ 1, b*(b-1)/2 + 1 ≤ a ≤ b*(b+1)/2 + 1}`. -/
 def S_tri : Set (ℕ × ℕ) :=
   {p | p.2 ≥ 1 ∧ p.2 * (p.2 - 1) / 2 + 1 ≤ p.1 ∧ p.1 ≤ p.2 * (p.2 + 1) / 2 + 1}
 
 /-! ## Height sweep (Narayana) -/
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper-full-new.tex).**
+/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
 The height sweep `H(P)`: list the steps of `P` by increasing starting height
 (height just before the step), breaking ties by decreasing input position
 (right-to-left). -/

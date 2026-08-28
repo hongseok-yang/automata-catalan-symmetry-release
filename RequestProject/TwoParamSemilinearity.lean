@@ -1,7 +1,7 @@
 /-
 # Semilinearity on the two-parameter family `W_{m,n}` (`thm:two-parameter-semilinearity`)
 
-Formalisation of **Theorem `thm:two-parameter-semilinearity`** of `paper-full-new.tex`
+Formalisation of **Theorem `thm:two-parameter-semilinearity`** of `paper.tex`
 (lines 3729–3737, §9 "The two-parameter family and its Presburger control"):
 
 > Let `T ∈ WRP` be fixed and suppose `|T(W_{m,n})| = O(m+n)`.  Then
@@ -906,7 +906,7 @@ end Counts
 
 /-- **The two-parameter bounded-counting principle** — the tuple/graph form of the
 paper's `lem:presburger-counting`, exactly as used in the proof of
-`thm:two-parameter-semilinearity` (paper-full-new.tex): a semilinear
+`thm:two-parameter-semilinearity` (paper.tex): a semilinear
 two-parameter atom family with finite fibres of linearly bounded size has a semilinear
 count graph `{(m, n, #fibre_{m,n})} ⊆ ℕ³`.
 
@@ -967,7 +967,7 @@ theorem two_param_profile_semilinear_of_count_graphs
     have e3 : v 3 = totUCnt P (v 0) (v 1) - fasCnt P (v 0) (v 1) := hv3.trans hb3
     exact ⟨hge, e2.symm, by omega⟩
 
-/-- **Theorem `thm:two-parameter-semilinearity`** (paper-full-new.tex),
+/-- **Theorem `thm:two-parameter-semilinearity`** (paper.tex),
 formalised relative to the two-parameter counting principle `TwoParamCountGraph`
 (see its docstring: it is the paper's `lem:presburger-counting` in graph form, the one
 ingredient not available from the repo's admitted axioms).
@@ -1175,7 +1175,7 @@ end RowTheorem
 /-! ## The counting principle as the seventh admitted project axiom -/
 
 /-- **Admitted axiom (the seventh project axiom; project-agnostic).**  The paper's
-`lem:presburger-counting` (paper-full-new.tex) in the joint-graph form its
+`lem:presburger-counting` (paper.tex) in the joint-graph form its
 §9 proof uses: a semilinear `(m, n, ī)`-family with finite fibres of linearly
 bounded cardinality has a semilinear count graph `{(m, n, #fibre)} ⊆ ℕ³`.
 
@@ -1191,7 +1191,7 @@ WRP-presentation/`copiedSlice` token.  It is not derivable from the per-row axio
 is admitted separately rather than reduced. -/
 axiom twoParamCountGraph_admitted : TwoParamCountGraph
 
-/-- **Theorem `thm:two-parameter-semilinearity` (paper-full-new.tex lines
+/-- **Theorem `thm:two-parameter-semilinearity` (paper.tex lines
 3729–3737), unconditional** — `two_param_profile_semilinear` discharged with the
 admitted counting axiom `twoParamCountGraph_admitted`.  Trust base (verified by
 `#print axioms`): the kernel axioms, the two general slice-definability axioms

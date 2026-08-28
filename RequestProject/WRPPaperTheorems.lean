@@ -7,7 +7,7 @@ combined order `≺`; the Lean model also admits arity-`0` copies), and the slic
 theorems use the weaker some-realised-slice hypothesis with a set-valued
 conclusion (deviations A3/A4).  The negative theorems are therefore *stronger*
 than the paper's — this file exports the paper's literal statements as
-corollaries, so that every headline sentence of `paper-full-new.tex` has a
+corollaries, so that every headline sentence of `paper.tex` has a
 Lean declaration of the same shape:
 
 * `wrp_no_area_dinv_swap_paper` (`thm:wrp-no-swap`) — no map in the revision's
@@ -45,7 +45,7 @@ open WRP
 /-! ## The slice analysis in the paper's literal form (`thm:wrp-slice-semilinearity`) -/
 
 /-- **`thm:wrp-slice-semilinearity` with the paper's totality reading**
-(paper-full-new.tex, deviation A3 closed): if `T ∈ WRP` is defined on
+(paper.tex, deviation A3 closed): if `T ∈ WRP` is defined on
 **every** slice `W_n` (`n ≥ 1`), with output `f n` and linear growth, then the
 paper's literal set `S_T = {(fas(T(W_n)), tailU(T(W_n))) : n ≥ 1}` is
 semilinear.  (The growth hypothesis keeps the Lean form over all realised
@@ -116,7 +116,7 @@ theorem wrp_no_area_dinv_swap_tieTotal
   wrp_no_area_dinv_swap T hWRP.isWRP F hreal hDyck hlen harea hdinv
 
 /-- **`thm:wrp-no-swap` over the revision's `def:wrp` class verbatim**
-(paper-full-new.tex): no map in the paper's WRP class — tie-order a strict
+(paper.tex): no map in the paper's WRP class — tie-order a strict
 total order, every arity `≥ 1` — realises a semilength-preserving area↔dinv
 swap on Dyck paths.  A fortiori from the stronger `wrp_no_area_dinv_swap`
 (deviation A2 closed). -/

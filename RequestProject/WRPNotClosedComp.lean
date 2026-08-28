@@ -1,7 +1,7 @@
 /-
 # Composition failure: `S ∘ D = F_{≥0} ∉ WRP` (`thm:wrp-not-closed`, Moreover)
 
-The revision's `thm:wrp-not-closed` (paper-full-new.tex) adds:
+The revision's `thm:wrp-not-closed` (paper.tex) adds:
 "Moreover, there exists a deterministic 2DFT `S` whose input head moves only
 from left to right such that `S ∘ D ∉ WRP`."  The proof (Appendix A.4, lines
 4677–4694) takes the three-block witness `D` of `WRPCompWitness.lean`, and the
@@ -48,7 +48,7 @@ open MSO Step WRPNotClosed TwoDFT
 
 namespace WRPComp
 
-/-! ## The machine `S` (paper-full-new.tex) -/
+/-! ## The machine `S` (paper.tex) -/
 
 /-- States of `S`: initial (at `⊢`), reading the first letter, seeking the
 separator with the `G`-bit set, copying block 2, and the emitless sink (the
@@ -328,7 +328,7 @@ theorem compS_computes_of_mem (w : List Step) (hw : w ∈ Lnn) :
 /-! ## `F_{≥0}` and its non-membership in WRP -/
 
 /-- **The map `F_{≥0}`** (from the proof of `thm:wrp-strict-below-logspace`,
-paper-full-new.tex Appendix A.3), landing in the block-2 alphabet: the
+paper.tex Appendix A.3), landing in the block-2 alphabet: the
 verbatim copy of `w` when every prefix height is `≥ 0`, and `ε` otherwise. -/
 def Fge0 : List Step → Option (List GBD) := fun w =>
   some (if ∀ i, i < w.length → 0 ≤ height w i then w.map relStep else [])
@@ -407,7 +407,7 @@ theorem Fge0_not_isWRP : ¬ WRP.IsWRP Fge0 := by
 
 /-! ## The packaged revision theorem -/
 
-/-- **`thm:wrp-not-closed`, Moreover clause (paper-full-new.tex,
+/-- **`thm:wrp-not-closed`, Moreover clause (paper.tex,
 proof lines 4677–4694).**  The same witness `D` and regular `K` as claim 1
 (`wrp_not_closed_preimage_comp`), together with a deterministic 2DFT `S`
 whose input head moves only from left to right, such that the composite

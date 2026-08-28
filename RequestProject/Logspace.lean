@@ -3,7 +3,7 @@
 # `thm:wrp-strict-below-logspace`
 
 Machine model and separation witness for the revision's Theorem "Below
-logspace" (`thm:wrp-strict-below-logspace`, paper-full-new.tex,
+logspace" (`thm:wrp-strict-below-logspace`, paper.tex,
 proof Appendix A.3 lines 4538–4601): `WRP` is a proper subclass of the
 word-to-word maps computable in deterministic logspace.
 
@@ -395,7 +395,7 @@ instance : Fintype LState :=
   ⟨⟨{.scan, .pend, .back, .copy, .sink}, by decide⟩, fun x => by cases x <;> decide⟩
 
 /-- **The 1-counter machine for `F_{≥0}`** (the logspace half of the proof of
-`thm:wrp-strict-below-logspace`, paper-full-new.tex): scan
+`thm:wrp-strict-below-logspace`, paper.tex): scan
 right maintaining the height, branch on the zero-test at each `D`, return,
 and copy iff no proper prefix went negative. -/
 def lspFge0 : CounterDFT Step WRPComp.GBD 1 where
@@ -961,14 +961,14 @@ theorem lspFge0_spaceBound : SpaceBound lspFge0 1 := by
 /-! ## The separation (`thm:wrp-strict-below-logspace`) -/
 
 /-- **`F_{≥0}` is a deterministic-logspace map** — the "in logspace" half of
-the proof of `thm:wrp-strict-below-logspace` (paper-full-new.tex, Appendix
+the proof of `thm:wrp-strict-below-logspace` (paper.tex, Appendix
 A.3 lines 4581–4587: one scan with a height counter and a flag, then a copy
 pass): the machine `lspFge0`, with `c = 1` counter and space bound `C = 1`. -/
 theorem Fge0_isLogspace : IsLogspaceMap WRPComp.Fge0 :=
   ⟨1, 1, lspFge0, lspFge0_spaceBound, lspFge0_computes_iff⟩
 
 /-- **The separation half of `thm:wrp-strict-below-logspace`**
-(paper-full-new.tex; proof Appendix A.3 lines 4538–4601): there is
+(paper.tex; proof Appendix A.3 lines 4538–4601): there is
 a deterministic-logspace word-to-word map that is not a WRP map — namely
 `F_{≥0}`, whose nonempty-output preimage `Lnn \ {ε}` is not regular while
 every WRP map has a regular one (`lem:wrp-nonempty-regular`).  Trust: admits
@@ -977,14 +977,14 @@ theorem exists_logspace_not_wrp :
     ∃ f : List Step → Option (List WRPComp.GBD), IsLogspaceMap f ∧ ¬ WRP.IsWRP f :=
   ⟨WRPComp.Fge0, Fge0_isLogspace, WRPComp.Fge0_not_isWRP⟩
 
-/-- **Theorem `thm:wrp-strict-below-logspace` (paper-full-new.tex),
+/-- **Theorem `thm:wrp-strict-below-logspace` (paper.tex),
 staged**: `WRP` is a *proper* subclass of the deterministic-logspace
 word-to-word maps, formalised relative to the containment hypothesis `hinc`
 (mirroring how `thm:two-parameter-semilinearity` is staged over its counting
 principle).
 
 `hinc` is exactly Theorem `thm:wrp-logspace` (Logspace evaluation,
-paper-full-new.tex) specialised to this input/output alphabet pair:
+paper.tex) specialised to this input/output alphabet pair:
 every WRP map is computable in deterministic logspace, i.e. by a
 bounded-counter machine of this file.  It remains open in this repository:
 a verified evaluator needs DFA-based evaluation of the presentation's MSO

@@ -1,7 +1,7 @@
 /-
 # The revision's composition witness `D` (`thm:wrp-not-closed`, claim 1)
 
-paper-full-new.tex strengthens `thm:wrp-not-closed` (line 1674): the same
+paper.tex strengthens `thm:wrp-not-closed` (line 1674): the same
 witness map `D` must serve both the regular-preimage failure AND the
 composition failure `S ∘ D ∉ WRP` (Appendix A.4, lines 4602–4695).  The old
 witness `WRPNotClosed.wncD` emits only the diagnostic block; the revision's
@@ -13,7 +13,7 @@ over the output alphabet `Γ_D = {G, B, #, U, D}` (`GBD` below), the blocks
 kept apart by a leading block-tag rank coordinate — which is exactly the
 `ccPres` mechanism of the concatenation closure (`WRPClosures.isWRP_concat`),
 "exactly as in the concatenation construction of Theorem thm:wrp-closures"
-(paper-full-new.tex).
+(paper.tex).
 
 This file builds the revision's `D` from proved ingredients and proves claim 1:
 
@@ -43,7 +43,7 @@ open MSO Step WRPNotClosed
 
 namespace WRPComp
 
-/-! ## The output alphabet `Γ_D = {G, B, #, U, D}` (paper-full-new.tex) -/
+/-! ## The output alphabet `Γ_D = {G, B, #, U, D}` (paper.tex) -/
 
 /-- The revision's five-letter output alphabet for the witness `D`:
 `g`/`b` for the diagnostic block, `sep` for `#`, `u`/`d` for the verbatim
@@ -57,7 +57,7 @@ instance : Fintype GBD :=
 /-! ## The identity transduction is WRP
 
 Block 2 of the revision's witness is "a verbatim copy of the input, position
-`i` emitting `w_i` […] in input order" (paper-full-new.tex).  We
+`i` emitting `w_i` […] in input order" (paper.tex).  We
 build it as an arity-1, single-copy, rank-free polyregular presentation:
 select every in-range position, label it with its own letter, order by
 position. -/
@@ -239,7 +239,7 @@ theorem idStep_isWRP : WRP.IsWRP (fun w : List Step => some w) := by
   · rintro ⟨-, hout⟩
     exact congrArg some (idPoly.isOutput_unique idPoly_valid (idPoly_isOutput w) hout)
 
-/-! ## The three-block witness `D` (paper-full-new.tex) -/
+/-! ## The three-block witness `D` (paper.tex) -/
 
 /-- Relabel the diagnostic alphabet into `Γ_D`. -/
 def relGB : GB → GBD
@@ -260,7 +260,7 @@ def compD (w : List Step) : List GBD :=
 
 /-- `D` is WRP: relabel the two proved WRP blocks into `Γ_D` and concatenate
 with the separator `#` — the block-tag construction of `isWRP_concat` is
-exactly the paper's leading rank coordinate (paper-full-new.tex). -/
+exactly the paper's leading rank coordinate (paper.tex). -/
 theorem compD_isWRP : WRP.IsWRP (fun w => some (compD w)) := by
   have h1 : WRP.IsWRP (fun w : List Step => some ((wncD w).map relGB)) := by
     simpa using WRPClosures.isWRP_relabel relGB wncD_isWRP
@@ -271,7 +271,7 @@ theorem compD_isWRP : WRP.IsWRP (fun w => some (compD w)) := by
   funext w
   rfl
 
-/-! ## The regular language `K = G·Γ_D^*` (paper-full-new.tex) -/
+/-! ## The regular language `K = G·Γ_D^*` (paper.tex) -/
 
 /-- Three states: initial, "first letter was `G`" (accepting sink), "first
 letter was not `G`" (rejecting sink). -/
@@ -347,7 +347,7 @@ theorem wncD_ne_nil (w : List Step) : wncD w ≠ [] := by
   rw [h] at hhead
   simp at hhead
 
-/-- **First-letter characterisation for `D`** (paper-full-new.tex lines
+/-- **First-letter characterisation for `D`** (paper.tex lines
 4651–4664): the first letter of `D(w)` is `G` iff `w ∈ Lnn`. -/
 theorem head_compD_eq_g_iff (w : List Step) :
     (compD w).head? = some GBD.g ↔ w ∈ Lnn := by
@@ -371,7 +371,7 @@ theorem preimage_compK_eq_Lnn :
     exact ⟨compD w, rfl, (head_compD_eq_g_iff w).mpr hw⟩
 
 /-- **`thm:wrp-not-closed`, claim 1, with the revision's three-block witness**
-(paper-full-new.tex, proof lines 4609–4674): there are a WRP map `D`
+(paper.tex, proof lines 4609–4674): there are a WRP map `D`
 and a regular language `K` with `D⁻¹(K)` not regular — and this `D` is the one
 that also witnesses the composition failure.  Axiom-clean (no Büchi, no
 project axioms). -/

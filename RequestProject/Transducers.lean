@@ -1,5 +1,5 @@
 /-
-# Basic language-theoretic notions (§3 of `paper-full-new.tex`)
+# Basic language-theoretic notions (§3 of `paper.tex`)
 
 The shared elementary vocabulary of the transducer sections: realisation of a
 function by a partial transduction (`Realises`, `def:relative`), deterministic
@@ -20,7 +20,7 @@ open Step
 
 /-! ## Realisation -/
 
-/-- **`def:relative` (paper-full-new.tex).**
+/-- **`def:relative` (paper.tex).**
 A transduction `T : Alpha* ⇀ Beta*` (a partial map from words to words)
 *realises* a function `f : X → Beta*` (where `X ⊆ Alpha*`) if `X ⊆ dom(T)`
 and `T(x) = f(x)` for every `x ∈ X`. Its behaviour on inputs outside `X`
@@ -31,7 +31,7 @@ def Realises {Alpha Beta : Type} (T : List Alpha → Option (List Beta))
 
 /-! ## Deterministic finite automata -/
 
-/-- **`def:dfa` (paper-full-new.tex).**
+/-- **`def:dfa` (paper.tex).**
 A deterministic finite automaton (DFA) over alphabet `Alpha`.
 A finite set of states, a transition function, an initial state, and
 a set of accepting states. -/
@@ -52,7 +52,7 @@ def DFA'.accepts (A : DFA' Alpha) (w : List Alpha) : Prop :=
 def DFA'.language (A : DFA' Alpha) : Set (List Alpha) :=
   {w | A.accepts w}
 
-/-- **`def:regular-language` (paper-full-new.tex).**
+/-- **`def:regular-language` (paper.tex).**
 A language is *regular* if it is accepted by some DFA. -/
 def IsRegularLang {Alpha : Type} (L : Set (List Alpha)) : Prop :=
   ∃ A : DFA' Alpha, A.language = L

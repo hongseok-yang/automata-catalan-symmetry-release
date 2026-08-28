@@ -1,7 +1,7 @@
 /-
 # WRP does not have regular preimages of regular languages (`thm:wrp-not-closed`)
 
-Formalises the core of the paper's `thm:wrp-not-closed` (paper-full-new.tex): the class of weighted-rank polyregular transductions is **not** closed
+Formalises the core of the paper's `thm:wrp-not-closed` (paper.tex): the class of weighted-rank polyregular transductions is **not** closed
 under preimages of regular languages.  Concretely we exhibit
 
 * a genuine WRP transduction `wncD : List Step → Option (List GB)`,
@@ -828,7 +828,7 @@ theorem not_regular_Lnn : ¬ IsRegularLang Lnn := by
 
 /-! ## The main theorem -/
 
-/-- **Theorem `thm:wrp-not-closed` (`thm:wrp-not-closed`, paper-full-new.tex), regular-preimage
+/-- **Theorem `thm:wrp-not-closed` (`thm:wrp-not-closed`, paper.tex), regular-preimage
 half.**  There is a genuine WRP transduction `wncD` and a regular output language
 `wncK` whose preimage under `wncD` is not regular.  Hence WRP does not have
 regular preimages of regular languages.  Axiom-clean (no Büchi, no project

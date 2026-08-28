@@ -31,7 +31,7 @@ variable {Alpha : Type*}
 
 /-! ### Definition 3.10 (`def:rank-source`) — deterministic additive rank source -/
 
-/-- **`def:rank-source` (paper-full-new.tex).**  A `d`-dimensional deterministic
+/-- **`def:rank-source` (paper.tex).**  A `d`-dimensional deterministic
 additive rank source: a finite-state automaton whose transitions carry `ℤ^d`
 weights.  (We take `δ` total, as the paper allows after completing a partial `δ`
 with a dead state.) -/
@@ -76,7 +76,7 @@ def Summand.eval {d k : ℕ} (s : Summand Alpha d k) (w : List Alpha) (ī : Fin 
 
 /-- A `d`-dimensional **regular rank term** on `k`-tuples: a constant `c_0 ∈ ℤ^d`
 plus finitely many summands.  This is the rank-term primitive behind the
-revision's `def:prefix-additive-rank` (paper-full-new.tex); the equivalence is
+revision's `def:prefix-additive-rank` (paper.tex); the equivalence is
 `PrefixAdditiveRank.isRegularRankTerm_iff_isPrefixAdditiveRank`. -/
 structure RankTerm (Alpha : Type*) (d k : ℕ) where
   c0 : Fin d → ℤ
@@ -94,7 +94,7 @@ def IsRegularRankTerm {d k : ℕ} (f : List Alpha → (Fin k → ℕ) → (Fin d
 
 /-! ### (R1) Robustness of regular rank terms
 
-The (R1) rank-term algebra (`thm:wrp-closures`, paper-full-new.tex): regular
+The (R1) rank-term algebra (`thm:wrp-closures`, paper.tex): regular
 rank terms are closed under constants, negation, pointwise
 sum, partial coordinate reindexing (the embedding of a `ℤ^d` term into a larger
 `ℤ^D`), and argument-tuple `Fin.cast`.  These are **general** facts about
@@ -257,7 +257,7 @@ variable {Alpha Gamma : Type*}
 def lexLt {d : ℕ} (x y : Fin d → ℤ) : Prop :=
   ∃ i : Fin d, (∀ j : Fin d, j < i → x j = y j) ∧ x i < y i
 
-/-- **`def:wrp` (paper-full-new.tex).**  A WRP presentation: a
+/-- **`def:wrp` (paper.tex).**  A WRP presentation: a
 polyregular presentation together with a rank dimension and, for each copy, a
 regular rank term. -/
 structure Presentation (Alpha Gamma : Type*) where
@@ -323,7 +323,7 @@ theorem isRegularRankTerm_zero {k : ℕ} (f : List Alpha → (Fin k → ℕ) →
 theorem lexLt_zero (x y : Fin 0 → ℤ) : ¬ lexLt x y := by
   rintro ⟨i, _⟩; exact i.elim0
 
-/-- **`prop:conservative` (paper-full-new.tex).**  `Polyreg ⊆ WRP`: an
+/-- **`prop:conservative` (paper.tex).**  `Polyreg ⊆ WRP`: an
 ordinary polyregular function is WRP with rank dimension `0`. -/
 theorem isWRP_of_isPolyregular {T : List Alpha → Option (List Gamma)}
     (h : Polyreg.IsPolyregular T) : IsWRP T := by

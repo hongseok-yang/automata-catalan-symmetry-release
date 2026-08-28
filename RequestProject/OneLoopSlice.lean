@@ -2,7 +2,7 @@
 # The general one-loop lemmas (§7): `lem:one-loop-finite-state`,
 # `lem:one-loop-rank-affine` (graph form), `lem:one-loop-presburger`
 
-The §7 slice analysis of `paper-full-new.tex` is stated for a **general
+The §7 slice analysis of `paper.tex` is stated for a **general
 regular slice** `w_n = u·vⁿ·z`, with the positions of MSO variables and rank
 coordinates addressed by *(region, offset, repetition-index)* coordinates
 (`τ ∈ {u, v, z}`, offset `s`, index `j`).  The copied-slice development

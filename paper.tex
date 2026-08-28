@@ -410,8 +410,11 @@ is given in Appendix~\ref{app:narayana-sweep-proof}.
 Sections~\ref{sec:slice-semilinearity} and~\ref{sec:wrapped-flat} develop the
 semilinearity method and use it to prove the no-swap theorem.
 Section~\ref{sec:inverse-zeta} studies $\zeta^{-1}$ using a related argument.
-Finally, Section~\ref{sec:discussion} places the results in the related
-algebraic-combinatorial and automata-theoretic literatures.
+Section~\ref{sec:discussion} places the results in the related
+algebraic-combinatorial and automata-theoretic literatures.  Finally,
+Section~\ref{sec:lean} describes a machine-checked formalisation of the
+paper's results in the Lean proof assistant, and the small axiomatic base on
+which it rests.
 
 
 \section{Dyck paths, statistics, and named bijections}\label{sec:dyck}
@@ -531,7 +534,7 @@ Table~\ref{tab:named-bijections}.  Some are defined later, when they first
 enter the arguments.  Section~\ref{sec:landscape} places all of them in the
 model hierarchy for word-to-word computation.
 
-\begin{table}
+\begin{table}[t]
 \centering
 \small
 \renewcommand{\arraystretch}{1.25}
@@ -1767,7 +1770,7 @@ exists; it says that no such bijection can have a $\WRP$ realisation.  All
 classifications are relative to the step-word encoding
 (Remark~\ref{rmk:step-word}).
 
-\begin{table}[ht]
+\begin{table}[t]
 \centering
 \small
 \renewcommand{\arraystretch}{1.25}
@@ -4214,13 +4217,213 @@ hence with a composition of toggles~\cite{Deutsch1999,HopkinsJoseph2022}.  The
 word-based models developed here do not formalise first-return recursion or
 toggle operations, and we do not classify these maps.
 
+\section{Machine-checked formalisation in Lean}\label{sec:lean}
+
+The results of this paper have been formalised and machine-checked in the
+Lean~4 proof assistant~\cite{DeMouraUllrich2021}, building on the Mathlib
+library~\cite{MathlibCommunity2020}.  The development was produced
+automatically by the AI models Claude, Aristotle, and Codex, as recorded in
+the declaration of AI use at the end of the paper; since every proof is
+checked by Lean's kernel, the guarantees described in this section do not
+depend on how the proofs were found.  The formalisation is distributed with
+the paper.\footnote{\url{https://github.com/hongseok-yang/automata-catalan-symmetry-release}}
+It comprises roughly $100{,}000$ lines of Lean in $154$ source files, pins an
+exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so that the
+build is reproducible, and contains no unproved placeholder: every statement
+in the development is fully proved from Lean's kernel and the short list of
+admitted axioms described below.  This section summarises what is formalised,
+on which axiomatic base, and where the formal statements deliberately differ
+from the prose.
+
+\paragraph{Scope.}
+The development builds the paper from the ground up rather than verifying an
+isolated statement.  It defines Dyck paths, the statistics $\area$, $\dinv$,
+and $\coarea$, area sequences, the zeta map of Definition~\ref{def:zeta}, and
+the families $W_n$ and $W_{m,n}$; $\MSO$ on words together with the
+marked-word encodings of free variables (Section~\ref{sec:mso}); polyregular
+presentations (Definition~\ref{def:polyregular}) and deterministic two-way
+transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
+functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
+(Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine
+models of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
+results of the paper: Table~\ref{tab:lean} lists the headline theorems with
+their Lean names, and the intermediate lemmas are formalised as well.  In
+particular, the deficit-zero analysis of Section~\ref{sec:main}, the
+first-ascent computations of Section~\ref{sec:inverse-zeta}, and the one-loop
+lemmas of Section~\ref{sec:slice-semilinearity} all have formal proofs, the
+last both instantiated at the family $W_n$ and verbatim over an arbitrary
+slice $u\,v^n z$.  Background results quoted from the literature, such as
+Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
+enter through the admitted axioms below.  The worked examples of the paper
+are certified by Lean's executable decision procedures.  Two documentation
+files in the repository map every numbered statement of the paper to its
+formal counterpart, section by section; Table~\ref{tab:lean} cites Lean names
+without their namespace prefixes.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.31\textwidth}
+                                   >{\raggedright\arraybackslash}X
+                                   >{\raggedright\arraybackslash}p{0.11\textwidth}@{}}
+\toprule
+Result & Lean theorem(s) & Axioms \\
+\midrule
+Thm.~\ref{thm:wrp-closures} (basic closures) &
+  \texttt{isWRP\_relabel}, \texttt{isWRP\_restrict},
+  \texttt{isWRP\_reverse}, \texttt{isWRP\_disjointUnion},
+  \texttt{isWRP\_concat} & none \\
+Thm.~\ref{thm:wrp-strict-over-poly} (above $\polyreg$) &
+  \texttt{polyreg\_strict\_subset\_wrp} & (i), (vi) \\
+Thm.~\ref{thm:wrp-logspace} (logspace evaluation) &
+  \texttt{wrp\_isLogspaceMH}, \texttt{wrp\_isLogspaceTM},
+  \texttt{wrp\_logspace\_polytime}, \texttt{wrp\_logspaceTM\_polytime} &
+  (i) \\
+Cor.~\ref{cor:srr-quadratic} (quadratic evaluation) &
+  \texttt{srr\_quadratic} & (i) \\
+Thm.~\ref{thm:wrp-strict-below-logspace} (below logspace) &
+  \texttt{wrp\_strict\_below\_logspace},
+  \texttt{wrp\_strict\_below\_logspaceTM} & (i) \\
+Thm.~\ref{thm:wrp-not-closed} (closure failure) &
+  \texttt{wrp\_not\_closed\_preimage\_comp},
+  \texttt{wrp\_not\_closed\_composition} & (i) \\
+Thm.~\ref{thm:bounded-rank-collapse} (bounded-rank collapse) &
+  \texttt{bounded\_rank\_collapse} & none \\
+Cor.~\ref{cor:rank-necessary} (unbounded rank needed) &
+  \texttt{rank\_necessary} & (vi) \\
+Thm.~\ref{thm:zeta-wrp} (zeta in $\SWR$) &
+  \texttt{zetaMap\_realisedByWRP}, \texttt{zetaSweep\_isSRR1} & none \\
+Prop.~\ref{prop:alw-sweep-swr} (additive level sorts in $\SWR$) &
+  \texttt{additiveSweep\_isSRR1} & none \\
+Thm.~\ref{thm:zeta-not-polyregular} (zeta beyond $\polyreg$) &
+  \texttt{zetaMap\_not\_polyregular} & (vi) \\
+Cor.~\ref{cor:zeta-not-regular} (zeta beyond $\MSO$) &
+  \texttt{zetaMap\_not\_regular} & (vi) \\
+Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
+  \texttt{heightSweep\_bijOn},
+  \texttt{valleys\_heightSweep\_eq\_doubleRises},
+  \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
+Thm.~\ref{thm:wrp-slice-semilinearity} (first-ascent semilinearity) &
+  \texttt{wrp\_slice\_profile\_semilinear} & (i) \\
+Thm.~\ref{thm:wrp-no-swap} (no area--dinv swap) &
+  \texttt{wrp\_no\_area\_dinv\_swap} & (i) \\
+Thm.~\ref{thm:two-parameter-semilinearity} (two-parameter semilinearity) &
+  \texttt{two\_param\_profile\_semilinear\_unconditional} &
+  (ii), (iii), (v) \\
+Cor.~\ref{cor:inverse-zeta-not-wrp} (arity one) &
+  \texttt{inverse\_zeta\_not\_wrp\_arity1} & (i) \\
+Cor.~\ref{cor:inverse-zeta-not-wrp} (general arity) &
+  \texttt{inverse\_zeta\_not\_wrp} & (i)--(iv) \\
+\bottomrule
+\end{tabularx}
+\caption{The headline results and their Lean counterparts.  The last column
+lists the admitted axioms (i)--(vi), described in the text, on which the Lean
+proof depends beyond the kernel; ``none'' marks results proved with no
+admitted axiom.  Lean names are cited without namespace prefixes; the
+repository documentation maps every numbered statement of the paper,
+including the intermediate lemmas, to its formal counterpart.}
+\label{tab:lean}
+\end{table}
+
+\paragraph{Trust base.}
+Every result is proved from Lean's kernel primitives plus exactly six
+explicitly admitted axioms.  Each axiom is a standard fact from the
+literature, and none of them mentions a notion introduced in this paper: they
+speak only about $\MSO$, finite automata, semilinear sets, and polyregular
+maps.
+\begin{enumerate}[label=(\roman*)]
+\item \texttt{buchi}: every $\MSO$-definable language over a finite alphabet
+is recognised by a DFA, the logic-to-automata direction of the
+B\"uchi--Elgot--Trakhtenbrot theorem~\cite{Thomas1997}.  The converse
+direction, that the run of a DFA is $\MSO$-definable, is proved in the
+development.
+\item \texttt{msoDefinableRel2\_semilinear\_general}: over a two-parameter
+family of words assembled from fixed blocks repeated affinely in the two
+parameters, in the manner of the family $W_{m,n}$ of
+Definition~\ref{def:two-parameter-family}, the position tuples satisfying an
+$\MSO$ formula form a semilinear family.  This combines (i) with the
+Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
+\item \texttt{regularRankTerm\_value2\_graph\_semilinear}: the $\Z^d$-valued
+sibling of (ii), semilinearity of the value graphs of prefix-additive rank
+functions read along such a family.
+\item \texttt{isSliceFamilySemilinear2\_count}: the bounded-counting
+principle of Lemma~\ref{lem:presburger-counting} in a per-row form: for each
+value of the first parameter, the fibre count is eventually affine in the
+second parameter on residue classes, with a period uniform across the first
+parameter.
+\item \texttt{twoParamCountGraph\_admitted}: the joint count-graph form of
+Lemma~\ref{lem:presburger-counting} for two-parameter families.
+\item \texttt{polyreg\_regular\_preimage}: the preimage of a regular language
+under a polyregular map is regular~\cite{Bojanczyk2018}.
+\end{enumerate}
+Axioms (iv) and (v) are the point at which the informal development also
+consumes an external input: Lemma~\ref{lem:presburger-counting} is derived in
+Section~\ref{sec:slice-semilinearity} from Woods' parametric Presburger
+counting theorem~\cite{Woods2015}, and the formalisation admits the two
+instances it uses rather than re-proving that counting machinery.  Which
+axioms each headline result uses is recorded in Table~\ref{tab:lean} and can
+be audited mechanically with Lean's \texttt{\#print axioms} command.  The
+combinatorial core needs none of them: the closure and collapse theorems, the
+memberships of $\zeta$ and $H$, Theorem~\ref{thm:narayana-sweep}, the
+deficit-zero lemmas of Section~\ref{sec:main} together with
+Lemma~\ref{lem:triangular-not-semilinear}, and the machine simulations behind
+Theorem~\ref{thm:wrp-logspace} are all axiom-free.  The headline no-swap
+theorem and the arity-one case of Corollary~\ref{cor:inverse-zeta-not-wrp}
+use only the B\"uchi--Elgot--Trakhtenbrot axiom (i).
+
+\paragraph{Statement fidelity.}
+A machine-checked proof certifies exactly its formal statement, so we record
+how the main statements are rendered.  Transductions are modelled as total
+functions from input words to optional output words, with an absent value
+meaning ``undefined''; realisation on a domain (Definition~\ref{def:relative})
+constrains a transduction only on that domain.  Definition~\ref{def:wrp} is
+formalised twice.  A verbatim class renders the definition as stated: the
+tie-order $\chi$ is itself a strict total order on the selected atoms, and
+every copy name has positive arity.  A working class asks only that the
+combined output order $\prec$, atom rank refined by $\chi$, totally order the
+selected atoms of each input word.  The working class admits more
+presentations, so the negative theorems, proved over it, are formally
+stronger; every headline theorem is also restated over the verbatim class
+with the same admitted axioms, and the positive memberships of $\zeta$, $H$,
+and the additive level sorts are proved in the verbatim class directly.
+Theorem~\ref{thm:wrp-no-swap} is formalised in its map form: no bijectivity
+is assumed of the hypothetical swap.
+Corollary~\ref{cor:inverse-zeta-not-wrp} is rendered as left inversion: no
+$\WRP$ transduction outputs $P$ on input $\zeta(P)$ for every Dyck path $P$.
+This form does not rely on the classical bijectivity of $\zeta$, which the
+development does not formalise, and it implies in particular that
+$\zeta^{-1}$ is not in $\WRP$.  In Corollary~\ref{cor:zeta-not-regular},
+``deterministic two-way transducer'' is rendered as the arity-one
+deterministic $\MSO$ transductions, the class that Theorem~\ref{thm:eh}
+identifies with the two-way machines; the identification itself is quoted,
+not re-proved.  Theorem~\ref{thm:wrp-logspace} is proved for both machine
+models of Section~\ref{sec:wrp-evaluation}: the evaluator is constructed as
+an explicit multihead bounded-counter transducer and verified together with
+its polynomial step bound, and a proved two-stage simulation, head
+elimination followed by binary counters on worktape tracks, transports the
+result to worktape machines.  Corollary~\ref{cor:srr-quadratic} is proved in
+the multihead model, whose unit-cost word comparisons match the cost
+accounting of its paper proof, with a verified quadratic bound on the number
+of machine steps.  The remaining statement-level conventions, for example the
+graph form in which Lemma~\ref{lem:one-loop-rank-affine} is stated, are
+documented in the repository.
+
+\section*{Declaration of AI use}
+The mathematical theory of this paper was developed jointly by the human
+authors and the AI models GPT~Pro (OpenAI), Codex (OpenAI), and Claude
+(Anthropic).  The Lean formalisation described in Section~\ref{sec:lean} was
+carried out fully by AI models: Claude, Aristotle (Harmonic), and Codex.  The
+writing of the paper was assisted by these models.  The human authors are
+responsible for the content of the paper.
+
 \section*{Acknowledgments}
 We would like to thank Xiaoyu Huang for the inverse of the zeta map.
 This work was supported by the National Research Foundation of Korea (NRF)
 grant funded by the Korean Government (MSIT) (No.~RS-2023-00279680).
 
 \bibliographystyle{plain}
-\bibliography{paper-full-new}
+\bibliography{paper}
 
 \clearpage
 \appendix

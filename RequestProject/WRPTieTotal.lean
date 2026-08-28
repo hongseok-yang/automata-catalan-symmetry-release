@@ -1,7 +1,7 @@
 /-
 # The paper-exact WRP classes: total tie-orders (and the revision's `def:wrp`)
 
-`paper-full-new.tex` requires the tie-order `χ` of a polyregular presentation to
+`paper.tex` requires the tie-order `χ` of a polyregular presentation to
 be a strict total order on the selected atoms **by itself** (`def:polyregular`
 (v), line 961: `χ` "linearly orders the selected atoms"), and `def:wrp` (line
 1217) inherits the requirement, remarking "Since `χ` is a strict total order on
@@ -86,7 +86,7 @@ theorem lexLt_trichot {d : ℕ} (x y : Fin d → ℤ) :
 
 /-! ## The paper's remark in `def:wrp`: `χ` total ⟹ `≺` total -/
 
-/-- **`def:wrp` (paper-full-new.tex): "Since `χ` is a strict total
+/-- **`def:wrp` (paper.tex): "Since `χ` is a strict total
 order on selected atoms, `≺` is also a strict total order."**  If the
 underlying polyregular presentation is valid in the paper's sense (the
 tie-order `χ` is a strict total order on selected atoms), then the WRP
@@ -123,7 +123,7 @@ def IsWRPTieTotal (T : List Alpha → Option (List Gamma)) : Prop :=
   ∃ P : Presentation Alpha Gamma, P.toPoly.Valid ∧
     ∀ w out, T w = some out ↔ (P.toPoly.domain w ∧ P.IsOutput w out)
 
-/-- **The revision's `def:wrp` class verbatim** (paper-full-new.tex):
+/-- **The revision's `def:wrp` class verbatim** (paper.tex):
 realised by a WRP presentation over a paper-valid polyregular presentation —
 the tie-order `χ` is a strict total order on selected atoms (`def:polyregular`
 (v)) and every copy has arity `k_c ≥ 1` (`def:polyregular` (i)). -/
@@ -283,7 +283,7 @@ theorem isWRPTieTotal_of_isPolyregular {T : List Alpha → Option (List Gamma)}
   rw [hT w out]
   exact and_congr_right fun _ => (isOutput_zeroRank_iff P w out).symm
 
-/-- **`prop:conservative` within the revision's classes** (paper-full-new.tex
+/-- **`prop:conservative` within the revision's classes** (paper.tex
 `def:wrp`): a polyregular map of the revision's convention (`χ` total, arities
 positive — `IsPolyregularPos` with its `Valid`) is a paper-exact WRP map with
 rank dimension `0`. -/

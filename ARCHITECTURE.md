@@ -1,6 +1,6 @@
 # Architecture
 
-The Lean library `RequestProject` formalises `paper-full-new.tex`.  This file
+The Lean library `RequestProject` formalises `paper.tex`.  This file
 maps the sources to the paper, section by section.  Result-level
 correspondences and trust bases are in [`STATUS.md`](STATUS.md);
 [`RequestProject/Main.lean`](RequestProject/Main.lean) imports everything and
@@ -79,7 +79,7 @@ summarises the axioms.
   * `WRPWorktape.lean` — the logspace theorems restated over the worktape
     model.
 
-## §6 — Classifying the zeta map
+## §5 — Classifying the zeta map
 
 * `ZetaClassification.lean` — ζ on two-pyramid paths, `area ∘ ζ = dinv`, the
   regular probe `lem:zeta-probe` with its DFA witness.
@@ -139,7 +139,7 @@ The slice analysis that powers both §8 and §9.
   first-ascent/tail profile of a linear-growth WRP transduction on the
   two-parameter family is semilinear.
 
-## §10.2 — The Narayana sweep
+## §6 — The Narayana sweep
 
 * `NarayanaSweep.lean` — the height sweep swaps valleys and double rises
   (`thm:narayana-sweep`), with the non-involutivity counterexample.

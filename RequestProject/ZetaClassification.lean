@@ -14,7 +14,7 @@ open Step
 
 /-! ## Zeta on two-pyramid paths (Lemma 5.2) -/
 
-/-- **`lem:zeta-two-pyramid` (paper-full-new.tex).**
+/-- **`lem:zeta-two-pyramid` (paper.tex).**
 Two-pyramid paths `P_{m,n} = U^m D^m U^n D^n` are Dyck paths for `m, n ≥ 1`. -/
 theorem isDyckPath_twoPyramid (m n : ℕ) (_hm : 0 < m) (hn : 0 < n) :
     IsDyckPath (twoPyramid m n) := by
@@ -30,7 +30,7 @@ theorem isDyckPath_twoPyramid (m n : ℕ) (_hm : 0 < m) (hn : 0 < n) :
     rw [List.take_of_length_le] <;> simp +arith +decide [List.count_replicate]
 
 /-
-**`lem:zeta-two-pyramid` (paper-full-new.tex).**
+**`lem:zeta-two-pyramid` (paper.tex).**
 The area sequence of `P_{m,n}` is `(0, 1, …, m-1, 0, 1, …, n-1)`.
 -/
 theorem areaSeq_twoPyramid (m n : ℕ) :
@@ -104,7 +104,7 @@ theorem areaSeq_twoPyramid (m n : ℕ) :
 
 /-! ## Lemma 5.3 (`lem:zeta-probe`): A regular output probe -/
 
-/-- **`lem:zeta-probe` (paper-full-new.tex).**
+/-- **`lem:zeta-probe` (paper.tex).**
 The language `R = {UU(DU)^{2q} DD(UD)^s : q, s ≥ 0}`. -/
 def inRegularProbe (w : List Step) : Prop :=
   ∃ q s : ℕ, w = [U, U] ++
@@ -273,7 +273,7 @@ theorem zAcc_dyck_invariant (a : List ℤ) (hnn : ∀ x ∈ a, 0 ≤ x) :
         have hr1 : ((r + 1 : ℕ) : ℤ) - 1 = (r : ℤ) := by push_cast; ring
         rw [hr1]; ring
 
-/-- **Implicit in Definition 2.5 (`def:zeta`, paper-full-new.tex).**
+/-- **Implicit in Definition 2.5 (`def:zeta`, paper.tex).**
 Haglund showed that `ζ(P)` is a Dyck path whenever `P` is. -/
 theorem isDyckPath_zetaMap (P : List Step) (hP : IsDyckPath P) :
     IsDyckPath (zetaMap P) := by
@@ -657,7 +657,7 @@ theorem accForm_eq_dinv (P : List Step) (hP : IsDyckPath P) :
       Finset.sum_congr rfl (fun j _ => hcard j), Finset.sum_add_distrib, hpart1, hpart2]
   rw [hdinv]; ring
 
-/-- **Key property of ζ (`def:zeta`, paper-full-new.tex).**
+/-- **Key property of ζ (`def:zeta`, paper.tex).**
 `area(ζ(P)) = dinv(P)` for any Dyck path P. -/
 theorem area_zetaMap_eq_dinv (P : List Step) (hP : IsDyckPath P) :
     area (zetaMap P) = ↑(dinv P) := by
@@ -665,7 +665,7 @@ theorem area_zetaMap_eq_dinv (P : List Step) (hP : IsDyckPath P) :
     accForm_eq_dinv P hP]
 
 /-
-**Key property of ζ (`def:zeta`, paper-full-new.tex).**
+**Key property of ζ (`def:zeta`, paper.tex).**
 `ζ` preserves the semilength: `|ζ(P)| = |P|`.
 -/
 theorem length_zetaMap_eq (P : List Step) (hP : IsDyckPath P) :
@@ -730,7 +730,7 @@ theorem length_zetaMap_eq (P : List Step) (hP : IsDyckPath P) :
       linarith [ h_count P ]
 
 /-! ## Lemma 5.2 (`lem:zeta-two-pyramid`): the closed form of zeta on two-pyramid paths
-(`lem:zeta-two-pyramid`, paper-full-new.tex)
+(`lem:zeta-two-pyramid`, paper.tex)
 
 We compute `ζ(P_{m,n})` in closed form for all `m,n ≥ 1`, then use it (together
 with the explicit DFA `probeDFA` below) to prove the §5.3 probe characterisation
@@ -1316,4 +1316,4 @@ theorem inRegularProbe_zetaMap_twoPyramid (m n : ℕ) (hm : 0 < m) (hn : 0 < n) 
     exact ⟨m - 1, n - m, rfl⟩
 
 
-/-! ## Theorem 5.4: Zeta is not regular/MSO (`cor:zeta-not-regular`, paper-full-new.tex) -/
+/-! ## Theorem 5.4: Zeta is not regular/MSO (`cor:zeta-not-regular`, paper.tex) -/

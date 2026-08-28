@@ -1,7 +1,7 @@
 /-
 # Section 4 — WRP as a natural class (structural results)
 
-Formalisations of the structural results of §4 of paper-full-new.tex ("WRP as a
+Formalisations of the structural results of §4 of paper.tex ("WRP as a
 natural class: closure, complexity, and sharp boundaries").
 
 What is genuine here:
@@ -24,7 +24,7 @@ namespace WRPStructure
 
 /-! ## §4.3 Strictness over polyregular (`thm:wrp-strict-over-poly`) -/
 
-/-- **Theorem `thm:wrp-strict-over-poly` (`thm:wrp-strict-over-poly`, paper-full-new.tex), genuine.**
+/-- **Theorem `thm:wrp-strict-over-poly` (`thm:wrp-strict-over-poly`, paper.tex), genuine.**
 `PolyReg ⊊ WRP` on the Dyck domain.  The inclusion `PolyReg ⊆ WRP` is
 `WRP.isWRP_of_isPolyregular` (Prop 3.15); strictness is witnessed by the Haglund
 zeta map, which is realised by a WRP transduction on the Dyck domain

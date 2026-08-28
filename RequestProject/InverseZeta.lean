@@ -5,7 +5,7 @@ Formalization of §9 (A second separation: inverse zeta is not a rank sweep)
 of "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.  Stable LaTeX labels in
-`paper-full-new.tex` are canonical.
+`paper.tex` are canonical.
 -/
 import RequestProject.DyckPath
 import RequestProject.Transducers
@@ -13,9 +13,9 @@ import RequestProject.Semilinearity
 
 open Step
 
-/-! ## Copied slice (`sec:inverse-zeta`, paper-full-new.tex) -/
+/-! ## Copied slice (`sec:inverse-zeta`, paper.tex) -/
 
-/-- **Copied slice (`sec:inverse-zeta`, paper-full-new.tex).**
+/-- **Copied slice (`sec:inverse-zeta`, paper.tex).**
 The *copied slice* `W_{m,n} = U^m (U D)^n D^m`: a flat run `(UD)^n` wrapped in
 `U^m … D^m`, a Dyck path of semilength `m + n`.  On this two-parameter family the
 inverse zeta has a nonsemilinear first-ascent profile.  (This object is unused

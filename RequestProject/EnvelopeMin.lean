@@ -1,7 +1,7 @@
 /-
 # The eventually-affine minimum (`lem:semilinear-envelope`, full form)
 
-The revision's `lem:semilinear-envelope` (paper-full-new.tex)
+The revision's `lem:semilinear-envelope` (paper.tex)
 asserts, on each residue class of a period `M` determined by the semilinear
 set `S`: either the sections `S_b` are eventually empty along the class, or
 they are eventually nonempty and their **minimum** `m(b) = min S_b` is
@@ -289,7 +289,7 @@ theorem component_class_dichotomy (β : Fin 2 → ℕ) (st : Finset (Fin 2 → �
 
 /-! ## Assembly: the union of components -/
 
-/-- **`lem:semilinear-envelope`, full form (paper-full-new.tex).**
+/-- **`lem:semilinear-envelope`, full form (paper.tex).**
 For semilinear `S ⊆ ℕ²` (with finite sections, as in the paper; the proof
 does not need this) there is a period `M ≥ 1` such that on every residue
 class modulo `M`: either the sections are eventually empty along the class,

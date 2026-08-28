@@ -2,7 +2,7 @@
 # The stable one-dimensional ranked-regular fragment `sRR₁ = SWR` (genuine)
 
 This file gives `sRR₁` a genuine semantic definition refining
-`WRP.IsWRP`, following `def:wrp` (paper-full-new.tex):
+`WRP.IsWRP`, following `def:wrp` (paper.tex):
 
 * `RR` (ranked-regular) is the **arity-1** fragment: each output atom is a pair
   `(c, i)` indexed by a single input position.

@@ -6,7 +6,7 @@ Formalisation of the §`sec:minimality` results of
 by Baek, Hwang, La, and Yang:
 
 * `WRPBoundedRank.collapse_of_rank_mso` — the **structural core**
-  (`thm:bounded-rank-collapse`, paper-full-new.tex, the "(R2)" step):
+  (`thm:bounded-rank-collapse`, paper.tex, the "(R2)" step):
   *if* the rank values of a WRP presentation are MSO-definable (and confined to a
   finite value set per copy), then the transduction it realises is ordinary
   polyregular.  This piece is **axiom-free**: it only rebuilds the polyregular
@@ -25,7 +25,7 @@ by Baek, Hwang, La, and Yang:
   so each bounded rank value is MSO-definable.
 
 * `WRPBoundedRank.rank_necessary` — Corollary `cor:rank-necessary`
-  (`cor:rank-necessary`, paper-full-new.tex): the zeta map has no bounded-rank `WRP` presentation
+  (`cor:rank-necessary`, paper.tex): the zeta map has no bounded-rank `WRP` presentation
   realising it on the Dyck domain; combining with
   `ZetaNotPolyreg.zetaMap_not_polyregular` would otherwise contradict
   non-polyregularity.
@@ -288,7 +288,7 @@ private theorem collapsedPoly_valid (P : WRP.Presentation Alpha Gamma) (hV : P.V
   trichot := fun w a b ha hb => hV.trichot w a b ha hb
 
 /-- **Piece (A): structural core (`thm:bounded-rank-collapse`, the (R2) step,
-paper-full-new.tex), axiom-free.**  If, for a valid WRP presentation `P`,
+paper.tex), axiom-free.**  If, for a valid WRP presentation `P`,
 the rank of each copy lands in a finite value set `V c` and each rank-value
 relation `rank c · = v` is MSO-definable, then any transduction `T` realised by
 `P` is ordinary polyregular. -/
@@ -1065,7 +1065,7 @@ end Bridge
 
 /-! ## Piece (C) — assembly -/
 
-/-- **Theorem `thm:bounded-rank-collapse` (`thm:bounded-rank-collapse`, paper-full-new.tex).**  A `WRP`
+/-- **Theorem `thm:bounded-rank-collapse` (`thm:bounded-rank-collapse`, paper.tex).**  A `WRP`
 transduction whose explicit rank terms `κ c` have all of their sources uniformly
 bounded by `B` on the domain is an ordinary polyregular transduction.
 
@@ -1112,7 +1112,7 @@ theorem bounded_rank_collapse {Alpha Gamma : Type} [Fintype Alpha]
     rfl
   exact surrogate_collapse hVpoly r V hmem hmso hagree hreal
 
-/-- **Corollary `cor:rank-necessary` (`cor:rank-necessary`, paper-full-new.tex).**  The zeta map
+/-- **Corollary `cor:rank-necessary` (`cor:rank-necessary`, paper.tex).**  The zeta map
 admits no bounded-rank `WRP` presentation realising it on the Dyck domain: any such
 presentation would, by `bounded_rank_collapse`, exhibit `ζ` as an ordinary
 polyregular transduction, contradicting `ZetaNotPolyreg.zetaMap_not_polyregular`.

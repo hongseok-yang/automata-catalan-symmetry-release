@@ -1,7 +1,7 @@
 /-
 # Nonempty-output preimages of WRP transductions are regular (paper §4, `lem:wrp-nonempty-regular`)
 
-Formalisation of Lemma `lem:wrp-nonempty-regular` (`lem:wrp-nonempty-regular`, paper-full-new.tex) of
+Formalisation of Lemma `lem:wrp-nonempty-regular` (`lem:wrp-nonempty-regular`, paper.tex) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang:
@@ -290,7 +290,7 @@ theorem isRegularLang_of_detAuto {Alpha : Type} (M : SliceMSO.DetAuto Alpha) :
 
 /-! ## The lemma -/
 
-/-- **Lemma `lem:wrp-nonempty-regular` (`lem:wrp-nonempty-regular`, paper-full-new.tex).**  For every
+/-- **Lemma `lem:wrp-nonempty-regular` (`lem:wrp-nonempty-regular`, paper.tex).**  For every
 `WRP` transduction `T`, the language `{w ∈ dom(T) : |T(w)| ≥ 1}` of inputs with
 nonempty output is regular. -/
 theorem wrp_nonempty_preimage_regular

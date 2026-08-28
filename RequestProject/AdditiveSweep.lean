@@ -11,9 +11,9 @@ import RequestProject.DyckPath
 open Step
 
 /-! ## Definition 4.2: Additive sweep transduction
-(`def:additive-sweep`, paper-full-new.tex) -/
+(`def:additive-sweep`, paper.tex) -/
 
-/-- **`def:additive-sweep` (paper-full-new.tex).**
+/-- **`def:additive-sweep` (paper.tex).**
 Fix integer step weights `ν : {U, D} → ℤ` and a scan direction. The
 *additive sweep transduction* `Φ_ν` assigns to each step of the input
 word `w = w_1 ⋯ w_{2n}` the integer *level* `ℓ(i) = Σ_{j<i} ν(w_j)`,
@@ -36,9 +36,9 @@ def heightSweepLR (w : List Step) : List Step :=
 /-- The height-level sweep with right-to-left ties (= Narayana sweep). -/
 def heightSweepRL (w : List Step) : List Step :=
   additiveSweep (fun | U => 1 | D => -1) true w
-/-! ## Example 4.3 (`ex:height-sweep`, paper-full-new.tex): Height sweep on UUDUDD -/
+/-! ## Example 4.3 (`ex:height-sweep`, paper.tex): Height sweep on UUDUDD -/
 
-/-- **`ex:height-sweep` (paper-full-new.tex).**
+/-- **`ex:height-sweep` (paper.tex).**
 The height sweep with left-to-right ties on `UUDUDD` gives `UUUDDD`. -/
 theorem heightSweepLR_UUDUDD :
     heightSweepLR [U, U, D, U, D, D] = [U, U, U, D, D, D] := by native_decide

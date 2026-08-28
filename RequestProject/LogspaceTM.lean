@@ -1,7 +1,7 @@
 /-
 # The deterministic logspace worktape transducer (the paper's literal model)
 
-`thm:wrp-logspace` (paper-full-new.tex) speaks of an evaluator that
+`thm:wrp-logspace` (paper.tex) speaks of an evaluator that
 "uses only `O(log n)` bits of working memory beyond a read-only input and a
 write-only output", and "Space here and below is measured in bits."  The
 repo's `Multihead.MHC` model realises this through the classical multihead /

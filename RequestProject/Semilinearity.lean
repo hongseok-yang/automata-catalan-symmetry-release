@@ -12,9 +12,9 @@ import RequestProject.Transducers
 
 open Step
 
-/-! ## Semilinear sets (`sec:slice-semilinearity`, paper-full-new.tex) -/
+/-! ## Semilinear sets (`sec:slice-semilinearity`, paper.tex) -/
 
-/-- **§7 semilinear sets (`sec:slice-semilinearity`, paper-full-new.tex).**
+/-- **§7 semilinear sets (`sec:slice-semilinearity`, paper.tex).**
 A *linear set* in ℕ^d is a set of the form `{β + Σ c_j s_j : c_j ∈ ℕ}`
 for a base point β and finitely many step vectors s_j. -/
 def LinearSet (d : ℕ) (base : Fin d → ℕ) (steps : Finset (Fin d → ℕ)) :
@@ -22,7 +22,7 @@ def LinearSet (d : ℕ) (base : Fin d → ℕ) (steps : Finset (Fin d → ℕ)) 
   {v | ∃ coeffs : (Fin d → ℕ) → ℕ,
     v = fun i => base i + steps.sum (fun s => coeffs s * s i)}
 
-/-- **§7 semilinear sets (`sec:slice-semilinearity`, paper-full-new.tex).**
+/-- **§7 semilinear sets (`sec:slice-semilinearity`, paper.tex).**
 A *semilinear set* is a finite union of linear sets.
 This is the Ginsburg–Spanier characterization of sets definable in
 Presburger arithmetic. -/
@@ -38,9 +38,9 @@ def IsSemilinear2 (S : Set (ℕ × ℕ)) : Prop :=
 /-! ## Theorem 7.6 (`thm:wrp-slice-semilinearity`): semilinearity for
 linear-growth WRP — see `wrp_slice_profile_semilinear` in `NoSwapWRP.lean` -/
 /-! ## Lemma 8.6 (`lem:semilinear-envelope`): semilinear finite-section envelopes
-(`lem:semilinear-envelope`, paper-full-new.tex) -/
+(`lem:semilinear-envelope`, paper.tex) -/
 
-/-- **`lem:semilinear-envelope` (paper-full-new.tex), in a
+/-- **`lem:semilinear-envelope` (paper.tex), in a
 deliberately WEAKENED sufficient form.**  If `S ⊆ ℕ²` is semilinear and every
 vertical section `S_b` is finite, then on each residue class some section
 element eventually lies on a fixed **rational** line — written in
@@ -163,7 +163,7 @@ theorem semilinear_envelope (S : Set (ℕ × ℕ)) (hS : IsSemilinear2 S)
     exact absurd ⟨hbr, hbne⟩ hb
 
 /-! ## Lemma 8.7: The triangular profile is not semilinear
-(`lem:triangular-not-semilinear`, paper-full-new.tex) -/
+(`lem:triangular-not-semilinear`, paper.tex) -/
 
 /-- The lower bound defining membership in `S_tri`. -/
 theorem S_tri_lower_bound {a b : ℕ} (h : (a, b) ∈ S_tri) :
@@ -261,7 +261,7 @@ theorem exists_multiple_quadratic_gt_affine (M : ℕ) (hM : M ≥ 1)
       exact_mod_cast h_nat
     exact lt_of_le_of_lt h_lhs_le h_int
 
-/-- **`lem:triangular-not-semilinear` (paper-full-new.tex).**
+/-- **`lem:triangular-not-semilinear` (paper.tex).**
 The triangular set `S_tri` is not semilinear.
 Its lower envelope `m(b) = b*(b-1)/2 + 1` is quadratic in `b`,
 which contradicts eventual affinity. -/
@@ -290,9 +290,9 @@ theorem S_tri_not_semilinear : ¬ IsSemilinear2 S_tri := by
     mul_nonneg (show (0 : ℤ) ≤ q - 1 from by omega) hquad_pos]
 
 /-! ## The revision's dichotomy form of `lem:semilinear-envelope`
-(paper-full-new.tex)
+(paper.tex)
 
-paper-full-new.tex strengthens `lem:semilinear-envelope` to a per-residue-
+paper.tex strengthens `lem:semilinear-envelope` to a per-residue-
 class **dichotomy**: for a period `M` determined by `S`, on every residue
 class modulo `M` either the sections `S_b` are empty for all sufficiently
 large `b` in the class, or they are nonempty for all sufficiently large `b`
@@ -361,7 +361,7 @@ private theorem linearSet_shift {β : Fin 2 → ℕ} {st : Finset (Fin 2 → ℕ
   omega
 
 /-- **The revision's `lem:semilinear-envelope` dichotomy
-(paper-full-new.tex).**  For semilinear `S ⊆ ℕ²` with finite
+(paper.tex).**  For semilinear `S ⊆ ℕ²` with finite
 sections there is a period `M ≥ 1` such that on every residue class modulo
 `M`, exactly one of: (i) the sections are eventually empty along the class;
 (ii) they are eventually nonempty along the class, and some section element

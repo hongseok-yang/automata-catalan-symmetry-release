@@ -4,7 +4,7 @@
 The proof of the revision's `thm:wrp-not-closed` closes with: "By Theorem
 `thm:eh` and Proposition `prop:conservative`, `S` itself belongs to `WRP`.
 Hence two `WRP` maps, `D` and `S`, have a composite outside `WRP`, proving
-that the class is not closed under composition" (paper-full-new.tex lines
+that the class is not closed under composition" (paper.tex lines
 4691–4694).
 
 This file discharges that observation **without** formalising `thm:eh`
@@ -652,7 +652,7 @@ theorem sMap_compD (w : List Step) : sMap (compD w) = Fge0 w := by
       fun h => hw ((head_compD_eq_g_iff w).mp h)
     rw [sMap, if_neg hg, Fge0, if_neg hw]
 
-/-- **`thm:wrp-not-closed`, the "consequently" (paper-full-new.tex lines
+/-- **`thm:wrp-not-closed`, the "consequently" (paper.tex lines
 4691–4694), inside WRP**: two WRP maps — the witness `D` and the map computed
 by the left-to-right 2DFT `S` — whose composite (= `F_{≥0}`) is not a WRP
 map.  Hence `WRP` is not closed under composition. -/

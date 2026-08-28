@@ -6,7 +6,7 @@ This repository contains the paper
 > An Automata-Theoretic View of the q,t-Catalan Symmetry**
 > Jineon Baek, Byung-Hak Hwang, Joonhyun La, Hongseok Yang
 
-as [`paper-full-new.tex`](paper-full-new.tex), together with a Lean 4
+as [`paper.tex`](paper.tex), together with a Lean 4
 formalisation of its results in [`RequestProject/`](RequestProject/).
 
 The paper introduces *weighted-rank polyregular transductions* (WRP) — a
@@ -21,7 +21,7 @@ zeta map is not WRP.
 
 | Path | Contents |
 |---|---|
-| `paper-full-new.tex`, `paper-full-new.bib` | the paper |
+| `paper.tex`, `paper.bib` | the paper |
 | `RequestProject/` | the Lean sources (one library) |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | the pinned build configuration |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | module map: which file proves what, organised by paper section |

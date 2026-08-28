@@ -1,12 +1,12 @@
 /-
 # Prefix-additive rank functions (`def:prefix-additive-rank`)
 
-Formalisation of the revised rank layer of "A Computational Obstruction to Swapping Area and Dinv" (paper-full-new.tex): the *prefix-additive rank function* of
-Definition `def:prefix-additive-rank` (paper-full-new.tex), the paper's
+Formalisation of the revised rank layer of "A Computational Obstruction to Swapping Area and Dinv" (paper.tex): the *prefix-additive rank function* of
+Definition `def:prefix-additive-rank` (paper.tex), the paper's
 packaging of the rank-term primitive `RankTerm` of `WRP.lean`.  The prefix-rank notion itself (`def:prefix-rank`,
-paper-full-new.tex) is unchanged and remains
+paper.tex) is unchanged and remains
 `RankSource.prefixRank`; the underlying source (`def:rank-source`,
-paper-full-new.tex) now has a *total* transition function, exactly
+paper.tex) now has a *total* transition function, exactly
 as `RankSource` always did.
 
 The two shapes are
@@ -20,7 +20,7 @@ The two shapes are
   exactly one coefficient-free source and correction table per coordinate.
 
 They define the same class of functions.  This is the unlabelled equivalence
-remark following `def:prefix-additive-rank` (paper-full-new.tex lines
+remark following `def:prefix-additive-rank` (paper.tex lines
 1195–1213), whose merge construction we formalise verbatim:
 
 * a prefix-additive function is a regular rank term with one coefficient-`1`
@@ -34,7 +34,7 @@ remark following `def:prefix-additive-rank` (paper-full-new.tex lines
 Consequently the WRP class is unchanged when presentations are required to
 carry prefix-additive rank functions (`WRP.isWRP_iff_prefixAdditive`), so
 every theorem about `WRP.IsWRP` in this repository reads verbatim as a theorem
-about the revision's `def:wrp` (paper-full-new.tex).
+about the revision's `def:wrp` (paper.tex).
 `WRP.Presentation.ofPrefixAdditive` packages the revision's presentation data
 into a `WRP.Presentation`.
 -/
@@ -86,7 +86,7 @@ def scale {d : ℕ} (z : ℤ) (A : RankSource Alpha d) : RankSource Alpha d :=
 
 /-- The product of two sources, running both in lockstep and *adding* their
 transition weights: the "product automaton" of the merge construction
-(paper-full-new.tex). -/
+(paper.tex). -/
 def add {d : ℕ} (A B : RankSource Alpha d) : RankSource Alpha d where
   Q := A.Q × B.Q
   fintypeQ := by have := A.fintypeQ; have := B.fintypeQ; exact inferInstance
@@ -164,7 +164,7 @@ private theorem list_sum_map_add {γ : Type*} (l : List γ) (f g : γ → ℤ) :
   | nil => simp
   | cons x t ih => simp only [List.map_cons, List.sum_cons, ih]; ring
 
-/-- **The merge step of the equivalence remark** (paper-full-new.tex lines
+/-- **The merge step of the equivalence remark** (paper.tex lines
 1204–1208): if every summand of `l` targets coordinate `r`, then the merged
 source's prefix rank at `x_r` plus the merged correction there equals the sum
 of the summands' contributions. -/
@@ -192,7 +192,7 @@ end Summand
 
 /-! ## Definition `def:prefix-additive-rank` and the equivalence -/
 
-/-- **Definition (`def:prefix-additive-rank`, paper-full-new.tex).**
+/-- **Definition (`def:prefix-additive-rank`, paper.tex).**
 A `d`-dimensional prefix-additive rank function on `k`-tuples: a constant
 `c₀ ∈ ℤ^d` and, for each tuple coordinate `r`, one deterministic additive rank
 source `A_r` together with a local-correction table `β_r`.  There are no
@@ -219,7 +219,7 @@ def IsPrefixAdditiveRank {d k : ℕ}
 /-- The easy inclusion: a prefix-additive rank function is a regular rank term
 with one coefficient-`1` summand per tuple coordinate ("that definition is
 already such an affine combination with one coefficient-1 term per
-coordinate", paper-full-new.tex). -/
+coordinate", paper.tex). -/
 theorem isRegularRankTerm_of_isPrefixAdditiveRank {d k : ℕ}
     {f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)}
     (hf : IsPrefixAdditiveRank f) : IsRegularRankTerm f := by
@@ -261,7 +261,7 @@ private theorem sum_map_filter_partition {k : ℕ} {γ : Type*} (l : List γ)
 
 /-- The merge direction: every regular rank term is a prefix-additive rank
 function.  "For each coordinate `r`, group the terms with `π(t) = r`.  Their
-product automaton is a single source `A_r` […]" (paper-full-new.tex lines
+product automaton is a single source `A_r` […]" (paper.tex lines
 1195–1208). -/
 theorem isPrefixAdditiveRank_of_isRegularRankTerm {d k : ℕ}
     {f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)}
@@ -281,7 +281,7 @@ theorem isPrefixAdditiveRank_of_isRegularRankTerm {d k : ℕ}
   simpa using (List.mem_filter.mp hs).2
 
 /-- **The equivalence remark after `def:prefix-additive-rank`**
-(paper-full-new.tex): the "apparently more general" regular rank terms
+(paper.tex): the "apparently more general" regular rank terms
 (`RankTerm`) define exactly the prefix-additive rank functions. -/
 theorem isRegularRankTerm_iff_isPrefixAdditiveRank {d k : ℕ}
     (f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)) :
@@ -296,7 +296,7 @@ namespace WRP
 
 variable {Alpha Gamma : Type*}
 
-/-- **Definition (`def:wrp`, paper-full-new.tex) — presentation
+/-- **Definition (`def:wrp`, paper.tex) — presentation
 constructor.**  The revision's WRP presentation data: a polyregular
 presentation, a rank dimension `d`, and for each copy a `d`-dimensional
 *prefix-additive* rank function.  It packages into a `WRP.Presentation` (whose
@@ -315,7 +315,7 @@ def Presentation.ofPrefixAdditive (toPoly : Polyreg.Presentation Alpha Gamma) (d
 /-- **The revision's `def:wrp` defines the same class.**  `T` is WRP (in the
 `RankTerm` formulation stored by `Presentation`) iff it admits a presentation
 all of whose rank functions are prefix-additive, i.e. iff it is a
-weighted-rank polyregular map in the sense of paper-full-new.tex
+weighted-rank polyregular map in the sense of paper.tex
 (`def:wrp`, line 1217). -/
 theorem isWRP_iff_prefixAdditive (T : List Alpha → Option (List Gamma)) :
     IsWRP T ↔ ∃ P : Presentation Alpha Gamma,

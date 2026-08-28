@@ -1,7 +1,7 @@
 /-
 # The revision's arity convention: every copy has arity ≥ 1
 
-paper-full-new.tex fixes `k_c ≥ 1` for every copy name of a polyregular
+paper.tex fixes `k_c ≥ 1` for every copy name of a polyregular
 presentation (`def:polyregular`, line 938), and `def:wrp` (line 1217) inherits
 the convention.  The previous draft — and the Lean model
 (`Polyreg.Presentation.arity : Fin K → ℕ`) — allowed arity-`0` copies.
@@ -43,7 +43,7 @@ namespace Polyreg
 
 variable {Alpha Gamma : Type*}
 
-/-- **`def:polyregular` (paper-full-new.tex), arity convention.**
+/-- **`def:polyregular` (paper.tex), arity convention.**
 Every copy name carries a fixed arity `k_c ≥ 1`. -/
 def Presentation.ArityPos (P : Presentation Alpha Gamma) : Prop :=
   ∀ c, 0 < P.arity c
@@ -66,7 +66,7 @@ theorem Presentation.isOutput_nil_eq_nil {P : Presentation Alpha Gamma}
       (fun a ha => P.not_selectedAtom_nil hpos a ((hmem a).mp ha))
   rw [hnil, List.map_nil]
 
-/-- **The revision's polyregular class** (`def:polyregular`, paper-full-new.tex
+/-- **The revision's polyregular class** (`def:polyregular`, paper.tex
 line 938): realised by a valid presentation all of whose copies have arity
 `≥ 1`. -/
 def IsPolyregularPos (f : List Alpha → Option (List Gamma)) : Prop :=
@@ -102,7 +102,7 @@ namespace WRP
 
 variable {Alpha Gamma : Type*}
 
-/-- **The revision's WRP class** (`def:wrp`, paper-full-new.tex):
+/-- **The revision's WRP class** (`def:wrp`, paper.tex):
 realised by a valid WRP presentation whose underlying polyregular presentation
 is arity-positive. -/
 def IsWRPPos (T : List Alpha → Option (List Gamma)) : Prop :=

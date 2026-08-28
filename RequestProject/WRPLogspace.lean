@@ -2,7 +2,7 @@
 # WRP ⊆ deterministic logspace (`thm:wrp-logspace`) and the strict separation
 
 This file proves the containment half of `thm:wrp-strict-below-logspace`
-(paper-full-new.tex): every WRP map is computable by a
+(paper.tex): every WRP map is computable by a
 deterministic multihead bounded-counter transducer with linearly bounded
 counters (`Multihead.IsLogspaceMH`), and combines it with the separation
 witness `Multihead.exists_logspaceMH_not_wrp` into the **unconditional**
@@ -6360,7 +6360,7 @@ end
 end WRPLogspace
 
 open WRPLogspace in
-/-- **`thm:wrp-logspace` (paper-full-new.tex; proof App. A.2 lines
+/-- **`thm:wrp-logspace` (paper.tex; proof App. A.2 lines
 4401–4475): every WRP map is deterministic-logspace computable** in the
 multihead bounded-counter model.
 
@@ -6409,7 +6409,7 @@ theorem wrp_logspace_polytime {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma]
   · intro w out e N hrun hhalt
     exact Multihead.MHC.halting_length_le (evalM_spaceBound E) hrun hhalt
 
-/-- **`thm:wrp-strict-below-logspace` (paper-full-new.tex),
+/-- **`thm:wrp-strict-below-logspace` (paper.tex),
 UNCONDITIONAL**: every WRP map is deterministic-logspace computable in the
 multihead model, and some deterministic-logspace map is not WRP. -/
 theorem wrp_strict_below_logspace :
