@@ -8,16 +8,18 @@ by Baek, Hwang, La, and Yang (`paper.tex`).
 
 Importing this module elaborates every file of the development.  `lake build`
 succeeds with 0 `sorry` and 0 warnings.  The entire development admits exactly
-six axioms beyond Lean's kernel primitives, all standard and project-agnostic
-(none mentions a project-specific notion):
+six axioms beyond Lean's kernel primitives; each packages a standard external
+result, or a direct consequence of one, some stated through the development's
+own abstractions so that they apply directly where they are needed:
 
-* `SliceMSO.buchi` — the MSO ⇒ automaton half of Büchi–Elgot–Trakhtenbrot;
+* `SliceMSO.buchi` — the MSO ⇒ automaton half of Büchi–Elgot–Trakhtenbrot
+  (the converse direction is the theorem `detAuto_state_mso`);
 * `SliceSemilinearN.msoDefinableRel2_semilinear_general` — an MSO-definable
   relation over a block-linear word family is semilinear (Ginsburg–Spanier);
 * `SliceSemilinearN.regularRankTerm_value2_graph_semilinear` — its ℤ-valued
   sibling for regular rank terms;
 * `SliceSemilinearN.isSliceFamilySemilinear2_count` — bounded Presburger
-  counting (`lem:presburger-counting`);
+  counting (`lem:presburger-counting`), per-row form;
 * `TwoParamSemilinearity.twoParamCountGraph_admitted` — its joint-graph form
   for the two-parameter family;
 * `polyreg_regular_preimage` — polyregular preimages of regular languages are
@@ -26,11 +28,18 @@ six axioms beyond Lean's kernel primitives, all standard and project-agnostic
 The headline results and where they live:
 
 * `wrp_no_area_dinv_swap` (`NoSwapWRP.lean`) — `thm:wrp-no-swap`, the no-swap
-  theorem, kernel + `buchi` only;
+  theorem, kernel + `buchi` only — with its model-free combinatorial half
+  `model_free_obstruction` (`cor:model-free-obstruction`, axiom-clean);
 * `CopiedTieSemilinear2.inverse_zeta_not_wrp` (general arity) and
   `CopiedD4.inverse_zeta_not_wrp_arity1` — `cor:inverse-zeta-not-wrp`;
 * `zetaMap_realisedByWRP` / `zetaSweep_isSRR1` (`ZetaWRP.lean`, `SRR1.lean`)
-  and `ZetaNotPolyreg.zetaMap_not_polyregular` — the §6 zeta classification;
+  and `ZetaNotPolyreg.zetaMap_not_polyregular` — the §5 zeta classification,
+  the lower bound via the shared criterion
+  `ZetaNotPolyreg.two_pyramid_criterion` (`prop:two-pyramid-criterion`);
+* `heightSweep_twoPyramid` (`HeightSweepTwoPyramid.lean`) and
+  `HeightSweepNotPolyreg.heightSweep_not_polyregular`
+  (`HeightSweepNotPolyreg.lean`) — `lem:H-two-pyramid`, `lem:H-probe`, and
+  `thm:H-not-polyregular`: the height sweep is beyond PolyReg;
 * `wrp_isLogspaceMH` / `wrp_strict_below_logspace` (`WRPLogspace.lean`),
   `srr_quadratic` (`SRRQuadratic.lean`), and the worktape-model versions
   `wrp_isLogspaceTM` / `wrp_strict_below_logspaceTM` (`WRPWorktape.lean`);
@@ -100,6 +109,8 @@ import RequestProject.CopiedTieSlice
 import RequestProject.DyckPath
 import RequestProject.EnvelopeMin
 import RequestProject.Examples
+import RequestProject.HeightSweepNotPolyreg
+import RequestProject.HeightSweepTwoPyramid
 import RequestProject.InverseZeta
 import RequestProject.InverseZetaFas
 import RequestProject.InverseZetaNotWRP

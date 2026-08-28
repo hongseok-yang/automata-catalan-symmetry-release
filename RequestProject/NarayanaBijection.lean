@@ -9,7 +9,7 @@ Completes components (b) and (d) of the paper's `thm:narayana-sweep`
 * `narayana_symmetry_card` — the card-level Narayana symmetry
   `#{P ∈ D_n : (val, dr) = (j, k)} = #{P ∈ D_n : (val, dr) = (k, j)}`.
 
-The route (design artifact `NARAYANA_BIJ_DESIGN.json`): injectivity of `H` on
+The route: injectivity of `H` on
 Dyck paths by the LEVEL-COUNTING reconstruction — the sorted sweep word
 determines, level by level, the per-level `U`/`D` counts of the source (the
 crossing identity is the existing `belowU_eq_atMostD`; each positive level of

@@ -1,10 +1,10 @@
 /-
 # Composition failure: `S ∘ D = F_{≥0} ∉ WRP` (`thm:wrp-not-closed`, Moreover)
 
-The revision's `thm:wrp-not-closed` (paper.tex) adds:
+`thm:wrp-not-closed` (paper.tex) adds:
 "Moreover, there exists a deterministic 2DFT `S` whose input head moves only
-from left to right such that `S ∘ D ∉ WRP`."  The proof (Appendix A.4, lines
-4677–4694) takes the three-block witness `D` of `WRPCompWitness.lean`, and the
+from left to right such that `S ∘ D ∉ WRP`."  The proof (Appendix
+A.4) takes the three-block witness `D` of `WRPCompWitness.lean`, and the
 one-way machine `S` that
 
 * records in its finite control whether the first letter is `G`,
@@ -28,7 +28,7 @@ Contents:
 * `Fge0` / `Fge0_not_isWRP` — the map `F_{≥0}` (into the block-2 alphabet)
   and its non-membership, via `wrp_nonempty_preimage_regular` and the
   pigeonhole `not_regular_LnnPos`;
-* `wrp_not_closed_composition` — the packaged revision statement: the SAME
+* `wrp_not_closed_composition` — the packaged paper statement: the SAME
   `D` and `K` as claim 1, the left-to-right `S`, and: any function realising
   the relational composite `S ∘ D` is not WRP.
 
@@ -116,7 +116,7 @@ def compS : TwoDFT GBD GBD where
 @[simp] theorem compS_η_rmark (q : SState) : compS.η q .rmark = none := by
   cases q <;> rfl
 
-/-- `S`'s head moves only from left to right (the condition in the revision's
+/-- `S`'s head moves only from left to right (the condition in the paper's
 `thm:wrp-not-closed`). -/
 theorem compS_leftToRight : compS.LeftToRight := by
   rintro q s ⟨q', d, u⟩ h
@@ -405,10 +405,10 @@ theorem Fge0_not_isWRP : ¬ WRP.IsWRP Fge0 := by
   rw [hset] at hreg
   exact not_regular_LnnPos hreg
 
-/-! ## The packaged revision theorem -/
+/-! ## The packaged paper theorem -/
 
 /-- **`thm:wrp-not-closed`, Moreover clause (paper.tex,
-proof lines 4677–4694).**  The same witness `D` and regular `K` as claim 1
+proof in Appendix A.4).**  The same witness `D` and regular `K` as claim 1
 (`wrp_not_closed_preimage_comp`), together with a deterministic 2DFT `S`
 whose input head moves only from left to right, such that the composite
 `S ∘ D` — any partial function `SD` with `SD w = out` iff `S` accepts `D(w)`

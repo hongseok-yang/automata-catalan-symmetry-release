@@ -1,7 +1,7 @@
 /-
 # The eventually-affine minimum (`lem:semilinear-envelope`, full form)
 
-The revision's `lem:semilinear-envelope` (paper.tex)
+The paper's `lem:semilinear-envelope` (paper.tex)
 asserts, on each residue class of a period `M` determined by the semilinear
 set `S`: either the sections `S_b` are eventually empty along the class, or
 they are eventually nonempty and their **minimum** `m(b) = min S_b` is
@@ -11,8 +11,8 @@ eventually affine, `m(b) = αb + γ` with constants depending on the class.
 with a weakened affine clause ("*some* section element on a fixed rational
 line").  This file proves the full statement, `semilinear_envelope_min`: the
 minimum itself is eventually affine (integer-cleared rational form
-`M·min S_b = p·b + γ`, cf. `PAPER_DEVIATIONS.md` § A5 for why the slope must
-be rational).
+`M·min S_b = p·b + γ`; see `semilinear_envelope`'s docstring for why the
+slope must be rational).
 
 The proof is elementary lattice-point reasoning, no Ehrhart theory:
 

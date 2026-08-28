@@ -671,7 +671,7 @@ theorem areaSeq_of_tight (N : ℕ) (hN : N ≥ 1) (c : ℕ)
   congr 1
   omega
 
-/-! ## Lemma 7.3: Tight targets are rigid -/
+/-! ## `lem:deficit-zero-targets`: Tight targets are rigid -/
 
 /-- **`lem:deficit-zero-targets` (paper.tex).**
 Fix `N ≥ 1` and `c ∈ {0, …, C(N,2)}`. There is a unique Dyck path
@@ -732,7 +732,7 @@ theorem tight_targets_rigid (N : ℕ) (hN : N ≥ 1)
     rw [hAQ, hareaSeq, ← hb, ← hd_def, ← ha_def]
   exact dyck_eq_of_areaSeq_eq Q Q0 hQmem.1 hdyck hfinal
 
-/-! ## Corollary 8.5 (`cor:forced-triangular-profile`): forced triangular profile -/
+/-! ## `cor:forced-triangular-pairs`: forced triangular profile -/
 
 /-! ### First-ascent and tail of the canonical path -/
 
@@ -880,7 +880,7 @@ then the first-ascent profile `{(fas(F(W_n)), tailU(F(W_n))) : n ≥ 1} = S_tri`
 The key steps:
 1. `Q_n := F(W_n)` has `area = C(n,2)` and `dinv = n`,
 2. Hence `coarea(Q_n) = C(n+1,2) - C(n,2) = n = dinv(Q_n)`, so Q_n is tight,
-3. By Lemma 7.3, Q_n is determined uniquely, and its profile lies in S_tri. -/
+3. By `lem:deficit-zero-targets`, Q_n is determined uniquely, and its profile lies in S_tri. -/
 theorem forced_triangular_profile
     (f : List Step → List Step)
     (hDyck : ∀ P, IsDyckPath P → IsDyckPath (f P))

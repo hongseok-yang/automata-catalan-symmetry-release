@@ -1,8 +1,7 @@
 /-
 # The general-arity equal-rank cell selector — prerequisites (GA-6.3a/b/c)
 
-The GA-6.3 selector (the general-arity mirror of `eqRankD_position_selector`, design:
-`GA6_DESIGN.json`) determines which cells `(c', rs, t)` carry equal-rank selected
+The GA-6.3 selector (the general-arity mirror of `eqRankD_position_selector`) determines which cells `(c', rs, t)` carry equal-rank selected
 `D`-atoms per residue class of `n`.  This file lands its support layer:
 
 * `dstarRankGA_lex_min` — no selected `D`-atom's rank lex-precedes the `d*`-rank
@@ -128,8 +127,7 @@ set_option maxHeartbeats 1600000 in
 collinear full classes — both Case-A chain endpoints land in the freeze zones) over
 `RegionSpec B`, and the frozen front data `F₂` at the single fixed base position
 `1 + 2(Bh+1)` over `RegionSpec Bh`.  On in-domain `D`-present slices `n ≥ N1`, a
-selected `D`-atom has `d*`-rank exactly when it lies in the class-`n % p0` cells.
-Build script: `GA63_PORTMAP.json`. -/
+selected `D`-atom has `d*`-rank exactly when it lies in the class-`n % p0` cells. -/
 theorem eqRankD_cell_selector (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ)
     (hbud : ∀ n, P.toPoly.domain (wrappedFlat n) →
       ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →

@@ -4,7 +4,7 @@
 `CopiedTieGate.clauseFormulaMk`/`clauseFMk_sat` decode the `D`-atom via the CORE
 `regionDecodeL (rsB i)` (the atom lands at `mS-1 + (rsB i).posAt t n`, the MIDDLE region).
 The tie gate must cover the FULL `RegionSpecF` cells (incl. the SUFFIX `D^{mS-1}` sufIdx
-cells — the BRIDGE_DESIGN FG4 undercount).  `clauseFormulaMkF`/`clauseFMk_satF` are the
+cells — the FG4 undercount).  `clauseFormulaMkF`/`clauseFMk_satF` are the
 verbatim twins with the `D`-atom decode arm `regionDecodeL (rsB i) → regionDecodeLF (rs i)`
 (`rs : RegionSpecF Bh`); ALL position reasoning is delegated to `regionDecodeLF_sat`
 (`CopiedLandmarkF`), so the rest of the proof is unchanged (the validity hypothesis `hv`

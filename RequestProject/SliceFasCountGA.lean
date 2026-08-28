@@ -2,7 +2,7 @@
 # GA-7.3–7.6 — the three counts and the pinned deliverables
 # (`SliceFasCountGA` namespace, part 3/3)
 
-The counting layer proper (script: `GA7_PORTMAP.json`, SECTIONS 4-7): frozen
+The counting layer proper: frozen
 cells are EP indicators, bulk cells feed the `SliceGatedConv`/`SliceFasCount`
 convolution kernels through the cell-tuple convolution data (window via
 saturating-counter flags where kernels lack interval parameters), with the

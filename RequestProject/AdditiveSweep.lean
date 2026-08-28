@@ -1,7 +1,7 @@
 /-
 # Additive Sweep Transductions
 
-Formalization of Definition 4.2 and Proposition 4.3 of
+Formalization of `def:additive-sweep` and `prop:alw-sweep-swr` of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -10,7 +10,7 @@ import RequestProject.DyckPath
 
 open Step
 
-/-! ## Definition 4.2: Additive sweep transduction
+/-! ## `def:additive-sweep`: Additive sweep transduction
 (`def:additive-sweep`, paper.tex) -/
 
 /-- **`def:additive-sweep` (paper.tex).**
@@ -36,7 +36,7 @@ def heightSweepLR (w : List Step) : List Step :=
 /-- The height-level sweep with right-to-left ties (= Narayana sweep). -/
 def heightSweepRL (w : List Step) : List Step :=
   additiveSweep (fun | U => 1 | D => -1) true w
-/-! ## Example 4.3 (`ex:height-sweep`, paper.tex): Height sweep on UUDUDD -/
+/-! ## `ex:height-sweep` (paper.tex): Height sweep on UUDUDD -/
 
 /-- **`ex:height-sweep` (paper.tex).**
 The height sweep with left-to-right ties on `UUDUDD` gives `UUUDDD`. -/

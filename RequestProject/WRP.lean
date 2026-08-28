@@ -1,7 +1,7 @@
 /-
 # Weighted-rank polyregular transductions (WRP)
 
-Formalisation of Definitions 3.10–3.13 (`def:rank-source`, `def:regular-rank-term`, `def:wrp`) of
+Formalisation of the WRP definitions (`def:rank-source`, `def:prefix-additive-rank`, `def:wrp`) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -11,7 +11,7 @@ augmented by a rank dimension `d`, finitely many deterministic additive rank
 sources, and for each copy a `d`-dimensional *regular rank term* `κ_c`.  The
 output order `≺` first compares ranks lexicographically and breaks ties with the
 underlying MSO ordering `χ` (the *tie-order*).  Off the rank layer (`d = 0`) the
-class is exactly `Polyreg` (Proposition 3.15).
+class is exactly `Polyreg` (`prop:conservative`).
 -/
 import RequestProject.Polyregular
 
@@ -20,7 +20,7 @@ open MSO
 /-! ## Regular rank terms (general weighted-automaton machinery)
 
 `RankSource`/`Summand`/`RankTerm`/`IsRegularRankTerm` are the ℤ-weighted finite-automaton
-definability theory of the paper (Definitions 3.10, 3.12).  They are **general** — purely
+definability theory of the paper (`def:rank-source`, `def:prefix-additive-rank`).  They are **general** — purely
 parametric over an alphabet `Alpha` and dimensions `d, k`, with no dependence on the WRP
 `Presentation` model — so they live at top level rather than under `namespace WRP`
 (the rank-counting analogue of `MSO.MSODefinableRel`). -/
@@ -29,7 +29,7 @@ section RankTermTheory
 
 variable {Alpha : Type*}
 
-/-! ### Definition 3.10 (`def:rank-source`) — deterministic additive rank source -/
+/-! ### `def:rank-source` — deterministic additive rank source -/
 
 /-- **`def:rank-source` (paper.tex).**  A `d`-dimensional deterministic
 additive rank source: a finite-state automaton whose transitions carry `ℤ^d`
@@ -56,7 +56,7 @@ def prefixRank (w : List Alpha) (i : ℕ) : Fin d → ℤ :=
 
 end RankSource
 
-/-! ### Definition 3.12 (`def:regular-rank-term`) — regular rank term -/
+/-! ### Regular rank terms (the primitive behind `def:prefix-additive-rank`) -/
 
 /-- One summand of a regular rank term: a source `A`, an integer coefficient, a
 chosen coordinate `π : Fin k`, and a bounded local correction `β` depending only
@@ -76,7 +76,7 @@ def Summand.eval {d k : ℕ} (s : Summand Alpha d k) (w : List Alpha) (ī : Fin 
 
 /-- A `d`-dimensional **regular rank term** on `k`-tuples: a constant `c_0 ∈ ℤ^d`
 plus finitely many summands.  This is the rank-term primitive behind the
-revision's `def:prefix-additive-rank` (paper.tex); the equivalence is
+paper's `def:prefix-additive-rank` (paper.tex); the equivalence is
 `PrefixAdditiveRank.isRegularRankTerm_iff_isPrefixAdditiveRank`. -/
 structure RankTerm (Alpha : Type*) (d k : ℕ) where
   c0 : Fin d → ℤ
@@ -88,7 +88,7 @@ def RankTerm.eval {d k : ℕ} (κ : RankTerm Alpha d k) (w : List Alpha) (ī : F
   fun c => κ.c0 c + (κ.summands.map (fun s => s.eval w ī c)).sum
 
 /-- A function `f` is a *regular rank term* when it is the evaluation of some
-`RankTerm` (Definition 3.12). -/
+`RankTerm`. -/
 def IsRegularRankTerm {d k : ℕ} (f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)) : Prop :=
   ∃ κ : RankTerm Alpha d k, ∀ w ī, f w ī = κ.eval w ī
 
@@ -251,7 +251,7 @@ namespace WRP
 
 variable {Alpha Gamma : Type*}
 
-/-! ### Definition 3.13 (`def:wrp`) — WRP presentation -/
+/-! ### `def:wrp` — WRP presentation -/
 
 /-- Strict lexicographic order on rank vectors `Fin d → ℤ`. -/
 def lexLt {d : ℕ} (x y : Fin d → ℤ) : Prop :=
@@ -276,7 +276,7 @@ def Atom := P.toPoly.Atom
 /-- The rank `ℤ^d` of an atom. -/
 def rankOf (w : List Alpha) (a : P.toPoly.Atom) : Fin P.d → ℤ := P.rank a.1 w a.2
 
-/-- **The output order `≺` (Definition 3.13).**  Compare ranks lexicographically;
+/-- **The output order `≺` (`def:wrp`).**  Compare ranks lexicographically;
 on equal rank, defer to the MSO tie-order `χ` of the polyregular presentation. -/
 def wrpOrd (w : List Alpha) (a b : P.toPoly.Atom) : Prop :=
   lexLt (P.rankOf w a) (P.rankOf w b) ∨
@@ -307,7 +307,7 @@ def IsWRP (T : List Alpha → Option (List Gamma)) : Prop :=
   ∃ P : Presentation Alpha Gamma, P.Valid ∧
     ∀ w out, T w = some out ↔ (P.toPoly.domain w ∧ P.IsOutput w out)
 
-/-! ### Proposition 3.15 — WRP extends Polyreg -/
+/-! ### `prop:conservative` — WRP extends Polyreg -/
 
 /-- The trivial (`d = 0`) rank term. -/
 def zeroRankTerm (k : ℕ) : RankTerm Alpha 0 k := ⟨fun c => c.elim0, []⟩
@@ -377,7 +377,7 @@ def emptyPres (Alpha Gamma : Type*) : Presentation Alpha Gamma where
   rankReg := fun c => c.elim0
 
 /-- **Non-vacuity.**  `IsWRP` is inhabited: the constant `[]` transduction is WRP
-(via `emptyPres`).  Hence Theorem 8.9 ("no WRP swap") is not vacuously true for
+(via `emptyPres`).  Hence `thm:wrp-no-swap` ("no WRP swap") is not vacuously true for
 lack of WRP transductions. -/
 theorem isWRP_const_nil {Alpha Gamma : Type*} :
     IsWRP (fun _ : List Alpha => (some ([] : List Gamma))) := by

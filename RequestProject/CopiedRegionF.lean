@@ -3,7 +3,7 @@
 
 The `RegionSpecF` analogues of the wrapped descriptor toolkit
 (`SliceDstarGateGA` / `SliceFasSelectorGA` / `SliceCellConvGA`), per
-FIBRED_PORTMAP F3.2.  Boundary (stretch) constructors are base-independent
+Stage F3.2.  Boundary (stretch) constructors are base-independent
 positions, so every map treats them as identities; `core` constructors defer
 to the wrapped lemmas under the `mS − 1` shift:
 

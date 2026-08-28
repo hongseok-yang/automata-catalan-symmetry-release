@@ -1,8 +1,8 @@
 /-
 # Bounded ranks collapse `WRP` to `polyreg` (paper §4 minimality)
 
-Formalisation of the §`sec:minimality` results of
-"A Computational Obstruction to Swapping Area and Dinv"
+Formalisation of the bounded-rank boundary of `sec:wrp` ("Two boundaries of
+the rank-sort layer") of "A Computational Obstruction to Swapping Area and Dinv"
 by Baek, Hwang, La, and Yang:
 
 * `WRPBoundedRank.collapse_of_rank_mso` — the **structural core**
@@ -18,8 +18,8 @@ by Baek, Hwang, La, and Yang:
   `thm:bounded-rank-collapse`: a `WRP` transduction whose explicit rank terms
   have all their sources uniformly **bounded** on the domain is ordinary
   polyregular.  This piece supplies the `hmso` hypothesis of the core via the
-  converse-Büchi theorem `SliceMSO.detAuto_state_mso` (an axiom until 2026-08-28;
-  now proved, making this result axiom-clean): an augmented automaton (the
+  converse-Büchi theorem `SliceMSO.detAuto_state_mso` (a proved theorem,
+  so this result is axiom-clean): an augmented automaton (the
   rank source's control state product the running ℤ^d total clamped to the cube
   `{-B,…,B}^d`, with a dead overflow state) carries the prefix rank in its state,
   so each bounded rank value is MSO-definable.

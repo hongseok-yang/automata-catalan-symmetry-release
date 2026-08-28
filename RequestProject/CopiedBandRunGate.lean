@@ -1,5 +1,5 @@
 /-
-# The DEPTH-BANDED run-clause variant (§9 mS-direction, the soundness fix — UPDATE 66)
+# The DEPTH-BANDED run-clause variant (§9 mS-direction)
 
 The whole-run run-clause `CopiedSufRunGate.sufOrdClauseAt` fires on EVERY sel-`D` atom in the final
 `D`-run at `position % Q = r`, with no depth filter.  That is UNSOUND for the bridge's forward

@@ -1,5 +1,5 @@
 /-
-# Nonempty-output preimages of WRP transductions are regular (paper §4, `lem:wrp-nonempty-regular`)
+# Nonempty-output preimages of WRP transductions are regular (`lem:wrp-nonempty-regular`, Appendix A.3)
 
 Formalisation of Lemma `lem:wrp-nonempty-regular` (`lem:wrp-nonempty-regular`, paper.tex) of
 "A Computational Obstruction to Swapping Area and Dinv:

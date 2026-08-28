@@ -112,7 +112,7 @@ theorem tie_count_fibred_of_gate (P : WRP.Presentation Step Step) (hV : P.Valid)
   refine ⟨p0, hp0, fun C mS hmS hbud => ?_⟩
   have hm : 1 ≤ mS := le_trans hMbr1 hmS
   -- per-mS tie-bridge threshold `Nbr` (the n-leg threshold grows linearly in mS; harmless,
-  -- absorbed into the per-mS output `N` below — see FORMALISATION_WORKLOG UPDATE 68)
+  -- absorbed into the per-mS output `N` below)
   obtain ⟨Nbr, hbrn⟩ := hbr mS hmS
   obtain ⟨dstarC, N0, hCaff, hCagree⟩ := hdstarC C mS hm hbud
   obtain ⟨Ncan, hrec⟩ := hrecount C mS hm hbud
@@ -546,7 +546,7 @@ theorem tie_count_fibred_of_gate_budgeted_indexed (P : WRP.Presentation Step Ste
   refine ⟨p0, hp0, fun mS hmS hbud => ?_⟩
   have hm : 1 ≤ mS := le_trans hMbr1 hmS
   -- per-mS tie-bridge threshold `Nbr` (the n-leg threshold grows linearly in mS; harmless,
-  -- absorbed into the per-mS output `N` below — see FORMALISATION_WORKLOG UPDATE 68)
+  -- absorbed into the per-mS output `N` below)
   obtain ⟨idx, Nbr, hbrn⟩ := hbr mS hmS hbud
   obtain ⟨dstarC, N0, hCaff, hCagree⟩ := hdstarC C mS hm hbud
   obtain ⟨Ncan, hrec⟩ := hrecount C mS hm hbud

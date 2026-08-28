@@ -8,7 +8,7 @@ development), projection (`isSemilinearNd_proj`), and cylindrification under an
 injective coordinate selection (`isSemilinearNd_comap_injective`) — all proved,
 not admitted — plus the derived `univ`/`biInter`/`forall_last` closures.
 
-This is the toolkit the pin-free tie count (`ROUTE_B_TIE_COUNTING.md`) is built
+This is the toolkit the pin-free tie count (`CopiedTieCounting.lean`) is built
 on.  The slice atom-family wrapper used by the live general-arity result is the
 two-parameter `IsSliceFamilySemilinear2` in `SliceSemilinear2.lean`; the
 set-fibre ↔ `Finset.filter` count bridges (`natCard_setOf_eq_filter_card`,

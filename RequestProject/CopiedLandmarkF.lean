@@ -4,7 +4,7 @@
 `CopiedLandmark.regionDecodeL` decodes a CORE `RegionSpec` position (the D-atom lands in
 the MIDDLE region `mS-1 + r.posAt t n`).  The tie gate (`fasU_atomOrd_cellCfg_gate_fibred`)
 must enumerate the FULL `RegionSpecF` cells — including the SUFFIX `D^{mS-1}` (sufIdx) cells
-the core decoder misses (the BRIDGE_DESIGN FG4 undercount).  `regionDecodeLF` covers all three
+the core decoder misses (the FG4 undercount).  `regionDecodeLF` covers all three
 `RegionSpecF` constructors:
 - `core r`  → `regionDecodeL r`         (`x = mS-1 + r.posAt t n`),
 - `sufIdx l` → `offsetForm 3 1 (3 + l)` (`x = lastU + 3 + l = mS+2n+1+l` — the key new case),

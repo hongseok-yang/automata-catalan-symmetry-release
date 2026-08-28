@@ -7,7 +7,7 @@ endpoint is the global `d*`-min is a genuine selected-`D` achiever at depth `l �
 (`selB` minimises over the `.inr (.inl i_off)` from-end cells, `i_off ∈ [1, q_D]`, via
 `dstarRankGA_m_eq_selB`).  Such a from-end achiever is `¬cfgCellGAFL` (it is `DeepSuf`) and lies in
 no slope-0 tying class, so NEITHER the CORE gate NOR the per-residue-class run-clauses force
-`atomOrd`-precedence to it — a genuine coverage gap (`FORMALISATION_WORKLOG.md` UPDATE 62).
+`atomOrd`-precedence to it — a genuine coverage gap.
 
 This file builds the missing FROM-END component: one clause per from-end offset `k`
 (`= i_off - 1`), pinning the single position `|w| - 1 - k` via `SliceFasGates.mso_position_fromEnd`

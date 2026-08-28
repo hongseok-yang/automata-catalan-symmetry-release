@@ -197,7 +197,7 @@ theorem isSemilinear2_of_affineInPeriod (g : ℕ → ℕ × ℕ) (p m : ℕ) (hp
   rw [hpiece]
   exact isSemilinear2_arithProg s₁ b₁ s₂ b₂ 0 1
 
-/-- **Bounded counting (paper Lemma 6.5), fully proved for the slice.**  If the
+/-- **Bounded counting (paper `lem:presburger-counting`), fully proved for the slice.**  If the
 two statistics `fas`/`tailU` are partial sums of *eventually-periodic increment*
 sequences (`incFas`, `incTailU`, common period `p` from threshold `m`), then their
 joint profile `{(Σ_{i<n} incFas, Σ_{i<n} incTailU) : n ≥ 1}` is semilinear.  No

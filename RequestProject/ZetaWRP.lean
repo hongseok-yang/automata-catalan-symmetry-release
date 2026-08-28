@@ -1,8 +1,8 @@
 /-
 # The zeta map is a WRP transduction (`thm:zeta-wrp`) — the GENUINE theorem
 
-Formalises the paper's positive theorem (`thm:zeta-wrp`, §`sec:zeta-positive`
-of paper.tex): the Haglund zeta map is realised by a weighted-rank
+Formalises the paper's positive theorem (`thm:zeta-wrp`, the upper-bound
+subsection of `sec:zeta`, paper.tex): the Haglund zeta map is realised by a weighted-rank
 polyregular transduction, over the concrete model of `WRP.lean`.
 
 The presentation is the paper's: the one-state height source (`ω(U) = +1`,

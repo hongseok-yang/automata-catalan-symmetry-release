@@ -331,7 +331,7 @@ theorem areaSeq_exists_lt_index (P : List Step)
 
 /-! ## Statistics: area, dinv, coarea -/
 
-/-- **`ex:UUDDUD` (paper.tex).**
+/-- **Area–dinv–coarea definition (`sec:dyck`, paper.tex).**
 `area(P) = Σ_{i=1}^{n} a_i`, the sum of the area sequence. -/
 def area (P : List Step) : ℤ :=
   (areaSeq P).sum
@@ -341,7 +341,7 @@ theorem area_nonneg (P : List Step) (hP : IsDyckPath P) : 0 ≤ area P := by
   unfold area
   exact List.sum_nonneg (areaSeq_nonneg P hP)
 
-/-- **`ex:UUDDUD` (paper.tex).**
+/-- **Area–dinv–coarea definition (`sec:dyck`, paper.tex).**
 `dinv(P) = #{(i,j) : 1 ≤ i < j ≤ n, a_i - a_j ∈ {0, 1}}`,
 counting the dinv pairs in the area sequence. -/
 def dinv (P : List Step) : ℕ :=
@@ -351,7 +351,7 @@ def dinv (P : List Step) : ℕ :=
     ((List.finRange n).filter fun ⟨i, hi⟩ =>
       i < j ∧ (a[i] - a[j] = 0 ∨ a[i] - a[j] = 1))).length
 
-/-- **`ex:UUDDUD` (paper.tex).**
+/-- **Area–dinv–coarea definition (`sec:dyck`, paper.tex).**
 `coarea(P) = C(n,2) - area(P)` where `n` is the semilength. -/
 noncomputable def coarea (P : List Step) : ℤ :=
   let n : ℤ := semilength P
@@ -397,7 +397,7 @@ def twoPyramid (m n : ℕ) : List Step :=
 
 /-! ## Wrapped-flat paths W_n -/
 
-/-- **§8, Lemma 8.1 (`lem:wrapped-flat-stats`, paper.tex).**
+/-- **`lem:wrapped-flat-stats` (paper.tex).**
 The wrapped-flat path `W_n = U(UD)^n D`. -/
 def wrappedFlat (n : ℕ) : List Step :=
   [U] ++ (List.replicate n [U, D]).flatten ++ [D]
@@ -463,19 +463,19 @@ theorem length_areaSeq_eq_semilength (P : List Step) (hP : IsDyckPath P) :
 
 /-! ## Local statistics: valleys, double rises, peaks -/
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+/-- **`sec:narayana-sweep` (paper.tex).**
 The number of valleys `val(w) = #{i : w_i w_{i+1} = DU}`. -/
 def valleys (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
     w[i]! = D ∧ w[i + 1]! = U
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+/-- **`sec:narayana-sweep` (paper.tex).**
 The number of double rises `dr(w) = #{i : w_i w_{i+1} = UU}`. -/
 def doubleRises (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
     w[i]! = U ∧ w[i + 1]! = U
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+/-- **`sec:narayana-sweep` (paper.tex).**
 The number of peaks `pk(w) = #{i : w_i w_{i+1} = UD}`. -/
 def peaks (w : List Step) : ℕ :=
   (List.range (w.length - 1)).countP fun i =>
@@ -490,7 +490,7 @@ def S_tri : Set (ℕ × ℕ) :=
 
 /-! ## Height sweep (Narayana) -/
 
-/-- **Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+/-- **`sec:narayana-sweep` (paper.tex).**
 The height sweep `H(P)`: list the steps of `P` by increasing starting height
 (height just before the step), breaking ties by decreasing input position
 (right-to-left). -/

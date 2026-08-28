@@ -372,7 +372,7 @@ theorem countIntervalResidue_at (a m : ℕ) (ha : a < m) {P : ℕ} (hP : 1 ≤ P
       (hlobound (j / m)).mpr (by rw [hjeq]; exact hjlo),
       (hhibound (j / m)).mpr (by rw [hjeq]; exact hjhi)⟩
 
-/-- **The pinned gated convolution kernel** (FIBRED_PORTMAP F3.1): for
+/-- **The pinned gated convolution kernel** (Stage F3.1): for
 eventually-periodic iterates `u`, `v` and ANY bit `b`, the count of
 loop-indices `j < n` in a pinned affine interval whose convolution bit is on
 is pinned at `P · (pu · pv)`.  `u`, `v`, `b` are abstract: per-`mS`-sized
@@ -1087,7 +1087,7 @@ theorem countLexL_residueIndex_at (a m : ℕ) (ha : a < m) (L : List (ℤ × ℤ
     rw [← hia]
     exact hilex
 
-/-- **The pinned gated lex-convolution kernel** (FIBRED_PORTMAP F3.1 + D19):
+/-- **The pinned gated lex-convolution kernel** (Stage F3.1 + D19):
 the count of loop-indices `j < n` with `lexLt (R j) (T n)` and convolution
 bit on is pinned at any multiple of
 `P · (pu·pv·pR) · ∏ max |(pu·pv)·PR c| 1`. -/

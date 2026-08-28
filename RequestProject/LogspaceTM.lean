@@ -55,7 +55,7 @@ variable {Alpha Gamma : Type*}
 /-! ## The machine -/
 
 /-- **Deterministic logspace worktape transducer.**  A read-only two-way input
-head on `⊢w⊣` (the end-marker discipline of `def:2dft-run`), one two-way
+head on `⊢w⊣` (the end-marker discipline of the `def:2dft` run), one two-way
 read-write worktape over the finite work alphabet `Delta` (initially all
 `blank`), and a write-only output.  Each transition observes the state, the
 input symbol under the input head, the work symbol under the work head, and

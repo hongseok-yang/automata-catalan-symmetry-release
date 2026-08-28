@@ -4,7 +4,7 @@
 The fibred chain's period discipline: every sequence on the period path is
 affine-on-residues AT a pinned period that was fixed before the boundary
 width `mS`; thresholds, intercepts and slopes may be per-`mS`.  This file is
-the combinator algebra for that discipline (FIBRED_PORTMAP F3.0):
+the combinator algebra for that discipline (Stage F3.0):
 
 * `AffineOnResiduesAtZ` — the `ℤ`-valued twin of
   `SlicePeriodStar.AffineOnResiduesAt`, with `of_dvd`, rebase, closures, and

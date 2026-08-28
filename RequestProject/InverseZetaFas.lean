@@ -1,8 +1,8 @@
 /-
-# Lemma 9.5 (`lem:inverse-zeta-fas`): first ascent of inverse zeta on the
+# `lem:inverse-zeta-fas`: first ascent of inverse zeta on the
 # copied slice — the honest bijectivity-free form
 
-Formalises paper Lemma 9.5 (`lem:inverse-zeta-fas`, paper.tex): rather than
+Formalises paper `lem:inverse-zeta-fas` (paper.tex): rather than
 `fas(ζ⁻¹(W_{m,n}))` (which presupposes that `ζ` is a bijection, nowhere
 formalised), we exhibit the EXPLICIT ζ-preimage — the row of `m + 1` balanced
 pyramids — and prove `zetaMap (pyramidRow m n) = copiedSlice m n` together with
@@ -10,7 +10,7 @@ pyramids — and prove `zetaMap (pyramidRow m n) = copiedSlice m n` together wit
 UNCONDITIONAL (no `m ≥ 1` needed); the packaging corollary `inverse_zeta_fas`
 carries the paper's hypothesis for fidelity.
 
-Design artifact: `INVZETA_FAS_DESIGN.json`.  Trust base of the headline chain:
+Trust base of the headline chain:
 `[propext, Classical.choice, Quot.sound]` (the `native_decide` examples are
 regression anchors only).
 -/
@@ -602,7 +602,7 @@ theorem inverse_zeta_fas (m n : ℕ) (_hm : 1 ≤ m) :
   ⟨pyramidRow m n, pyramidRow_mem_dyckPath m n, zetaMap_pyramidRow m n,
     firstAscent_pyramidRow m n⟩
 
-/-! ## Lemma 9.6 (`lem:inverse-zeta-not-semilinear`): the first-ascent graph
+/-! ## `lem:inverse-zeta-not-semilinear`: the first-ascent graph
 is not semilinear
 
 The paper's set `G ⊆ ℕ³` reduces, by intersection with `{f = m}` and
@@ -670,7 +670,7 @@ theorem quad_le_band_lower (b : ℕ) (hb : 2 ≤ b) :
   generalize hY : b * (b - 1) = Y at *
   omega
 
-/-- **Lemma 9.6, the heart**: the band is not semilinear. -/
+/-- **`lem:inverse-zeta-not-semilinear`, the heart**: the band is not semilinear. -/
 theorem invBand_not_semilinear : ¬ IsSemilinear2 invBand := by
   intro hband
   rcases semilinear_envelope invBand hband invBand_section_finite with
@@ -693,11 +693,11 @@ theorem invBand_not_semilinear : ¬ IsSemilinear2 invBand := by
     le_mul_of_one_le_left (by exact_mod_cast Nat.zero_le a) (by omega)
   linarith [ha_affine, hbquad, hchain, ha_le]
 
-/-- **Lemma 9.6 (`lem:inverse-zeta-not-semilinear`), ceiling form**: the
+/-- **`lem:inverse-zeta-not-semilinear`, ceiling form**: the
 diagonal section of the first-ascent graph — the set of `(n, m)` with `m ≥ 1`
 and `⌈(m+n)/(m+1)⌉ = m` — is not semilinear.  (The paper's `ℕ³`-packaging
 `G` reduces to this by intersection and projection, the Presburger-closure
-side deferred with the §9 tower.) -/
+side deliberately not formalised.) -/
 theorem inverse_zeta_graph_band_not_semilinear :
     ¬ IsSemilinear2 {p : ℕ × ℕ | 1 ≤ p.2 ∧ (p.2 + p.1 + p.2) / (p.2 + 1) = p.2} := by
   have hset : {p : ℕ × ℕ | 1 ≤ p.2 ∧ (p.2 + p.1 + p.2) / (p.2 + 1) = p.2}

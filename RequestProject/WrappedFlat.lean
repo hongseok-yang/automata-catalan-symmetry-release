@@ -1,7 +1,8 @@
 /-
 # Wrapped-Flat Paths and Statistics
 
-Formalization of Section 8 (The wrapped-flat slice and the no-swap theorem)
+Formalization of Section 8 (The family `(W_n)_{n≥1}` and the no-swap theorem,
+`sec:wrapped-flat`)
 of "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -11,7 +12,7 @@ import RequestProject.AreaSeq
 
 open Step
 
-/-! ## Lemma 7.1: Statistics of W_n -/
+/-! ## `lem:wrapped-flat-stats`: Statistics of W_n -/
 
 /-
 **`lem:wrapped-flat-stats` (paper.tex).**
@@ -98,7 +99,7 @@ theorem length_wrappedFlat (n : ℕ) :
   simp [List.length_flatten]
   omega
 
-/-! ## Lemma 7.2: Dinv is bounded by coarea -/
+/-! ## `lem:dinv-coarea`: Dinv is bounded by coarea -/
 
 open Finset in
 /-- Length of a filtered `finRange` equals the cardinality of the matching
@@ -125,7 +126,7 @@ theorem dinv_eq_sum_card (P : List Step) :
   rw [length_filter_finRange_eq_card]
 
 open Finset in
-/-- **Per-column dinv bound (heart of Lemma 7.2).**
+/-- **Per-column dinv bound (heart of `lem:dinv-coarea`).**
 The number of dinv partners `i < j` of column `j` is at most `j - a_j`, because
 the `a_j` levels `0,…,a_j-1` each occur before `j` and are never counted. -/
 theorem dinv_column_bound (P : List Step) (hP : IsDyckPath P)
@@ -241,7 +242,7 @@ theorem dinv_le_coarea (Q : List Step) (hQ : IsDyckPath Q) :
   rw [Finset.sum_sub_distrib, sum_fin_areaSeq Q, sum_fin_cast_int, hlen]
   rfl
 
-/-! ## Lemma 7.1 specific values for small n -/
+/-! ## `lem:wrapped-flat-stats` specific values for small n -/
 
 /-- Verification: `area(W_0) = 0`. -/
 theorem area_wrappedFlat_zero : area (wrappedFlat 0) = 0 := by native_decide

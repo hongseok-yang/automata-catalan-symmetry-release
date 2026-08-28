@@ -1,7 +1,7 @@
 /-
 # The fibred gate machines and their EPs (§9 tower, Stage F3.3)
 
-The fixed-machine design (FIBRED_PORTMAP D8): acceptance of a fibred cell
+The fixed-machine design (D8): acceptance of a fibred cell
 tuple on the copied slice reduces, for ALL `n` at once, to ONE pulled-back
 re-rooted machine — because the marked boundary stretches of a valid cell
 tuple are `n`-independent.  That hinge is `cellTupleF_seg_congr_n` (spike S1):

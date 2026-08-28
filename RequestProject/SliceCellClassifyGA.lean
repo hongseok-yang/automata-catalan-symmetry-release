@@ -2,8 +2,7 @@
 # GA-7.1/7.2 — the canonical cell classification and the recount
 # (`SliceFasCountGA` namespace, part 2/3)
 
-The conceptual core of the counting layer (script: `GA7_PORTMAP.json`, SECTIONS
-2-3): the POSITION-DETERMINED canonical classification makes tuple ↦ (descriptor,
+The conceptual core of the counting layer: the POSITION-DETERMINED canonical classification makes tuple ↦ (descriptor,
 base) a function, so every selectedness-implying tuple count partitions EXACTLY
 into finitely many frozen cells plus per-bulk-cell 1-parameter base counts.
 

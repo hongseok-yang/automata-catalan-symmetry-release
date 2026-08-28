@@ -91,7 +91,7 @@ theorem rankAffine_of_iterate {d : ℕ} {Q : Type*} [Finite Q] (f : Q → Q) (q0
   exact RankAffine.of_eventuallyPeriodic hp (fun j hj => by rw [hper j hj])
 
 /-- **A slice block-atom's rank-source prefix-rank is `RankAffine` in its
-loop-index.**  (Paper Lemma 6.3 for the one-loop family, in recurrence form.) -/
+loop-index.**  (Paper `lem:one-loop-rank-affine` for the one-loop family, in recurrence form.) -/
 theorem prefixRank_blockU_rankAffine {d : ℕ} (A : RankSource Step d) :
     RankAffine (fun j => A.prefixRank ([U] ++ (List.replicate j [U, D]).flatten)
       (([U] ++ (List.replicate j [U, D]).flatten).length)) := by

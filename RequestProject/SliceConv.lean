@@ -1,7 +1,8 @@
 /-
 # Convolution of two purely-periodic sequences is affine on residue classes
 
-The selection-*counting* construction of paper Lemma 6.4 reduces (after peeling the
+The selection-*counting* construction of the paper's slice analysis
+(`sec:slice-semilinearity`) reduces (after peeling the
 forward/backward eventual-periodicity thresholds) to the following purely
 combinatorial fact, which is its mathematical heart.
 

@@ -6,13 +6,13 @@ to the *actual* `RankSource.prefixRank` evaluated on the wrapped-flat slice
 `W_n = U(UD)^n D`.  We introduce a fold-based rank accumulator `rankStep`, prove
 it computes `prefixRank`, and split a run over `pre ++ (UD)^n` into one block per
 loop iteration.  The conclusion (`prefixRank_pre_blocks_affineOnResidues`) is the
-paper's Lemma 6.3 for the concrete model: the rank accumulated reading
+paper's `lem:one-loop-rank-affine` for the concrete model: the rank accumulated reading
 `pre ++ (loop)^n` is, beyond a threshold and on each residue class of `n`, affine
 in `n`.
 
 For the wrapped-flat slice `W_n = U(UD)^n D`, take `pre = [U]` and `loop = [U,D]`:
 the prefix-ranks at the loop boundaries are then affine on residue classes of `n`,
-which is the rank ingredient the remaining `wrp_slice_profile_affine` axiom needs.
+which is the rank ingredient the slice-profile theorem `wrp_slice_profile_affine` needs.
 This file fully proves that ingredient (axiom-clean); what the axiom still bundles
 is the MSO-selection ⇒ Presburger step and the bounded counting of `fas`/`tailU`.
 -/
@@ -96,7 +96,7 @@ theorem foldl_rankStep_replicate_snd (loop : List Alpha) (q : A.Q) (acc : Fin d 
         · exact rankStep_fst A q acc loop
         · simp only [blockWeight]; exact rankStep_snd_add A q acc loop
 
-/-- **Paper Lemma 6.3 for the concrete model.**  The total prefix-rank of the rank
+/-- **Paper `lem:one-loop-rank-affine` for the concrete model.**  The total prefix-rank of the rank
 source `A` reading `pre ++ loop^n` is, beyond a threshold `m` and on each residue
 class of `n` mod a period `p`, affine in the loop count `n`. -/
 theorem prefixRank_pre_blocks_affineOnResidues (pre loop : List Alpha) :

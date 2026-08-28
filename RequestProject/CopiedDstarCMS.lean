@@ -1645,7 +1645,7 @@ the SHALLOW collapse endpoint `T + r ≥ T ≥ mg` clears the gate before-gap.  
 (step-5 passes `mS-1-T`) so the DEEP endpoint stays `≥ T` from the suffix end (after-gap), outputs
 `M ≤ l_bd` / `l_bd < N` (before/after gaps for step 5), the gate shift (a multiple of `pc`), and the
 value domination.  (Arity-1 has one coordinate per cell, so step 5 = step 4 with vacuous clear-window;
-the general-arity collapse is blocked by coordinate crossing — see FORMALISATION_WORKLOG UPDATE 26.) -/
+the general-arity collapse is blocked by coordinate crossing.) -/
 
 /-- **Revised step 3 (Option B'', single threshold).**  For each suffix/prefix coordinate `(c, j0)`,
 exposes a SINGLE collapse period `pc` (= gate cycle × rank period) AND a SINGLE threshold

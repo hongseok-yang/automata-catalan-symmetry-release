@@ -1,7 +1,7 @@
 /-
 # `d*` for general arity — the semantic layer and the cell transport (GA-5.1–5.6)
 
-The adjudicated GA-5 mechanical layer (see `GA58_ADJUDICATION.json`):
+The GA-5 mechanical layer:
 
 * `selDListGA` / `mem_selDListGA` — the selected-`D`-atom list of `W_n` over all
   copies and tuples (`Sigma.eta` replaces the arity-1 `atom_eq` machinery);

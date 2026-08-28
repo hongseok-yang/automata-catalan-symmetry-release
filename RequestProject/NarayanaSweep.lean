@@ -1,8 +1,8 @@
 /-
 # The Narayana Sweep
 
-Formalization of Section 10.2 (A rank sweep that does swap a statistic pair:
-the Narayana symmetry) of
+Formalization of Section 6 (The height sweep and the Narayana symmetry,
+`sec:narayana-sweep`) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -14,7 +14,7 @@ open Step
 /-! ## The Narayana polynomial (`sec:discussion`, paper.tex) -/
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+**`sec:narayana-sweep` (paper.tex).**
 Elementary identity: `val(w) = pk(w) - 1` for any Dyck path of semilength ≥ 1.
 -/
 theorem valleys_eq_peaks_sub_one (w : List Step) (hw : IsDyckPath w)
@@ -55,7 +55,7 @@ theorem valleys_eq_peaks_sub_one (w : List Step) (hw : IsDyckPath w)
       grind
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+**`sec:narayana-sweep` (paper.tex).**
 Elementary identity: `dr(w) = n - pk(w)` for a Dyck path of semilength n.
 -/
 theorem doubleRises_eq_semilength_sub_peaks (w : List Step) (hw : IsDyckPath w) :
@@ -96,7 +96,7 @@ theorem doubleRises_eq_semilength_sub_peaks (w : List Step) (hw : IsDyckPath w) 
       grind
 
 /-
-**Section 10.2 (`sec:narayana-sweep`, paper.tex).**
+**`sec:narayana-sweep` (paper.tex).**
 `val(w) + dr(w) = n - 1` for a Dyck path of semilength n ≥ 1.
 -/
 theorem valleys_add_doubleRises (w : List Step) (hw : IsDyckPath w)

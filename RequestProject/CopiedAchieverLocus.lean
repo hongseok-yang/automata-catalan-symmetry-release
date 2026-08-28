@@ -226,7 +226,7 @@ theorem dstarAchieverUpdateLocus
       hpc hTq hF hupdval hag hselconst hNcmS hNcmx l hl hsel hachF
 
 /-- Affine-table suffix/prefix d*-achiever coverage package.  This is the run-residue coverage
-shape that no longer mentions arity-one scalarization: the slope branch is stated directly for the
+shape that does not mention arity-one scalarization: the slope branch is stated directly for the
 affine tables `FFs`/`FFp`. -/
 def DstarAchieverAffineLocus (P : WRP.Presentation Step Step) (hV : P.Valid) : Prop :=
     (∀ (c0 : Fin P.toPoly.K) (j0 : Fin (P.toPoly.arity c0))

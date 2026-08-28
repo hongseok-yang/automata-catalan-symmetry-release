@@ -192,7 +192,7 @@ theorem eventuallyPeriodic_eq (f g : ℕ → ℤ) (m₀ p : ℕ) (hp : 1 ≤ p) 
 
 /-- **`lexLt` of two coordinatewise-affine `ℤ^d` vectors is eventually periodic.**
 This is the rank-order stabilisation the WRP slice analysis needs: each rank
-coordinate `F n i` is affine on residue classes of `n` (paper Lemma 6.3, proved in
+coordinate `F n i` is affine on residue classes of `n` (paper `lem:one-loop-rank-affine`, proved in
 `SliceRank`), and the lexicographic comparison of two such vectors — the way the
 WRP order `≺` decides precedence on the slice — is therefore an eventually periodic
 predicate in `n`. -/

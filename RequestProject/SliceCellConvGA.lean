@@ -1,8 +1,7 @@
 /-
 # GA-7.0 — the cell-tuple convolution form (`SliceFasCountGA` namespace, part 1/3)
 
-The foundation of the general-arity counting layer (script: `GA7_PORTMAP.json`,
-SECTIONS 0-1).  The marked-DFA acceptance of a CELL TUPLE decomposes, on the bulk
+The foundation of the general-arity counting layer.  The marked-DFA acceptance of a CELL TUPLE decomposes, on the bulk
 window, as fixed boundary data around two unmarked-block `bFN`-iterates:
 
 * the hit-functions and the five per-segment letter identifications;

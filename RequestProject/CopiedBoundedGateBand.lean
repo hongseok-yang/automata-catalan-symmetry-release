@@ -1,5 +1,5 @@
 /-
-# The BANDED bounded-cell full gate (§9 mS-direction soundness fix — UPDATE 66)
+# The BANDED bounded-cell full gate (§9 mS-direction)
 
 `CopiedBoundedGate.fasU_atomOrd_full_gate_bounded` with the suffix/prefix RUN clauses replaced by their
 DEPTH-BANDED variants (`CopiedBandRunGate.sufOrdClauseAtBandTot`/`prefOrdClauseAtBandTot`): the run

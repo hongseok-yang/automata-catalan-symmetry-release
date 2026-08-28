@@ -1,7 +1,7 @@
 /-
 # Period-star layer (§9 tower, Stage C): function-level eventual periodicity
 
-The pinned-period discipline of the fibred route (`CS_DESIGN.json`, CS-1).
+The pinned-period discipline of the fibred route.
 The one-parameter tower extracts its periods POINTWISE — at a start state that
 moves with the prefix (`detAuto_slice_eventuallyPeriodic` runs from
 `foldl δ q0 pre`).  On the copied slice the prefix is `U^{m}`, so pointwise

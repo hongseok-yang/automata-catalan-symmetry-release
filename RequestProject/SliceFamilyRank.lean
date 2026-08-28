@@ -20,7 +20,7 @@ machinery (`SliceRankRegions`, `SliceRankAtom`) applies:
   families read at index `n−e`, `RankAffine` in `n`.
 
 This file provides the three bridges; the per-cell decomposition theorem
-`rank(t, n) = R(t) + B(n)` assembles them at the next milestone.
+`rank(t, n) = R(t) + B(n)` (`rank_cell_decomp` below) assembles them.
 
 Axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/

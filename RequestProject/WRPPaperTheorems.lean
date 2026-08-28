@@ -2,55 +2,58 @@
 # Paper-exact statements of the negative theorems and the slice analysis
 
 The Lean classes deliberately quantify over supersets of the paper's `def:wrp`
-class (deviation A2 of `PAPER_DEVIATIONS.md`: `Valid` asks totality only of the
+class (`Valid` asks totality only of the
 combined order `≺`; the Lean model also admits arity-`0` copies), and the slice
 theorems use the weaker some-realised-slice hypothesis with a set-valued
-conclusion (deviations A3/A4).  The negative theorems are therefore *stronger*
+conclusion.  The negative theorems are therefore *stronger*
 than the paper's — this file exports the paper's literal statements as
 corollaries, so that every headline sentence of `paper.tex` has a
 Lean declaration of the same shape:
 
-* `wrp_no_area_dinv_swap_paper` (`thm:wrp-no-swap`) — no map in the revision's
+* `wrp_no_area_dinv_swap_paper` (`thm:wrp-no-swap`) — no map in the paper's
   `def:wrp` class realises an area↔dinv swap (also the `χ`-total form
-  `wrp_no_area_dinv_swap_tieTotal` for the previous draft's class);
+  `wrp_no_area_dinv_swap_tieTotal` for the tie-total class);
 * `inverse_zeta_not_wrp_paper` (`cor:inverse-zeta-not-wrp`) — general arity —
   and `inverse_zeta_not_wrp_arity1_paper` (the Büchi-only arity-1 route),
   over paper-valid presentations;
 * `wrp_paper_isLogspaceMH` / `wrp_paper_logspace_polytime` /
   `wrp_strict_below_logspace_paper` (`thm:wrp-logspace`,
-  `thm:wrp-strict-below-logspace`) — the logspace trio over the revision's
+  `thm:wrp-strict-below-logspace`) — the logspace trio over the paper's
   class;
 * `wrp_slice_profile_semilinear_total` and its paper-class form
   `wrp_slice_profile_semilinear_paper` (`thm:wrp-slice-semilinearity`) — the
-  revision's literal statement: `T` **total on the family** with
+  paper's literal statement: `T` **total on the family** with
   `|T(W_n)| = O(n)`, and the literal set
-  `S_T = {(fas(T(W_n)), tailU(T(W_n))) : n ≥ 1}` semilinear (deviation A3);
+  `S_T = {(fas(T(W_n)), tailU(T(W_n))) : n ≥ 1}` semilinear;
 * `wrp_slice_profile_pointwise_affine` — the pointwise reading of the slice
-  analysis: on every in-domain slice the profile of `T(W_n)` *is* `g n`
-  (deviation A4).
+  analysis: on every in-domain slice the profile of `T(W_n)` *is* `g n`;
+* `polyreg_strict_subset_wrp_paper` (`thm:wrp-strict-over-poly`) — the strict
+  inclusion with the ζ-membership taken in the paper-exact class.
 
 Trust bases are unchanged by these corollaries: the slice/no-swap statements
 admit `SliceMSO.buchi` only; the general-arity inverse-zeta statement adds the
 three route-B counting/definability axioms; the logspace statements admit
-`SliceMSO.buchi` (the machine cores are axiom-clean).  The not-closed theorem
-with paper-exact witnesses is in `WRPPaperNotClosed.lean`.
+`SliceMSO.buchi` (the machine cores are axiom-clean); the strict inclusion
+admits `polyreg_regular_preimage` only.  The not-closed theorem with
+paper-exact witnesses is in `WRPPaperNotClosed.lean`.
 -/
 import RequestProject.WRPTieTotal
 import RequestProject.NoSwapWRP
 import RequestProject.CopiedTieSemilinear2
 import RequestProject.WRPLogspace
+import RequestProject.ZetaNotPolyreg
 
 open WRP
 
 /-! ## The slice analysis in the paper's literal form (`thm:wrp-slice-semilinearity`) -/
 
 /-- **`thm:wrp-slice-semilinearity` with the paper's totality reading**
-(paper.tex, deviation A3 closed): if `T ∈ WRP` is defined on
+(paper.tex): if `T ∈ WRP` is defined on
 **every** slice `W_n` (`n ≥ 1`), with output `f n` and linear growth, then the
 paper's literal set `S_T = {(fas(T(W_n)), tailU(T(W_n))) : n ≥ 1}` is
 semilinear.  (The growth hypothesis keeps the Lean form over all realised
-slices — interconvertible with the paper's `|T(W_n)| = O(n)`, deviation A6; at
-`n = 0` it is inert by the totalisation convention C3.) -/
+slices — interconvertible with the paper's `|T(W_n)| = O(n)`; at
+`n = 0` it is inert by the totalisation convention.) -/
 theorem wrp_slice_profile_semilinear_total (T : List Step → Option (List Step))
     (hT : IsWRP T) (f : ℕ → List Step)
     (hf : ∀ n, 1 ≤ n → T (wrappedFlat n) = some (f n))
@@ -73,7 +76,7 @@ theorem wrp_slice_profile_semilinear_total (T : List Step → Option (List Step)
   rw [← hset]
   exact hsemi
 
-/-- **`thm:wrp-slice-semilinearity` over the revision's `def:wrp` class**: the
+/-- **`thm:wrp-slice-semilinearity` over the paper's `def:wrp` class**: the
 same literal statement for `T` in the paper-exact class `IsWRPPaper`. -/
 theorem wrp_slice_profile_semilinear_paper (T : List Step → Option (List Step))
     (hT : IsWRPPaper T) (f : ℕ → List Step)
@@ -83,10 +86,10 @@ theorem wrp_slice_profile_semilinear_paper (T : List Step → Option (List Step)
       q = (firstAscent (f n), tailU (f n))} :=
   wrp_slice_profile_semilinear_total T hT.isWRP f hf hgrow
 
-/-- **The pointwise slice analysis** (deviation A4 closed): the profile of
+/-- **The pointwise slice analysis**: the profile of
 `T(W_n)` on every in-domain slice `n ≥ 1` *is* `g n`, for a single function
 `g` affine on residue classes beyond a threshold — the paper's pointwise
-reading of Lemmas 7.2–7.4 / `thm:wrp-slice-semilinearity`. -/
+reading of the `lem:one-loop-*` lemmas / `thm:wrp-slice-semilinearity`. -/
 theorem wrp_slice_profile_pointwise_affine (T : List Step → Option (List Step))
     (hT : IsWRP T)
     (hgrow : ∃ C, ∀ n out, T (wrappedFlat n) = some out → out.length ≤ C * (n + 1))
@@ -101,7 +104,7 @@ theorem wrp_slice_profile_pointwise_affine (T : List Step → Option (List Step)
 
 /-! ## The no-swap theorem over the paper's classes (`thm:wrp-no-swap`) -/
 
-/-- **`thm:wrp-no-swap` over the previous draft's `def:wrp` class** (tie-order
+/-- **`thm:wrp-no-swap` over the tie-total class** (tie-order
 `χ` a strict total order): no `χ`-total WRP transduction realises a
 semilength-preserving area↔dinv swap on Dyck paths. -/
 theorem wrp_no_area_dinv_swap_tieTotal
@@ -115,11 +118,11 @@ theorem wrp_no_area_dinv_swap_tieTotal
     False :=
   wrp_no_area_dinv_swap T hWRP.isWRP F hreal hDyck hlen harea hdinv
 
-/-- **`thm:wrp-no-swap` over the revision's `def:wrp` class verbatim**
+/-- **`thm:wrp-no-swap` over the paper's `def:wrp` class verbatim**
 (paper.tex): no map in the paper's WRP class — tie-order a strict
 total order, every arity `≥ 1` — realises a semilength-preserving area↔dinv
-swap on Dyck paths.  A fortiori from the stronger `wrp_no_area_dinv_swap`
-(deviation A2 closed). -/
+swap on Dyck paths.  A fortiori from the stronger
+`wrp_no_area_dinv_swap`. -/
 theorem wrp_no_area_dinv_swap_paper
     (T : List Step → Option (List Step)) (hWRP : IsWRPPaper T)
     (F : List Step → List Step)
@@ -133,7 +136,7 @@ theorem wrp_no_area_dinv_swap_paper
 
 /-! ## The inverse-zeta separation over the paper's classes (`cor:inverse-zeta-not-wrp`) -/
 
-/-- **`cor:inverse-zeta-not-wrp` over the revision's `def:wrp` class**: no map
+/-- **`cor:inverse-zeta-not-wrp` over the paper's `def:wrp` class**: no map
 in the paper's WRP class inverts `ζ` on Dyck paths (general arity; route B). -/
 theorem inverse_zeta_not_wrp_paper :
     ¬ ∃ T : List Step → Option (List Step),
@@ -157,7 +160,7 @@ theorem inverse_zeta_not_wrp_arity1_paper :
 /-! ## The logspace trio over the paper's class (`thm:wrp-logspace`,
 `thm:wrp-strict-below-logspace`) -/
 
-/-- **`thm:wrp-logspace` over the revision's `def:wrp` class**: every
+/-- **`thm:wrp-logspace` over the paper's `def:wrp` class**: every
 paper-exact WRP map is computable by a deterministic multihead bounded-counter
 logspace machine. -/
 theorem wrp_paper_isLogspaceMH {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma]
@@ -165,7 +168,7 @@ theorem wrp_paper_isLogspaceMH {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma
     Multihead.IsLogspaceMH T :=
   wrp_isLogspaceMH T hT.isWRP
 
-/-- **The polynomial-time clause of `thm:wrp-logspace` over the revision's
+/-- **The polynomial-time clause of `thm:wrp-logspace` over the paper's
 class**: the witnessing machine halts within the explicit polynomial bound. -/
 theorem wrp_paper_logspace_polytime {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma]
     (T : List Step → Option (List Gamma)) (hT : IsWRPPaper T) :
@@ -175,7 +178,7 @@ theorem wrp_paper_logspace_polytime {Gamma : Type} [Fintype Gamma] [DecidableEq 
         N < M.cardQ * (w.length + 2) ^ h * (C * (w.length + 1) + 1) ^ c :=
   wrp_logspace_polytime T hT.isWRP
 
-/-- **`thm:wrp-strict-below-logspace` over the revision's `def:wrp` class**:
+/-- **`thm:wrp-strict-below-logspace` over the paper's `def:wrp` class**:
 the paper-exact WRP class is contained in deterministic (multihead) logspace,
 and some logspace map lies outside it.  Both halves a fortiori: containment
 through `IsWRPPaper ⊆ IsWRP`, separation because the witness `F_{≥0}` is not
@@ -188,3 +191,15 @@ theorem wrp_strict_below_logspace_paper :
   ⟨fun T hT => wrp_isLogspaceMH T hT.isWRP,
    ⟨WRPComp.Fge0, Multihead.Fge0_isLogspaceMH,
     fun h => WRPComp.Fge0_not_isWRP h.isWRP⟩⟩
+
+/-- **`thm:wrp-strict-over-poly` over the paper's `def:wrp` class**:
+`PolyReg ⊊ WRP` witnessed by ζ, with the membership taken in the paper-exact
+class (`zetaMap_realisedByWRPPaper`) and the non-membership over genuine
+polyregular transductions.  Same trust base as
+`WRPStructure.polyreg_strict_subset_wrp`. -/
+theorem polyreg_strict_subset_wrp_paper :
+    (∃ T : List Step → Option (List Step),
+        WRP.IsWRPPaper T ∧ Realises T {P | IsDyckPath P} zetaMap) ∧
+    ¬ (∃ T : List Step → Option (List Step),
+        Polyreg.IsPolyregular T ∧ Realises T {P | IsDyckPath P} zetaMap) :=
+  ⟨zetaMap_realisedByWRPPaper, ZetaNotPolyreg.zetaMap_not_polyregular⟩

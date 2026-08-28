@@ -1,5 +1,5 @@
 /-
-# TWO-rep tying folds (§9 mS-direction soundness fix — UPDATE 66)
+# TWO-rep tying folds (§9 mS-direction)
 
 The banded run clause's activation set must be the TWO-rep tying set
 `{r ∈ [0,pcF) : rank(sufIdx (Ts+r)) = d* ∧ rank(sufIdx (Ts+r+pcF)) = d*}` — NOT the single-rep

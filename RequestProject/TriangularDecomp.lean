@@ -1,7 +1,7 @@
 /-
 # Triangular decomposition and the canonical tight area sequence
 
-Supporting arithmetic for Lemma 7.3.  Every `c : ℕ` is uniquely
+Supporting arithmetic for `lem:deficit-zero-targets`.  Every `c : ℕ` is uniquely
 `c = C(b+1,2) + d` with `0 ≤ d ≤ b` (`triangularDecomp`), and the canonical tight
 area sequence `canonAreaSeq` built from `(a, b, d)` is a valid Dyck area sequence.
 -/

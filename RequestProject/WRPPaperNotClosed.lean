@@ -4,9 +4,9 @@
 `thm:wrp-not-closed` (paper.tex) is existential — its
 witnesses `D` and `S` must themselves lie in the paper's `def:wrp` class.  The
 Lean witnesses of `WRPCompWitness.lean` / `WRPNotClosedComp.lean` /
-`SMapWRP.lean` live in the deliberately larger `WRP.IsWRP` (deviation A2: the
+`SMapWRP.lean` live in the deliberately larger `WRP.IsWRP` (the
 concat tie-order is `False` across blocks, so `χ` is not total; and the
-sentinel/separator copies have arity `0`, violating the revision's `k_c ≥ 1`).
+sentinel/separator copies have arity `0`, violating the paper's `k_c ≥ 1`).
 This file upgrades the witnesses into `WRP.IsWRPPaper` and restates the
 theorem's three clauses with them:
 
@@ -22,8 +22,8 @@ theorem's three clauses with them:
   copy-then-position scan tie-orders).
 * **arity positivity** via the `ArityLift` anchor: `liftPoly_valid` (the lift
   preserves `χ`-totality) and `isWRPPaper_restrict_nonempty` (a `χ`-total WRP
-  map restricted to nonempty inputs lies in the revision's class).  The
-  restriction is exactly the revision's own convention: with `k_c ≥ 1` no atom
+  map restricted to nonempty inputs lies in the paper's class).  The
+  restriction is exactly the paper's own convention: with `k_c ≥ 1` no atom
   exists on `ε`, so the paper's `D` outputs `ε` there while the Lean `compD`
   outputs `G#` via its arity-`0` sentinel — the two agree on every nonempty
   input, and `ε ∈ L_{≥0}` makes the empty input irrelevant to all three
@@ -501,7 +501,7 @@ theorem liftPoly_valid {P : Polyreg.Presentation Alpha Gamma} (hV : P.Valid) :
     · exact Or.inr (Or.inr h)
 
 /-- **Arity-0 elimination in the paper's class**: a `χ`-total WRP map
-restricted to nonempty inputs lies in the revision's `def:wrp` class
+restricted to nonempty inputs lies in the paper's `def:wrp` class
 (`χ`-total and arity-positive). -/
 theorem isWRPPaper_restrict_nonempty {T : List Alpha → Option (List Gamma)}
     (h : WRP.IsWRPTieTotal T) :
@@ -610,7 +610,7 @@ theorem compD_isWRPTieTotal : WRP.IsWRPTieTotal (fun w => some (compD w)) := by
   rfl
 
 /-- **The paper-exact witness**: `D` restricted to nonempty inputs.  On the
-revision's arity-positive convention no atom exists on `ε`, so this is exactly
+paper's arity-positive convention no atom exists on `ε`, so this is exactly
 the paper's `D` (which outputs `ε`'s worth of atoms there — none — while the
 Lean `compD` emits `G#` via its arity-0 sentinel; the two agree on every
 nonempty input). -/
@@ -619,7 +619,7 @@ def compDPos : List Step → Option (List GBD) := fun w =>
   | [] => none
   | _ => some (compD w)
 
-/-- **`D ∈ WRP` in the revision's `def:wrp` class**: `χ`-total by the (R2)
+/-- **`D ∈ WRP` in the paper's `def:wrp` class**: `χ`-total by the (R2)
 refinement, arity-positive by the anchor lift. -/
 theorem compDPos_isWRPPaper : WRP.IsWRPPaper compDPos := by
   have h := ArityLift.isWRPPaper_restrict_nonempty compD_isWRPTieTotal
@@ -648,7 +648,7 @@ theorem preimage_compDPos_eq_LnnPos :
       · rintro ⟨hmem, -⟩
         exact ⟨compD (x :: rest), rfl, (head_compD_eq_g_iff (x :: rest)).mpr hmem⟩
 
-/-- **`thm:wrp-not-closed`, claim 1, with the witness in the revision's
+/-- **`thm:wrp-not-closed`, claim 1, with the witness in the paper's
 `def:wrp` class** (paper.tex): a paper-exact WRP map `D`
 and a regular `K` with `D⁻¹(K)` not regular.  Axiom-clean. -/
 theorem wrp_not_closed_preimage_comp_paper :
@@ -697,7 +697,7 @@ theorem Fge0Pos_not_isWRP : ¬ WRP.IsWRP Fge0Pos := by
   exact not_regular_LnnPos hreg
 
 /-- **`thm:wrp-not-closed`, Moreover clause, with the witness in the
-revision's `def:wrp` class**: the paper-exact `D` and regular `K` of claim 1,
+paper's `def:wrp` class**: the paper-exact `D` and regular `K` of claim 1,
 and the left-to-right 2DFT `S`, such that any composite `S ∘ D` is not WRP —
 a fortiori not paper-exact WRP. -/
 theorem wrp_not_closed_composition_paper :
@@ -732,12 +732,12 @@ theorem wrp_not_closed_composition_paper :
           exact hiff.mpr ⟨compD (x :: rest), rfl, hval⟩
     exact Fge0Pos_not_isWRP (hEq ▸ hWRP)
 
-/-- `S ∈ WRP` in the revision's `def:wrp` class: `sMap` has a direct arity-1
+/-- `S ∈ WRP` in the paper's `def:wrp` class: `sMap` has a direct arity-1
 presentation whose validity is `χ`-totality. -/
 theorem sMap_isWRPPaper : WRP.IsWRPPaper sMap :=
   WRP.isWRPPaper_of_isRegular sMap_isRegular
 
-/-- **`thm:wrp-not-closed`, the "consequently", inside the revision's
+/-- **`thm:wrp-not-closed`, the "consequently", inside the paper's
 `def:wrp` class**: two paper-exact WRP maps — `D` and the map `sMap` computed
 by the left-to-right 2DFT `S` — whose composite is not WRP, a fortiori not
 paper-exact WRP.  Hence the paper's `def:wrp` class is not closed under

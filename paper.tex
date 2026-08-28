@@ -4411,18 +4411,15 @@ as $H$ and other mixed-sign sweep maps.
 
 \section{Machine-checked formalisation in Lean}\label{sec:lean}
 
-With the exception of the new height-sweep lower-bound chain
-(Lemmas~\ref{lem:H-two-pyramid} and~\ref{lem:H-probe} and
-Theorem~\ref{thm:H-not-polyregular}), the results of this paper have been
-formalised and machine-checked in the Lean~4 proof assistant
-\cite{DeMouraUllrich2021}, building on the Mathlib library
-\cite{MathlibCommunity2020}.  The development was produced
+The results of this paper have been formalised and machine-checked in the
+Lean~4 proof assistant \cite{DeMouraUllrich2021}, building on the Mathlib
+library \cite{MathlibCommunity2020}.  The development was produced
 automatically by the AI models Claude, Aristotle, and Codex, as recorded in
 the declaration of AI use at the end of the paper; since every proof is
 checked by Lean's kernel, the guarantees described in this section do not
 depend on how the proofs were found.  The formalisation is distributed with
 the paper.\footnote{\url{https://github.com/hongseok-yang/automata-catalan-symmetry-release}}
-It comprises roughly $100{,}000$ lines of Lean in $154$ source files, pins an
+It comprises roughly $100{,}000$ lines of Lean in $156$ source files, pins an
 exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so that the
 build is reproducible, and contains no unproved placeholder: every statement
 in the development is fully proved from Lean's kernel and the short list of
@@ -4433,26 +4430,29 @@ from the prose.
 \paragraph{Scope.}
 The development builds the paper from the ground up rather than verifying an
 isolated statement.  It defines Dyck paths, the statistics $\area$, $\dinv$,
-and $\coarea$, area sequences, the zeta map of Definition~\ref{def:zeta}, and
-the families $W_n$ and $W_{m,n}$; $\MSO$ on words together with the
+and $\coarea$, area sequences, the zeta map of Definition~\ref{def:zeta}, the
+height sweep $H$ of Section~\ref{sec:narayana-sweep}, and
+the families $W_n$, $W_{m,n}$, and $P_{m,n}$; $\MSO$ on words together with the
 marked-word encodings of free variables (Section~\ref{sec:mso}); polyregular
 presentations (Definition~\ref{def:polyregular}) and deterministic two-way
 transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
 functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
 (Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine
 models of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
-formalised results of the paper: Table~\ref{tab:lean} lists the headline
-theorems with their Lean names or current status, and the intermediate lemmas
+results of the paper: Table~\ref{tab:lean} lists the headline
+theorems with their Lean names, and the intermediate lemmas
 supporting those results are formalised as well.  In
 particular, the deficit-zero analysis of Section~\ref{sec:main}, the
-first-ascent computations of Section~\ref{sec:inverse-zeta}, and the
+first-ascent computations of Section~\ref{sec:inverse-zeta}, the two-pyramid
+closed forms behind the $\zeta$ and $H$ lower bounds
+(Lemmas~\ref{lem:zeta-two-pyramid} and~\ref{lem:H-two-pyramid}), and the
 regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
 proofs, the last both instantiated at the family $W_n$ and verbatim over an
 arbitrary slice $u\,v^n z$.  Background results quoted from the literature, such as
 Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
 enter through the admitted axioms below.  The worked examples of the paper
 are certified by Lean's executable decision procedures.  Two documentation
-files in the repository map the formalised numbered statements of the paper to
+files in the repository map the numbered statements of the paper to
 their formal counterparts, section by section; Table~\ref{tab:lean} cites Lean
 names without their namespace prefixes.
 
@@ -4471,18 +4471,19 @@ Thm.~\ref{thm:wrp-closures} (basic closures) &
   \texttt{isWRP\_reverse}, \texttt{isWRP\_disjointUnion},
   \texttt{isWRP\_concat} & none \\
 Thm.~\ref{thm:wrp-strict-over-poly} (above $\polyreg$) &
-  \texttt{polyreg\_strict\_subset\_wrp} & (i), (vi) \\
+  \texttt{polyreg\_strict\_subset\_wrp} & (vi) \\
 Thm.~\ref{thm:wrp-logspace} (logspace evaluation) &
   \texttt{wrp\_isLogspaceMH}, \texttt{wrp\_isLogspaceTM},
   \texttt{wrp\_logspace\_polytime}, \texttt{wrp\_logspaceTM\_polytime} &
-  none \\
+  (i) \\
 Cor.~\ref{cor:srr-quadratic} (quadratic evaluation) &
   \texttt{srr\_quadratic} & (i) \\
 Thm.~\ref{thm:wrp-strict-below-logspace} (below logspace) &
   \texttt{wrp\_strict\_below\_logspace},
   \texttt{wrp\_strict\_below\_logspaceTM} & (i) \\
-Thm.~\ref{thm:wrp-not-closed} (closure failure) &
-  \texttt{wrp\_not\_closed\_preimage\_comp},
+Thm.~\ref{thm:wrp-not-closed} (closure failure, regular preimage) &
+  \texttt{wrp\_not\_closed\_preimage\_comp} & none \\
+Thm.~\ref{thm:wrp-not-closed} (closure failure, composition) &
   \texttt{wrp\_not\_closed\_composition} & (i) \\
 Thm.~\ref{thm:bounded-rank-collapse} (bounded-rank collapse) &
   \texttt{bounded\_rank\_collapse} & none \\
@@ -4492,6 +4493,8 @@ Thm.~\ref{thm:zeta-wrp} (zeta in $\SWR$) &
   \texttt{zetaMap\_realisedByWRP}, \texttt{zetaSweep\_isSRR1} & none \\
 Prop.~\ref{prop:alw-sweep-swr} (additive level sorts in $\SWR$) &
   \texttt{additiveSweep\_isSRR1} & none \\
+Prop.~\ref{prop:two-pyramid-criterion} (two-pyramid criterion) &
+  \texttt{two\_pyramid\_criterion} & (vi) \\
 Thm.~\ref{thm:zeta-not-polyregular} (zeta beyond $\polyreg$) &
   \texttt{zetaMap\_not\_polyregular} & (vi) \\
 Cor.~\ref{cor:zeta-not-regular} (zeta beyond $\MSO$) &
@@ -4501,9 +4504,12 @@ Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
   \texttt{valleys\_heightSweep\_eq\_doubleRises},
   \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
 Thm.~\ref{thm:H-not-polyregular} (height sweep beyond $\polyreg$) &
-  not yet formalised & pending \\
+  \texttt{heightSweep\_not\_polyregular},
+  \texttt{heightSweep\_not\_regular} & (vi) \\
 Thm.~\ref{thm:wrp-slice-semilinearity} (first-ascent semilinearity) &
   \texttt{wrp\_slice\_profile\_semilinear} & (i) \\
+Cor.~\ref{cor:model-free-obstruction} (model-free obstruction) &
+  \texttt{model\_free\_obstruction} & none \\
 Thm.~\ref{thm:wrp-no-swap} (no area--dinv swap) &
   \texttt{wrp\_no\_area\_dinv\_swap} & (i) \\
 Thm.~\ref{thm:two-parameter-semilinearity} (two-parameter semilinearity) &
@@ -4515,13 +4521,12 @@ Cor.~\ref{cor:inverse-zeta-not-wrp} (general arity) &
   \texttt{inverse\_zeta\_not\_wrp} & (i)--(iv) \\
 \bottomrule
 \end{tabularx}
-\caption{The headline results and their Lean status.  The last column lists
-the admitted axioms (i)--(vi), described in the text, on which each completed
+\caption{The headline results and their Lean counterparts.  The last column
+lists the admitted axioms (i)--(vi), described in the text, on which each
 Lean proof depends beyond the kernel; ``none'' marks results proved with no
-admitted axiom, and ``pending'' marks the new theorem not yet added to the
-development.  Lean names are cited without namespace prefixes; the repository
-documentation maps the formalised statements of the paper, including their
-intermediate lemmas, to their formal counterparts.}
+admitted axiom.  Lean names are cited without namespace prefixes; the
+repository documentation maps the numbered statements of the paper, including
+the intermediate lemmas, to their formal counterparts.}
 \label{tab:lean}
 \end{table}
 
@@ -4566,11 +4571,16 @@ axioms each headline result uses is recorded in Table~\ref{tab:lean} and can
 be audited mechanically with Lean's \texttt{\#print axioms} command.  The
 combinatorial core needs none of them: the closure and collapse theorems, the
 memberships of $\zeta$ and $H$, Theorem~\ref{thm:narayana-sweep}, the
-deficit-zero lemmas of Section~\ref{sec:main} together with
-Lemma~\ref{lem:triangular-not-semilinear}, and the machine simulations behind
-Theorem~\ref{thm:wrp-logspace} are all axiom-free.  The headline no-swap
-theorem and the arity-one case of Corollary~\ref{cor:inverse-zeta-not-wrp}
-use only the B\"uchi--Elgot--Trakhtenbrot axiom (i).
+two-pyramid closed forms (Lemmas~\ref{lem:zeta-two-pyramid}
+and~\ref{lem:H-two-pyramid}), the deficit-zero lemmas of
+Section~\ref{sec:main} together with the model-free obstruction
+(Corollary~\ref{cor:model-free-obstruction}), and the machine simulations
+behind Theorem~\ref{thm:wrp-logspace} are all axiom-free.  The headline
+no-swap theorem and the arity-one case of
+Corollary~\ref{cor:inverse-zeta-not-wrp} use only the
+B\"uchi--Elgot--Trakhtenbrot axiom (i), and the polyregular lower bounds for
+$\zeta$ and $H$ (Theorems~\ref{thm:zeta-not-polyregular}
+and~\ref{thm:H-not-polyregular}) use only the preimage axiom (vi).
 
 \paragraph{Statement fidelity.}
 A machine-checked proof certifies exactly its formal statement, so we record
@@ -4593,11 +4603,17 @@ Corollary~\ref{cor:inverse-zeta-not-wrp} is rendered as left inversion: no
 $\WRP$ transduction outputs $P$ on input $\zeta(P)$ for every Dyck path $P$.
 This form does not rely on the classical bijectivity of $\zeta$, which the
 development does not formalise, and it implies in particular that
-$\zeta^{-1}$ is not in $\WRP$.  In Corollary~\ref{cor:zeta-not-regular},
+$\zeta^{-1}$ is not in $\WRP$.  In Corollary~\ref{cor:zeta-not-regular} and
+in the 2DFT clause of Theorem~\ref{thm:H-not-polyregular},
 ``deterministic two-way transducer'' is rendered as the arity-one
 deterministic $\MSO$ transductions, the class that Theorem~\ref{thm:eh}
 identifies with the two-way machines; the identification itself is quoted,
-not re-proved.  Theorem~\ref{thm:wrp-logspace} is proved for both machine
+not re-proved.  The two-pyramid criterion
+(Proposition~\ref{prop:two-pyramid-criterion}) is formalised without its
+growth hypothesis: the formal proof applies the preimage axiom (vi) to the
+polyregular realiser directly, without passing through the linear-growth
+collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.
+Theorem~\ref{thm:wrp-logspace} is proved for both machine
 models of Section~\ref{sec:wrp-evaluation}: the evaluator is constructed as
 an explicit multihead bounded-counter transducer and verified together with
 its polynomial step bound, and a proved two-stage simulation, head

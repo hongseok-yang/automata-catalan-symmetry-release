@@ -27,7 +27,7 @@ Two robustness facts of the paper's proof are isolated here:
 
 * **(R1)** regular rank terms (`IsRegularRankTerm`) are closed under constants,
   negation, and coordinate-embedding into a larger `ℤ^d` (the rank dimension `d`
-  is a free parameter of Definition 3.13); and
+  is a free parameter of `def:wrp`); and
 * **(R2)** a copy set partitioned into finitely many classes, each carrying its
   own MSO tie-order, with a linear order on the classes, has a single
   MSO-definable strict total order ("earlier class first, then within-class

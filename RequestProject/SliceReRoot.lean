@@ -1,7 +1,7 @@
 /-
 # Re-rooted acceptors (§9 tower, Stage C core)
 
-The mechanism of the fibred route (`SEC9_TOWER_ADJUDICATION.json`): analysing a
+The mechanism of the fibred route: analysing a
 word `u ++ w ++ v` with a machine `M` is the same as analysing `w` with `M`
 re-rooted through `u` (new start state) and `v` (acceptance read through the
 suffix run).  Crucially `reRoot` KEEPS the transition function, so every

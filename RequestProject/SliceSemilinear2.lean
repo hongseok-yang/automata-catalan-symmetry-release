@@ -515,11 +515,10 @@ axiom regularRankTerm_value2_graph_semilinear {Alpha : Type*} [Fintype Alpha] {d
         f (F.eval mS n) (fun t => iv (Fin.castAdd (d + d) t))
           = decodeZ (fun c => iv (Fin.natAdd k c)))
 
-/-- **A regular rank term equals a slice-semilinear target: semilinear.**  Now a theorem,
+/-- **A regular rank term equals a slice-semilinear target: semilinear.**  A theorem —
 the bundled `= g` corollary of the value-graph axiom: intersect `f`'s value graph with
 `g`'s value graph (sharing the value block) and existentially project the value, using
-`decodeZ_surjective` to pick the common split.  Same signature as the former axiom, so
-all downstream consumers are unchanged. -/
+`decodeZ_surjective` to pick the common split. -/
 theorem regularRankTerm_eq_value2_semilinear {Alpha : Type*} [Fintype Alpha] {d k : ℕ}
     (F : BlockLinearWord2 Alpha)
     {f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)} (hf : IsRegularRankTerm f)

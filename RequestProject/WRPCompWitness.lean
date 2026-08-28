@@ -1,10 +1,10 @@
 /-
-# The revision's composition witness `D` (`thm:wrp-not-closed`, claim 1)
+# The paper's composition witness `D` (`thm:wrp-not-closed`, claim 1)
 
-paper.tex strengthens `thm:wrp-not-closed` (line 1674): the same
+In `thm:wrp-not-closed` (paper.tex) the same
 witness map `D` must serve both the regular-preimage failure AND the
-composition failure `S ∘ D ∉ WRP` (Appendix A.4, lines 4602–4695).  The old
-witness `WRPNotClosed.wncD` emits only the diagnostic block; the revision's
+composition failure `S ∘ D ∉ WRP` (Appendix A.4, `app:wrp-structural-proofs`).  The single-block
+witness `WRPNotClosed.wncD` emits only the diagnostic block; the paper's
 `D` (Appendix A.4, "The map `D`") emits **three blocks**
 
     D(w)  =  (diagnostic `G`/`B` block, sorted by prefix height)  ‖  #  ‖  w
@@ -15,7 +15,7 @@ kept apart by a leading block-tag rank coordinate — which is exactly the
 "exactly as in the concatenation construction of Theorem thm:wrp-closures"
 (paper.tex).
 
-This file builds the revision's `D` from proved ingredients and proves claim 1:
+This file builds the paper's `D` from proved ingredients and proves claim 1:
 
 * `idPoly` / `idStep_isWRP` — the identity transduction `w ↦ w` on step words
   is (arity-1, rank-free) polyregular, hence WRP: the verbatim block-2 copy;
@@ -28,7 +28,7 @@ This file builds the revision's `D` from proved ingredients and proves claim 1:
   `wrp_not_closed_preimage_comp`: `D⁻¹(K) = Lnn` is not regular.
 
 (The Lean `compD` differs from the paper's `D` only at the empty input:
-`wncD`'s sentinel copy has arity `0`, so `compD ε = G#` while the revision's
+`wncD`'s sentinel copy has arity `0`, so `compD ε = G#` while the paper's
 arity-`≥1` convention gives `D(ε) = ε` — see `WRPArityPos.lean`.  Claim 1 is
 insensitive to this: `ε ∈ Lnn` on both readings.  So is the composition
 clause: `S` maps both `G#` and `ε` to `ε`.)
@@ -45,7 +45,7 @@ namespace WRPComp
 
 /-! ## The output alphabet `Γ_D = {G, B, #, U, D}` (paper.tex) -/
 
-/-- The revision's five-letter output alphabet for the witness `D`:
+/-- The paper's five-letter output alphabet for the witness `D`:
 `g`/`b` for the diagnostic block, `sep` for `#`, `u`/`d` for the verbatim
 input copy. -/
 inductive GBD | g | b | sep | u | d
@@ -56,7 +56,7 @@ instance : Fintype GBD :=
 
 /-! ## The identity transduction is WRP
 
-Block 2 of the revision's witness is "a verbatim copy of the input, position
+Block 2 of the paper's witness is "a verbatim copy of the input, position
 `i` emitting `w_i` […] in input order" (paper.tex).  We
 build it as an arity-1, single-copy, rank-free polyregular presentation:
 select every in-range position, label it with its own letter, order by
@@ -253,7 +253,7 @@ def relStep : Step → GBD
   | U => GBD.u
   | D => GBD.d
 
-/-- **The revision's witness `D`** (Appendix A.4): diagnostic block, separator
+/-- **The paper's witness `D`** (Appendix A.4): diagnostic block, separator
 `#`, verbatim input copy. -/
 def compD (w : List Step) : List GBD :=
   (wncD w).map relGB ++ [GBD.sep] ++ w.map relStep
@@ -347,8 +347,8 @@ theorem wncD_ne_nil (w : List Step) : wncD w ≠ [] := by
   rw [h] at hhead
   simp at hhead
 
-/-- **First-letter characterisation for `D`** (paper.tex lines
-4651–4664): the first letter of `D(w)` is `G` iff `w ∈ Lnn`. -/
+/-- **First-letter characterisation for `D`** (paper.tex, Appendix
+A.4): the first letter of `D(w)` is `G` iff `w ∈ Lnn`. -/
 theorem head_compD_eq_g_iff (w : List Step) :
     (compD w).head? = some GBD.g ↔ w ∈ Lnn := by
   have hne : (wncD w).map relGB ≠ [] := by
@@ -370,8 +370,8 @@ theorem preimage_compK_eq_Lnn :
   · intro hw
     exact ⟨compD w, rfl, (head_compD_eq_g_iff w).mpr hw⟩
 
-/-- **`thm:wrp-not-closed`, claim 1, with the revision's three-block witness**
-(paper.tex, proof lines 4609–4674): there are a WRP map `D`
+/-- **`thm:wrp-not-closed`, claim 1, with the paper's three-block witness**
+(paper.tex, proof in Appendix A.4): there are a WRP map `D`
 and a regular language `K` with `D⁻¹(K)` not regular — and this `D` is the one
 that also witnesses the composition failure.  Axiom-clean (no Büchi, no
 project axioms). -/

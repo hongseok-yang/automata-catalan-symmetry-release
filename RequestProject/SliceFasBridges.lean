@@ -2,7 +2,7 @@
 # Leaf bridges for the arity-1 `fas` discharge
 
 Two small, foundational `AffineOnResidues`/`RankAffine` bridges that the §7 arity-1
-discharge consumes downstream (flagged "missing" in `FAS_DESIGN.md`):
+discharge consumes downstream:
 
 * `rankAffine_coord_affineOnResiduesZ` — a `RankAffine` `ℤ^d`-sequence is
   `AffineOnResiduesZ` in each coordinate (read the coordinate of the constant period

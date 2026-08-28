@@ -15,7 +15,8 @@ distributes over `++` and over `flatten ∘ replicate`, together with the run-si
 primitives: the unmarked single step `fStepN`, the unmarked block map `bFN`, and the
 **unmarked-segment fold** (`foldl_blocks_unmarked`): folding the DFA over a run of
 mark-free blocks is the `bFN` iterate.  These are the GA-2 ingredients for the
-separated-group shift lemma (next milestone), which drives the growth collapse (GA-3).
+separated-group shift lemma (`acceptsN_moveGroup_step` below), which drives the growth
+collapse (GA-3).
 
 Axiom-clean (`[propext, Classical.choice, Quot.sound]`): pure list/automaton algebra.
 -/

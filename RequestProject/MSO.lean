@@ -1,7 +1,7 @@
 /-
 # Monadic second-order logic on words
 
-Formalisation of Section 3.2 (Monadic second-order logic on words) of
+Formalisation of `sec:mso` (Monadic second-order logic on words) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.

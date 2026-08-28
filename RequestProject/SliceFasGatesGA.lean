@@ -1,7 +1,7 @@
 /-
 # The general-arity TIE gate, layer 1 (GA-6.2a/b/e/f)
 
-The GA-6 build (design: `GA6_DESIGN.json`) mirrors the arity-1
+The GA-6 build mirrors the arity-1
 `fasU_atomOrd_cfg_gate` with cells replacing positions.  This file lands the
 foundation:
 

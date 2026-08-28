@@ -1,11 +1,11 @@
 /-
-# Deterministic two-way finite-state transducers (`def:2dft`, `def:2dft-run`)
+# Deterministic two-way finite-state transducers (`def:2dft`)
 
-Formalisation of the revision's machine model of word-to-word computation
+Formalisation of the paper's machine model of word-to-word computation
 ("A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry", paper.tex):
 
-* `def:2dft` (line 781): a 2DFT `T = (Q, Σ, Γ, q₀, F, η)` with a **partial
+* `def:2dft`: a 2DFT `T = (Q, Σ, Γ, q₀, F, η)` with a **partial
   transition-output function**
   `η : Q × (Σ ∪ {⊢,⊣}) ⇀ Q × {-1,+1} × Γ^*`
   and the **end-marker discipline** — a transition from `⊢`, if defined,
@@ -13,7 +13,7 @@ Formalisation of the revision's machine model of word-to-word computation
   the direction set `{-1,+1}` as `Bool` (`true = +1`, `false = -1`) and the
   tape alphabet `Σ ∪ {⊢,⊣}` as `TapeSym`.
 
-* `def:2dft-run` (line 798): for `w = a₁⋯a_n` put `a₀ = ⊢`, `a_{n+1} = ⊣`
+* the run definition of `def:2dft`: for `w = a₁⋯a_n` put `a₀ = ⊢`, `a_{n+1} = ⊣`
   (`tapeSym`); a configuration is a pair `(q, i)`; the run is the unique
   maximal step sequence from `(q₀, 0)`; a finite run halts where `η` is
   undefined (`Halted`), is accepting if the halting state is in `F`, and then
@@ -25,9 +25,9 @@ Formalisation of the revision's machine model of word-to-word computation
 Determinism ("Because `η` is a function, every configuration has at most one
 successor, so the maximal run is unique") is `steps_unique` / `computes_unique`.
 
-`LeftToRight` is the head condition of the revision's `thm:wrp-not-closed`
-("a deterministic 2DFT `S` whose input head moves only from left to right",
-line 1677); `steps_scan` evaluates such sweeps: a state that self-loops
+`LeftToRight` is the head condition of the paper's `thm:wrp-not-closed`
+("a deterministic 2DFT `S` whose input head moves only from left to
+right"); `steps_scan` evaluates such sweeps: a state that self-loops
 rightward across a segment of letters emits the concatenation of its
 per-letter emissions.
 -/
@@ -70,7 +70,7 @@ def moveDir (i : ℕ) (d : Bool) : ℕ := if d then i + 1 else i - 1
 @[simp] theorem moveDir_true (i : ℕ) : moveDir i true = i + 1 := rfl
 @[simp] theorem moveDir_false (i : ℕ) : moveDir i false = i - 1 := rfl
 
-/-- The tape content of `def:2dft-run`: `a₀ = ⊢`, `a_i = w_i` for
+/-- The tape content of the `def:2dft` run: `a₀ = ⊢`, `a_i = w_i` for
 `1 ≤ i ≤ n`, and `a_i = ⊣` for `i > n` (only `i = n + 1` is reachable). -/
 def tapeSym (w : List Alpha) (i : ℕ) : TapeSym Alpha :=
   if i = 0 then .lmark
@@ -91,7 +91,7 @@ theorem tapeSym_ge (w : List Alpha) (i : ℕ) (h : w.length < i) :
 
 variable (T : TwoDFT Alpha Gamma)
 
-/-- **The step relation of `def:2dft-run`**, with accumulated emission:
+/-- **The step relation of the `def:2dft` run**, with accumulated emission:
 `Steps w c out c'` says the machine can go from configuration `c` to
 configuration `c'` emitting `out` along the way.  (Since `η` is a function
 this relation is deterministic; see `steps_unique`.) -/
@@ -106,13 +106,13 @@ inductive Steps (w : List Alpha) : T.Q × ℕ → List Gamma → T.Q × ℕ → 
 def Halted (w : List Alpha) (c : T.Q × ℕ) : Prop :=
   T.η c.1 (tapeSym w c.2) = none
 
-/-- **The computed partial map of `def:2dft-run`**: the maximal run from
+/-- **The computed partial map of the `def:2dft` run**: the maximal run from
 `(q₀, 0)` is finite, halts acceptingly, and the emitted words concatenate to
 `out`. -/
 def Computes (w : List Alpha) (out : List Gamma) : Prop :=
   ∃ c : T.Q × ℕ, T.Steps w (T.q0, 0) out c ∧ T.Halted w c ∧ T.F c.1
 
-/-- The head condition of the revision's `thm:wrp-not-closed`: every defined
+/-- The head condition of the paper's `thm:wrp-not-closed`: every defined
 transition moves right. -/
 def LeftToRight : Prop :=
   ∀ q s r, T.η q s = some r → r.2.1 = true
@@ -139,7 +139,7 @@ theorem Steps.trans {w : List Alpha} : ∀ {c₁ c₂ c₃ : T.Q × ℕ} {o₁ o
       rw [List.append_assoc]
       exact Steps.head hη (ih h₂)
 
-/-- **Determinism (`def:2dft-run`): the maximal run is unique.**  Two halting
+/-- **Determinism (`def:2dft`): the maximal run is unique.**  Two halting
 runs from the same configuration have the same emission and the same halting
 configuration. -/
 theorem steps_unique {w : List Alpha} : ∀ {c : T.Q × ℕ} {out₁ out₂ : List Gamma}

@@ -69,7 +69,7 @@ def HeadMove.apply : HeadMove → ℕ → ℕ
 
 open TwoDFT in
 /-- **Deterministic multihead bounded-counter transducer.**  `h` two-way heads
-on `⊢w⊣` (same tape alphabet and cell convention as `def:2dft-run`) and `c`
+on `⊢w⊣` (same tape alphabet and cell convention as the `def:2dft` run) and `c`
 ℕ-valued counters; each transition observes the state, the tape symbol under
 every head, the head-coincidence pattern, and the counter zero-pattern, and
 outputs a new state, a move per head, a counter operation per counter, and an

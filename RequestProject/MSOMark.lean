@@ -1,7 +1,8 @@
 /-
 # Marked-alphabet recogniser for a one-free-variable MSO formula (no new axiom)
 
-The selection-*counting* half of paper Lemma 6.4 needs, for a unary MSO predicate
+The selection-*counting* half of the paper's slice analysis
+(`sec:slice-semilinearity`) needs, for a unary MSO predicate
 `φ(x)`, a finite automaton that decides `φ(p)` from the word `w` with position `p`
 marked.  Crucially this needs **no** new axiom: the existing `SliceMSO.buchi` is
 polymorphic in the alphabet, so we instantiate it at `Step × Bool`.

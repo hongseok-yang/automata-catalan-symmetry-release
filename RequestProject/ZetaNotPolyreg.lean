@@ -1,15 +1,15 @@
 /-
-# Zeta is not ordinary polyregular (`cor:zeta-not-polyregular`)
+# Zeta is not ordinary polyregular (`thm:zeta-not-polyregular`)
 
-Formalises the negative half of §6.2 (`thm:zeta-not-polyregular`, paper.tex): the Haglund
+Formalises the negative half of `sec:zeta-not-polyregular` (`thm:zeta-not-polyregular`, paper.tex): the Haglund
 zeta map is **not** realisable by any ordinary polyregular transduction on the
-Dyck domain, over the GENUINE semantic `Polyreg.IsPolyregular` (Def 3.8).
+Dyck domain, over the GENUINE semantic `Polyreg.IsPolyregular` (`def:polyregular`).
 
 The repository deliberately does **not** transcribe the paper's 2DFT /
 composition / regular-preimage / linear-growth-collapse proof (there is no
 two-way-transducer model in the repo).  Instead we use a single standard,
 project-agnostic closure fact — `polyreg_regular_preimage`, the polyregular
-analogue of `SliceMSO.buchi` — applied twice, plus the now-genuine §6.2
+analogue of `SliceMSO.buchi` — applied twice, plus the `sec:zeta-not-polyregular`
 combinatorics (`inRegularProbe_zetaMap_twoPyramid`, `inRegularProbe_isRegular`,
 `zetaMap_twoPyramid`) and a direct pigeonhole on the resulting `DFA'`.
 
@@ -468,40 +468,120 @@ theorem not_regular_le_family
   have : q + 1 ≤ p + 1 := hacc_iff.mp (le_refl _)
   omega
 
+/-- No `DFA'` recognises a language `Bad ⊆ (Sym3)*` that, on the index family,
+agrees with `{aᵐ#bⁿ : n ≤ m}` — the mirror of `not_regular_le_family`, pumping
+the `b`-block.  Fix the `a`-block at length `N + 1` (`N` the state count);
+among the states reached after `aᴺ⁺¹#b¹ … aᴺ⁺¹#bᴺ⁺¹`, two collide
+(pigeonhole), say after `bᵖ⁺¹` and `bᑫ⁺¹` with `p < q ≤ N`; appending
+`b^{N-p}` to both sends `aᴺ⁺¹#bᴺ⁺¹` (where `n ≤ m` holds) and
+`aᴺ⁺¹#bᴺ⁺¹⁺⁽ᑫ⁻ᵖ⁾` (where it fails) to the same state. -/
+theorem not_regular_ge_family
+    (Bad : Set (List Sym3)) (hReg : IsRegularLang Bad)
+    (hchar : ∀ m n, 1 ≤ m → 1 ≤ n → (encWord m n ∈ Bad ↔ n ≤ m)) : False := by
+  obtain ⟨A, hA⟩ := hReg
+  have := A.finQ
+  have := A.decEqQ
+  set N := Fintype.card A.Q with hN
+  -- the state reached after reading `a^{N+1} # b^{k+1}`
+  let runB : ℕ → A.Q := fun k => (encWord (N + 1) (k + 1)).foldl A.delta A.q0
+  -- pigeonhole: among the `N+1` prefixes `b^1 … b^{N+1}`, two collide
+  obtain ⟨i, hi, j, hj, hij, hcol⟩ :
+      ∃ i ∈ Finset.range (N + 1), ∃ j ∈ Finset.range (N + 1),
+        i ≠ j ∧ runB i = runB j := by
+    have hcard : (Finset.univ : Finset A.Q).card < (Finset.range (N + 1)).card := by
+      simp [hN]
+    obtain ⟨i, hi, j, hj, hij, he⟩ :=
+      Finset.exists_ne_map_eq_of_card_lt_of_maps_to hcard
+        (fun a _ => Finset.mem_univ (runB a))
+    exact ⟨i, hi, j, hj, hij, he⟩
+  rw [Finset.mem_range] at hi hj
+  -- order them: `p < q ≤ N` with the same run state
+  obtain ⟨p, q, hpN, hqN, hpq, hcolpq⟩ : ∃ p q, p < N + 1 ∧ q < N + 1 ∧ p < q ∧
+      runB p = runB q := by
+    rcases Nat.lt_or_ge i j with h | h
+    · exact ⟨i, j, hi, hj, h, hcol⟩
+    · exact ⟨j, i, hj, hi, lt_of_le_of_ne h hij.symm, hcol.symm⟩
+  -- appending `b^t` extends the `b`-block
+  have hsplit : ∀ k t, encWord (N + 1) (k + 1 + t)
+      = encWord (N + 1) (k + 1) ++ List.replicate t sb := by
+    intro k t
+    rw [encWord, encWord, List.replicate_add (k + 1) t sb]
+    simp [List.append_assoc]
+  have hfold : ∀ k t, (encWord (N + 1) (k + 1 + t)).foldl A.delta A.q0
+      = (List.replicate t sb).foldl A.delta (runB k) := by
+    intro k t; rw [hsplit k t, List.foldl_append]
+  -- runs agree, because the `b`-prefixes reach the same state
+  have hrun_eq : (encWord (N + 1) (p + 1 + (N - p))).foldl A.delta A.q0
+      = (encWord (N + 1) (q + 1 + (N - p))).foldl A.delta A.q0 := by
+    rw [hfold, hfold, hcolpq]
+  -- hence accepted together
+  have hacc_iff : encWord (N + 1) (p + 1 + (N - p)) ∈ Bad
+      ↔ encWord (N + 1) (q + 1 + (N - p)) ∈ Bad := by
+    rw [← hA]
+    show A.accepts _ ↔ A.accepts _
+    unfold DFA'.accepts
+    rw [hrun_eq]
+  -- but the characterisation forces a contradiction
+  rw [hchar (N + 1) (p + 1 + (N - p)) (by omega) (by omega),
+      hchar (N + 1) (q + 1 + (N - p)) (by omega) (by omega)] at hacc_iff
+  have : q + 1 + (N - p) ≤ N + 1 := hacc_iff.mp (by omega)
+  omega
+
+/-! ## The two-pyramid criterion -/
+
+/-- **`prop:two-pyramid-criterion` (paper.tex).**  The shared two-pyramid
+lower-bound criterion: if some regular probe language `K` cuts the family
+`f (P_{m,n})` along an index set that no regular language can realise, then no
+polyregular transduction realises `f` on the Dyck domain.  The Lean statement
+strengthens the paper's proposition: the growth hypothesis
+`|f (P_{m,n})| = O(m + n)` is not needed, because the proof applies the
+regular-preimage closure of polyregular maps (`polyreg_regular_preimage`)
+directly, without passing through the linear-growth collapse. -/
+theorem two_pyramid_criterion (f : List Step → List Step)
+    (K : Set (List Step)) (hK : IsRegularLang K)
+    (hbad : ∀ Bad : Set (List Sym3), IsRegularLang Bad →
+      (∀ m n, 1 ≤ m → 1 ≤ n → (encWord m n ∈ Bad ↔ f (twoPyramid m n) ∈ K)) →
+      False) :
+    ¬ ∃ T : List Step → Option (List Step),
+      Polyreg.IsPolyregular T ∧ Realises T {P | IsDyckPath P} f := by
+  rintro ⟨T, hTpoly, hTreal⟩
+  -- T⁻¹(K) is regular
+  have hKpre : IsRegularLang {w : List Step | ∃ out, T w = some out ∧ out ∈ K} :=
+    polyreg_regular_preimage T K hTpoly hK
+  -- E⁻¹(T⁻¹(K)) is regular: call it `Bad`
+  have hBad : IsRegularLang
+      {w : List Sym3 | ∃ out, encE w = some out ∧
+        out ∈ {w' : List Step | ∃ o, T w' = some o ∧ o ∈ K}} :=
+    polyreg_regular_preimage encE _ encE_isPolyregular hKpre
+  -- on the index family, `Bad` is exactly `{f (P_{m,n}) ∈ K}`
+  refine hbad _ hBad (fun m n hm hn => ?_)
+  have hdyck : IsDyckPath (twoPyramid m n) := isDyckPath_twoPyramid m n hm hn
+  have hT2 : T (twoPyramid m n) = some (f (twoPyramid m n)) := hTreal _ hdyck
+  constructor
+  · rintro ⟨out, hout, o, hTo, hmem⟩
+    rw [encE_encWord] at hout
+    obtain rfl : out = twoPyramid m n := (Option.some.inj hout).symm
+    rw [hT2] at hTo
+    obtain rfl : o = f (twoPyramid m n) := (Option.some.inj hTo).symm
+    exact hmem
+  · intro hmem
+    exact ⟨twoPyramid m n, encE_encWord m n, f (twoPyramid m n), hT2, hmem⟩
+
 /-! ## The separation -/
 
-/-- **Corollary `cor:zeta-not-polyregular` (`thm:zeta-not-polyregular`, paper.tex), genuine.**
+/-- **`thm:zeta-not-polyregular` (paper.tex), genuine.**
 No ordinary polyregular transduction realises the zeta map on the Dyck domain,
 over the real `Polyreg.IsPolyregular`.  Admits only `polyreg_regular_preimage`. -/
 theorem zetaMap_not_polyregular :
     ¬ ∃ T : List Step → Option (List Step),
-      Polyreg.IsPolyregular T ∧ Realises T {P | IsDyckPath P} zetaMap := by
-  rintro ⟨T, hTpoly, hTreal⟩
-  -- T⁻¹(R) is regular
-  have hRpre : IsRegularLang
-      {w : List Step | ∃ out, T w = some out ∧ out ∈ {w : List Step | inRegularProbe w}} :=
-    polyreg_regular_preimage T {w | inRegularProbe w} hTpoly inRegularProbe_isRegular
-  -- E⁻¹(T⁻¹(R)) is regular: call it `Bad`
-  have hBad : IsRegularLang
-      {w : List Sym3 | ∃ out, encE w = some out ∧
-        out ∈ {w : List Step | ∃ o, T w = some o ∧ inRegularProbe o}} :=
-    polyreg_regular_preimage encE _ encE_isPolyregular hRpre
-  -- on the index family, `Bad` is exactly `{m ≤ n}`
-  refine not_regular_le_family _ hBad (fun m n hm hn => ?_)
-  have hdyck : IsDyckPath (twoPyramid m n) := isDyckPath_twoPyramid m n hm hn
-  have hT2 : T (twoPyramid m n) = some (zetaMap (twoPyramid m n)) := hTreal _ hdyck
-  constructor
-  · rintro ⟨out, hout, o, hTo, hprobe⟩
-    rw [encE_encWord] at hout
-    obtain rfl : out = twoPyramid m n := (Option.some.inj hout).symm
-    rw [hT2] at hTo
-    obtain rfl : o = zetaMap (twoPyramid m n) := (Option.some.inj hTo).symm
-    exact (inRegularProbe_zetaMap_twoPyramid m n hm hn).mp hprobe
-  · intro hmn
-    exact ⟨twoPyramid m n, encE_encWord m n, zetaMap (twoPyramid m n), hT2,
-      (inRegularProbe_zetaMap_twoPyramid m n hm hn).mpr hmn⟩
+      Polyreg.IsPolyregular T ∧ Realises T {P | IsDyckPath P} zetaMap :=
+  -- the probe cuts `ζ(P_{m,n})` along `{m ≤ n}`, which no regular language realises
+  two_pyramid_criterion zetaMap {w | inRegularProbe w} inRegularProbe_isRegular
+    (fun Bad hBad hchar => not_regular_le_family Bad hBad
+      (fun m n hm hn =>
+        (hchar m n hm hn).trans (inRegularProbe_zetaMap_twoPyramid m n hm hn)))
 
-/-- **Theorem `thm:zeta-not-regular` (`cor:zeta-not-regular`, paper.tex), genuine.**  The
+/-- **`cor:zeta-not-regular` (paper.tex), genuine.**  The
 Haglund zeta map is not realisable, on the Dyck domain, by any deterministic MSO
 string transduction — equivalently (Engelfriet–Hoogeboom, the equivalence the
 paper invokes) by any deterministic two-way finite-state transducer.  This is the

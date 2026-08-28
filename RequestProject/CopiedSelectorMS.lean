@@ -65,7 +65,7 @@ theorem eqRankD_cell_selector_fibred_mS (P : WRP.Presentation Step Step) (hV : P
       A0 + 2 * p + B + 1 ≤ 2 * Bh + 2 ∧
       -- the rank-decomposition recurrence at THIS selector's own `p`/`A0` (the bridge's
       -- PR=0 chain needs the t-recurrence at the SAME `p` the emitters use; `dstar_setup_fibred`'s
-      -- `p`/`A0` are opaque witnesses otherwise — see FORMALISATION_WORKLOG UPDATE 68 obstacle 1).
+      -- `p`/`A0` are opaque witnesses otherwise).
       (∀ mS, 1 ≤ mS → ∃ (Rcell Bcell : (c' : Fin P.toPoly.K) →
           (Fin (P.toPoly.arity c') → CopiedCells.RegionSpecF B) → ℕ → Fin P.d → ℤ)
         (PR : (c' : Fin P.toPoly.K) →

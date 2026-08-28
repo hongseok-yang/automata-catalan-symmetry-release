@@ -2,21 +2,21 @@
 # Semilinearity on the two-parameter family `W_{m,n}` (`thm:two-parameter-semilinearity`)
 
 Formalisation of **Theorem `thm:two-parameter-semilinearity`** of `paper.tex`
-(lines 3729–3737, §9 "The two-parameter family and its Presburger control"):
+(§9 `sec:inverse-zeta`, subsection "The two-parameter family and its Presburger control"):
 
 > Let `T ∈ WRP` be fixed and suppose `|T(W_{m,n})| = O(m+n)`.  Then
 > `S_T = {(m, n, fas(T(W_{m,n})), tailU(T(W_{m,n}))) : m ≥ 1, n ≥ 0} ⊆ ℕ⁴`
 > is semilinear.
 
-Here `W_{m,n} = Uᵐ(UD)ⁿDᵐ` is the copied slice (`def:two-parameter-family`,
-paper line 3432 — `copiedSlice` in `InverseZeta.lean`), `fas` is `firstAscent`
+Here `W_{m,n} = Uᵐ(UD)ⁿDᵐ` is the copied slice (`def:two-parameter-family`
+— `copiedSlice` in `InverseZeta.lean`), `fas` is `firstAscent`
 (`DyckPath.lean`), and `tailU` is `tailU`.
 
 ## What is proved, and the one residual hypothesis
 
 The paper's proof has two halves.
 
-* **Definability** (`lem:two-parameter-presburger`, paper lines 3474–3488): selection,
+* **Definability** (`lem:two-parameter-presburger`, paper.tex): selection,
   labelling, rank comparison and tie-order of a fixed WRP presentation are
   Presburger-definable over the family.  This half is **fully discharged** here, on top of
   the project's existing (project-agnostic) slice-definability axioms: the fas membership
@@ -26,8 +26,8 @@ The paper's proof has two halves.
   `wrpOrd2_semilinear` (parts (c) and (d) of the paper's lemma, assembled from the rank
   value-graph and MSO axioms already admitted by the repo — no new axiom).
 
-* **Counting** (`lem:presburger-counting` in its tuple form, applied at paper lines
-  3789–3855): a semilinear `(m, n, ī)`-family with linearly bounded finite fibres has a
+* **Counting** (`lem:presburger-counting` in its tuple form, as applied in the
+  paper's §9 proof): a semilinear `(m, n, ī)`-family with linearly bounded finite fibres has a
   **semilinear count graph** `{(m, n, #fibre)}`.  The repo's admitted counting axiom
   `isSliceFamilySemilinear2_count` is strictly weaker: it yields, for each *fixed* `m`,
   affinity of `n ↦ #fibre` on residues (with a period uniform in `m`) — the base and
@@ -53,11 +53,12 @@ generalises from the row `m = 1`.
   `∃ C, ∀ m n out, 1 ≤ m → T (copiedSlice m n) = some out → out.length ≤ C * (m+n+1)`.
 * The paper computes `T(W_{m,n})` for every `m ≥ 1, n ≥ 0`, i.e. it implicitly assumes
   the family lies in `T`'s domain; this is the explicit hypothesis `hdom` (the same
-  quantification-honesty point as `rem:slice-domain` and the `hne` hypothesis of
+  quantification-honesty point as the domain hypothesis of `thm:wrp-slice-semilinearity`
+  and the `hne` hypothesis of
   `wrp_slice_profile_affine`).
 
 No `sorry`, no new axiom.  The axioms reachable from the declarations here are a subset
-of the six standard project axioms (see `FORMALISATION_STATUS.md`, "Build And Trust").
+of the project's standard admitted axioms.
 -/
 import RequestProject.CopiedTieSemilinear2
 import RequestProject.CopiedDischarge
@@ -604,7 +605,7 @@ end OrderComparison
 
 /-! ## C. The first-ascent and total-`U` membership families
 
-Following the paper (lines 3790–3855) with the `∀`-collapse of `SliceOutput` /
+Following the paper's §9 proof with the `∀`-collapse of `SliceOutput` /
 `CopiedDischarge.fasCount'`: the selected `U`-atoms counted by `fas` are exactly those
 that `≺`-precede every selected `D`-atom, so no explicit first-`D` parameterisation is
 needed — the universal over the opposing atom is erased by the proved
@@ -1172,16 +1173,16 @@ theorem two_param_profile_row_semilinear
 
 end RowTheorem
 
-/-! ## The counting principle as the seventh admitted project axiom -/
+/-! ## The counting principle as an admitted project axiom -/
 
-/-- **Admitted axiom (the seventh project axiom; project-agnostic).**  The paper's
+/-- **Admitted axiom (project-agnostic).**  The paper's
 `lem:presburger-counting` (paper.tex) in the joint-graph form its
 §9 proof uses: a semilinear `(m, n, ī)`-family with finite fibres of linearly
 bounded cardinality has a semilinear count graph `{(m, n, #fibre)} ⊆ ℕ³`.
 
 Standing: the same as `SliceSemilinearN.isSliceFamilySemilinear2_count` (the
-per-row counting axiom kept admitted by decision — see FORMALISATION_STATUS.md,
-"Build And Trust"): a standard fact of parametric Presburger counting (Woods;
+per-row counting axiom, likewise
+admitted): a standard fact of parametric Presburger counting (Woods;
 Ehrhart-type theory in the linear-bound regime, where the degree collapses and the
 count graph is semilinear), whose native proof is a from-scratch lattice-point
 counting engine assessed as research-grade.  It is **project-agnostic**: the
@@ -1191,8 +1192,8 @@ WRP-presentation/`copiedSlice` token.  It is not derivable from the per-row axio
 is admitted separately rather than reduced. -/
 axiom twoParamCountGraph_admitted : TwoParamCountGraph
 
-/-- **Theorem `thm:two-parameter-semilinearity` (paper.tex lines
-3729–3737), unconditional** — `two_param_profile_semilinear` discharged with the
+/-- **Theorem `thm:two-parameter-semilinearity`
+(paper.tex), unconditional** — `two_param_profile_semilinear` discharged with the
 admitted counting axiom `twoParamCountGraph_admitted`.  Trust base (verified by
 `#print axioms`): the kernel axioms, the two general slice-definability axioms
 `msoDefinableRel2_semilinear_general` / `regularRankTerm_value2_graph_semilinear`,

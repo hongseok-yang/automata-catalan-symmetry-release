@@ -101,7 +101,7 @@ theorem boundary_pair_component (P : WRP.Presentation Step Step)
   rw [hψdef]
   rw [SliceFasGates.sat_imp, MSO.Formula.sat_and, hsel, hlab, hord]
 
-/-! ## The bulk landmark clause — supporting layer (CLAUSE_DESIGN.json)
+/-! ## The bulk landmark clause — supporting layer
 
 `offsetForm3` is the 3-slot fixed-difference gadget (slots `0=z, 1=yF, 2=yL`)
 used by the landmark position-cell clause; `gordL`/`xOfL`/`comp_decodeL`/

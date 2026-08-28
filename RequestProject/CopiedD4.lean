@@ -1,10 +1,10 @@
 /-
-# §9 d4c capstone — the arity-1 Cor 9.7 tower (ported from `D4_SCAFFOLD.md`)
+# §9 d4c capstone — the arity-1 `cor:inverse-zeta-not-wrp` tower
 
-Ports the proven scaffold block, consuming the budgeted row-indexed bridge
+Consumes the budgeted row-indexed bridge
 `CopiedTieSlice.tie_point_bridge_fibred_clause_budgeted_indexed`.  Threaded with
 the `Mbr` mS-floor: the counts and the row producer carry `Mbr`, and the
-Cor 9.7 capstone applies the row at the section `m = p` with the period
+`cor:inverse-zeta-not-wrp` capstone applies the row at the section `m = p` with the period
 `p ≥ Mbr` (so the section-vs-period arithmetic in
 `pyramid_section_not_affine` is unchanged).
 -/
@@ -175,12 +175,12 @@ Compared with `CopiedTieSlice.TiePointBridgeBudgetedIndexedFinite`, the gate her
 decides `sel ∧ U ∧ atomOrd ī dstar` against ONE explicit residue-determined `dstar` — a
 single `boundary_pair_component`-style pairwise order check with the whole `dstar` tuple
 landmark-decoded — instead of the universally quantified `∀ b` tie condition.  The two
-genuine arity-free sub-problems this bundles (and which a future session must discharge)
+genuine arity-free sub-problems this bundles (both open here)
 are: (1) residue-determinacy of the minimal `dstar` cell descriptor (so `idx`/`n % pG`
 pin it down for all large `n`); and (2) a whole-tuple landmark-decode `atomOrd` gate for
 that fixed cell.  Sub-problem (2) becomes tractable precisely because (1) fixes the cell
-base, dissolving the historical mixed-cell decode obstruction (cluster coordinates no
-longer move with the counting base).  See `WHOLE_TUPLE_RESIDUE_CRUX.md`. -/
+base, dissolving the mixed-cell decode obstruction (cluster coordinates no
+longer move with the counting base). -/
 def WholeTupleDstarAtomOrdGate (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ) :
     Prop :=
   ∃ (pG Mbr : ℕ), 1 ≤ pG ∧ 1 ≤ Mbr ∧
@@ -590,7 +590,7 @@ theorem inverse_zeta_not_wrp_of_fas
   inverse_zeta_not_wrp_of_rowAffineFrom
     (fun T hT _htot hgrow => rowAffineFrom_of_isWRP_of_fas hFas T hT hgrow)
 
-/-- **Corollary 9.7, arity-1 form**: no WRP transduction realised by an ARITY-1
+/-- **`cor:inverse-zeta-not-wrp`, arity-1 form**: no WRP transduction realised by an ARITY-1
 presentation is a left inverse of the zeta map on Dyck paths. -/
 theorem inverse_zeta_not_wrp_arity1 :
     ¬ ∃ (P : WRP.Presentation Step Step) (T : List Step → Option (List Step)),

@@ -10,8 +10,9 @@ summarises the axioms.
 
 * `DyckPath.lean` — the `Step` alphabet `{U, D}`, Dyck paths (`IsDyckPath`,
   `DyckPath n`), `height`, `areaSeq`/`area`/`dinv`/`coarea`, the zeta map
-  (`zetaMap`), wrapped-flat paths (`wrappedFlat`), first ascent and `tailU`,
-  valleys/peaks/double rises, and the height sweep (`heightSweep`).
+  (`zetaMap`), wrapped-flat paths (`wrappedFlat`), two-pyramid paths
+  (`twoPyramid`), first ascent and `tailU`, valleys/peaks/double rises, and
+  the height sweep (`heightSweep`).
 * `AreaSeq.lean` — the area-sequence ↔ Dyck-path round trip
   (`pathOfAreaSeq`, `areaSeq_pathOfAreaSeq`, `dyck_eq_of_areaSeq_eq`).
 * `WrappedFlat.lean` — statistics of the slice `W_n`
@@ -31,6 +32,11 @@ summarises the axioms.
   `Polyreg.IsPolyregular`, `def:polyregular`) and the arity-1 fragment
   `Polyreg.IsRegular` (the deterministic MSO string transductions, i.e. by
   Engelfriet–Hoogeboom the 2DFT class).
+* `TwoDFT.lean` — deterministic two-way transducers (`def:2dft`), used by the
+  composition clause of `thm:wrp-not-closed`.
+
+## §4 — Weighted-rank polyregular maps
+
 * `WRP.lean` — rank sources and regular rank terms, the weighted-rank class
   `WRP.IsWRP` (`def:wrp`), the output order `wrpOrd`, conservativity
   (`isWRP_of_isPolyregular`).
@@ -41,13 +47,8 @@ summarises the axioms.
 * `WRPTieTotal.lean` — the verbatim paper classes: `WRP.IsWRPTieTotal`
   (χ itself a strict total order) and `WRP.IsWRPPaper` (χ-total + positive
   arity), with the inclusions into `WRP.IsWRP`.
-* `SRR1.lean` — the scan-order fragment `WRP.IsSRR1` (`sRR₁ = SWR`) and the
+* `SRR1.lean` — the scan-order fragment `WRP.IsSRR1` (`sRR₁`) and the
   memberships `heightSweep_isSRR1`, `zetaSweep_isSRR1`.
-* `TwoDFT.lean` — deterministic two-way transducers (`def:2dft`), used by the
-  composition clause of `thm:wrp-not-closed`.
-
-## §4 — Closure, complexity, and boundaries
-
 * `WRPClosures.lean` — `thm:wrp-closures`: restriction, relabelling,
   reversal, disjoint union, and separator concatenation, plus the rank-term
   (R1) algebra.
@@ -74,21 +75,38 @@ summarises the axioms.
     presentations (`srr_quadratic`, `N ≤ D·(n+1)²`);
   * `LogspaceTM.lean` — the literal worktape model (`LogTM`,
     `IsLogspaceTM`);
-  * `MHCOneHead.lean`, `MHCToTM.lean` — the proved two-stage simulation
+  * `MHCOneHead.lean`, `MHCToTM.lean` — the two-stage simulation
     (head elimination, then binary counters on worktape tracks);
   * `WRPWorktape.lean` — the logspace theorems restated over the worktape
     model.
 
 ## §5 — Classifying the zeta map
 
-* `ZetaClassification.lean` — ζ on two-pyramid paths, `area ∘ ζ = dinv`, the
-  regular probe `lem:zeta-probe` with its DFA witness.
+* `ZetaClassification.lean` — ζ on two-pyramid paths
+  (`lem:zeta-two-pyramid`), `area ∘ ζ = dinv`, the regular probe
+  `lem:zeta-probe` with its DFA witness.
 * `ZetaWRP.lean` — `thm:zeta-wrp`: the explicit WRP presentation realising ζ.
-* `AdditiveSweep.lean`, `AdditiveSweepWRP.lean` — additive sweep
-  transductions and `prop:alw-sweep-swr` (every additive sweep is in SWR).
-* `ZetaNotPolyreg.lean` — `thm:zeta-not-polyregular` and
-  `cor:zeta-not-regular`, via a counting encoder and the polyregular
+* `AdditiveSweep.lean`, `AdditiveSweepWRP.lean` — additive level sorts
+  and `prop:alw-sweep-swr` (every additive level sort is in sRR₁).
+* `ZetaNotPolyreg.lean` — the block-counting encoder, the shared two-pyramid
+  lower-bound criterion (`two_pyramid_criterion`,
+  `prop:two-pyramid-criterion`), the pigeonhole non-regularity lemmas for the
+  index families `{m ≤ n}` and `{n ≤ m}`, and the zeta lower bounds
+  `thm:zeta-not-polyregular` / `cor:zeta-not-regular`, via the polyregular
   regular-preimage axiom.
+
+## §6 — The height sweep and the Narayana symmetry
+
+* `NarayanaSweep.lean` — the height sweep swaps valleys and double rises
+  (`thm:narayana-sweep`), with the non-involutivity counterexample.
+* `NarayanaBijection.lean` — `heightSweep_bijOn`: the sweep restricts to a
+  bijection of `D_n`.
+* `NarayanaWRP.lean` — the explicit WRP presentation of the height sweep.
+* `HeightSweepTwoPyramid.lean` — `lem:H-two-pyramid`: the closed form of the
+  height sweep on two-pyramid paths.
+* `HeightSweepNotPolyreg.lean` — `lem:H-probe` and `thm:H-not-polyregular`:
+  the probe characterisation and the lower bound `H ∉ PolyReg` (hence `H` is
+  not 2DFT-realisable), via the shared two-pyramid criterion.
 
 ## §7 — Regular-slice semilinearity
 
@@ -101,7 +119,7 @@ The slice analysis that powers both §8 and §9.
 * `SliceAutomata.lean`, `SliceRank.lean`, `SliceMSO.lean`, `SliceOrder.lean`
   — the finite-state core: eventual periodicity of DFA states along
   `pre·loopⁿ·suf`, affine-on-residues rank accumulation, the Büchi axiom and
-  the proved converse (`detAuto_state_mso`), eventually-periodic predicates.
+  the converse theorem `detAuto_state_mso`, eventually-periodic predicates.
 * `SliceAffine*.lean`, `SliceThreshold.lean`, `SliceProfile*.lean`,
   `SliceFas*.lean`, `SliceDstar*.lean`, `SliceCell*.lean`,
   `SliceGrowthCollapse.lean`, `SliceFamilyCell.lean`, `SliceFamilyRank.lean`,
@@ -118,9 +136,10 @@ The slice analysis that powers both §8 and §9.
 ## §8 — The no-swap theorem
 
 * `NoSwapWRP.lean` — `thm:wrp-slice-semilinearity`
-  (`wrp_slice_profile_semilinear`) and the headline `thm:wrp-no-swap`
-  (`wrp_no_area_dinv_swap`): a WRP swap of area and dinv would make the
-  non-semilinear triangular set `S_tri` semilinear.
+  (`wrp_slice_profile_semilinear`), the model-free obstruction
+  `cor:model-free-obstruction` (`model_free_obstruction`), and the headline
+  `thm:wrp-no-swap` (`wrp_no_area_dinv_swap`): a WRP swap of area and dinv
+  would make the non-semilinear triangular set `S_tri` semilinear.
 
 ## §9 — The inverse zeta map is not WRP
 
@@ -138,14 +157,6 @@ The slice analysis that powers both §8 and §9.
 * `TwoParamSemilinearity.lean` — `thm:two-parameter-semilinearity`: the ℕ⁴
   first-ascent/tail profile of a linear-growth WRP transduction on the
   two-parameter family is semilinear.
-
-## §6 — The Narayana sweep
-
-* `NarayanaSweep.lean` — the height sweep swaps valleys and double rises
-  (`thm:narayana-sweep`), with the non-involutivity counterexample.
-* `NarayanaBijection.lean` — `heightSweep_bijOn`: the sweep restricts to a
-  bijection of `D_n`.
-* `NarayanaWRP.lean` — the explicit WRP presentation of the height sweep.
 
 ## Paper-exact statement layer
 

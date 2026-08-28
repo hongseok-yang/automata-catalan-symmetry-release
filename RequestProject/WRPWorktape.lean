@@ -19,7 +19,7 @@ pigeonhole bound `LogspaceTM.LogTM.halting_length_poly` applied to the
 worktape witness.
 
 * `wrp_isLogspaceTM` / `wrp_paper_isLogspaceTM` — the `thm:wrp-logspace`
-  containment over `WRP.IsWRP` and over the revision's verbatim `def:wrp`
+  containment over `WRP.IsWRP` and over the paper's verbatim `def:wrp`
   class `WRP.IsWRPPaper`.
 * `wrp_logspaceTM_polytime` / `wrp_paper_logspaceTM_polytime` — the
   polynomial-time clause: the worktape witness halts within `D·(n+2)^k`
@@ -43,7 +43,7 @@ theorem wrp_isLogspaceTM {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma]
     LogspaceTM.IsLogspaceTM T :=
   LogspaceTM.isLogspaceTM_of_isLogspaceMH (wrp_isLogspaceMH T hT)
 
-/-- `thm:wrp-logspace` over the revision's `def:wrp` class, worktape model. -/
+/-- `thm:wrp-logspace` over the paper's `def:wrp` class, worktape model. -/
 theorem wrp_paper_isLogspaceTM {Gamma : Type} [Fintype Gamma] [DecidableEq Gamma]
     (T : List Step → Option (List Gamma)) (hT : WRP.IsWRPPaper T) :
     LogspaceTM.IsLogspaceTM T :=
@@ -64,7 +64,7 @@ theorem wrp_logspaceTM_polytime {Gamma : Type} [Fintype Gamma] [DecidableEq Gamm
   obtain ⟨D, k, hpoly⟩ := LogspaceTM.LogTM.halting_length_poly hSB
   exact ⟨M, C, hSB, hcomp, D, k, fun w out e N hrun hhalt => hpoly hrun hhalt⟩
 
-/-- The polynomial-time clause over the revision's `def:wrp` class. -/
+/-- The polynomial-time clause over the paper's `def:wrp` class. -/
 theorem wrp_paper_logspaceTM_polytime {Gamma : Type} [Fintype Gamma]
     [DecidableEq Gamma] (T : List Step → Option (List Gamma))
     (hT : WRP.IsWRPPaper T) :
@@ -88,7 +88,7 @@ theorem wrp_strict_below_logspaceTM :
     LogspaceTM.isLogspaceTM_of_isLogspaceMH Multihead.Fge0_isLogspaceMH,
     WRPComp.Fge0_not_isWRP⟩⟩
 
-/-- `thm:wrp-strict-below-logspace` over the revision's `def:wrp` class,
+/-- `thm:wrp-strict-below-logspace` over the paper's `def:wrp` class,
 worktape model.  Both halves a fortiori: containment through
 `IsWRPPaper ⊆ IsWRP`, separation because `F_{≥0}` is not even in the larger
 class. -/

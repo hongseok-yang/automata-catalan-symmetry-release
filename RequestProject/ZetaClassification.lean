@@ -12,7 +12,7 @@ import RequestProject.Transducers
 
 open Step
 
-/-! ## Zeta on two-pyramid paths (Lemma 5.2) -/
+/-! ## Zeta on two-pyramid paths (`lem:zeta-two-pyramid`) -/
 
 /-- **`lem:zeta-two-pyramid` (paper.tex).**
 Two-pyramid paths `P_{m,n} = U^m D^m U^n D^n` are Dyck paths for `m, n ≥ 1`. -/
@@ -102,7 +102,7 @@ theorem areaSeq_twoPyramid (m n : ℕ) :
             intro i hi; rw [ height_eq_count ] ; simp +decide [ List.take_append, List.count_append, List.count_replicate ] ; ring_nf;
             grind
 
-/-! ## Lemma 5.3 (`lem:zeta-probe`): A regular output probe -/
+/-! ## `lem:zeta-probe`: A regular output probe -/
 
 /-- **`lem:zeta-probe` (paper.tex).**
 The language `R = {UU(DU)^{2q} DD(UD)^s : q, s ≥ 0}`. -/
@@ -273,7 +273,7 @@ theorem zAcc_dyck_invariant (a : List ℤ) (hnn : ∀ x ∈ a, 0 ≤ x) :
         have hr1 : ((r + 1 : ℕ) : ℤ) - 1 = (r : ℤ) := by push_cast; ring
         rw [hr1]; ring
 
-/-- **Implicit in Definition 2.5 (`def:zeta`, paper.tex).**
+/-- **Implicit in `def:zeta` (paper.tex).**
 Haglund showed that `ζ(P)` is a Dyck path whenever `P` is. -/
 theorem isDyckPath_zetaMap (P : List Step) (hP : IsDyckPath P) :
     IsDyckPath (zetaMap P) := by
@@ -729,12 +729,12 @@ theorem length_zetaMap_eq (P : List Step) (hP : IsDyckPath P) :
         cases ‹Step› <;> simp +decide [ * ] <;> linarith;
       linarith [ h_count P ]
 
-/-! ## Lemma 5.2 (`lem:zeta-two-pyramid`): the closed form of zeta on two-pyramid paths
-(`lem:zeta-two-pyramid`, paper.tex)
+/-! ## `lem:zeta-two-pyramid`: the closed form of zeta on two-pyramid paths
+(paper.tex)
 
 We compute `ζ(P_{m,n})` in closed form for all `m,n ≥ 1`, then use it (together
-with the explicit DFA `probeDFA` below) to prove the §5.3 probe characterisation
-`ζ(P_{m,n}) ∈ R ⟺ m ≤ n`.  These supersede the earlier `native_decide` spot checks.
+with the explicit DFA `probeDFA` below) to prove the probe characterisation
+`ζ(P_{m,n}) ∈ R ⟺ m ≤ n` (`lem:zeta-probe`).
 The development reuses the rank-block machinery (`zBlock`, `zAcc`,
 `zetaMap_eq_zAcc`, `areaSeq_twoPyramid`) established above. -/
 
@@ -1316,4 +1316,4 @@ theorem inRegularProbe_zetaMap_twoPyramid (m n : ℕ) (hm : 0 < m) (hn : 0 < n) 
     exact ⟨m - 1, n - m, rfl⟩
 
 
-/-! ## Theorem 5.4: Zeta is not regular/MSO (`cor:zeta-not-regular`, paper.tex) -/
+/-! ## Zeta is not regular/MSO (`cor:zeta-not-regular`, paper.tex) -/

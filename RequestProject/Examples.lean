@@ -10,7 +10,7 @@ import RequestProject.DyckPath
 
 open Step
 
-/-! ## Example 2.4 (`def:zeta`, paper.tex) -/
+/-! ## `def:zeta` (paper.tex): the zeta map on UUDDUD -/
 
 /-- **`def:zeta` (paper.tex).**
 The path `P = UUDDUD ∈ D_3` has U-positions 0, 1, 4 at heights 0, 1, 0,
@@ -34,7 +34,7 @@ theorem isDyckPath_UUDDUD : IsDyckPath [U, U, D, D, U, D] := by
   · intro k hk; simp only [List.length] at hk; interval_cases k <;> simp [height]
   · simp [height]
 
-/-! ## Example 2.6 (`sec:dyck`, paper.tex) -/
+/-! ## The worked zeta example (`sec:dyck`, paper.tex) -/
 
 /-- **`sec:dyck` (paper.tex).**
 `ζ(UUDDUD) = UUDUDD`. The area sequence `(0,1,0)` yields: at rank 0, entries
@@ -47,7 +47,7 @@ theorem zetaMap_UUDDUD : zetaMap [U, U, D, D, U, D] = [U, U, D, U, D, D] := by n
 dinv to area. -/
 theorem area_zetaMap_UUDDUD : area (zetaMap [U, U, D, D, U, D]) = 2 := by native_decide
 
-/-! ## Example 8.8 (`sec:narayana-sweep`, paper.tex): Narayana sweep on UUUDDD -/
+/-! ## `ex:narayana-sweep` (paper.tex): Narayana sweep on UUUDDD -/
 
 /-- **`sec:narayana-sweep` (paper.tex).**
 The Narayana sweep `H(UUUDDD) = UDUDUD`. The mountain with two double rises

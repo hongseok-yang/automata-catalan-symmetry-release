@@ -4,7 +4,7 @@
 
 Formalises the paper's `prop:alw-sweep-swr` (`prop:alw-sweep-swr`, paper.tex): for
 ARBITRARY integer step weights `ν : Step → ℤ` and a scan direction `dir`, the
-additive sweep transduction `Φ_ν` (`additiveSweep`, AdditiveSweep.lean line 22)
+additive sweep transduction `Φ_ν` (`additiveSweep` in `AdditiveSweep.lean`)
 is a stable one-dimensional rank sweep (`WRP.IsSRR1`), hence WRP.
 
 This is the verbatim generalisation of the height-sweep instance of
@@ -18,8 +18,8 @@ This is the verbatim generalisation of the height-sweep instance of
 * the scan tie-order: position-descending when `dir = true` (right-to-left),
   position-ascending when `dir = false` (left-to-right).
 
-`heightSweep = additiveSweep (fun | U => 1 | D => -1) true` (`AdditiveSweep.lean`
-line 59); the `dir = true` branch here is exactly the height-sweep proof of
+`heightSweep = additiveSweep (fun | U => 1 | D => -1) true`
+(`AdditiveSweep.lean`); the `dir = true` branch here is exactly the height-sweep proof of
 `NarayanaWRP.lean`, with `height → additiveLevel`.
 
 Trust base: `[propext, Classical.choice, Quot.sound]` — the rank source is
@@ -33,7 +33,7 @@ open MSO Step
 /-! ## The additive level and its rank source -/
 
 /-- The additive level `ℓ(i) = Σ_{j<i} ν(w_j)`, defeq to the inner `level` of
-`additiveSweep` (`AdditiveSweep.lean` line 24). -/
+`additiveSweep` (`AdditiveSweep.lean`). -/
 def additiveLevel (nu : Step → ℤ) (w : List Step) (i : ℕ) : ℤ :=
   (w.take i).foldl (fun acc t => acc + nu t) 0
 

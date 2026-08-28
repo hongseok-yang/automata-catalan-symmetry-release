@@ -1,7 +1,7 @@
 /-
 # `d*` for general arity — region enumeration and zone re-description (GA-5.7–5.8)
 
-The adjudicated GA-5 gate-layer prerequisites (see `GA58_ADJUDICATION.json`):
+The GA-5 gate-layer prerequisites:
 
 * `regionTuples` — the finite enumeration of cell descriptors (via the derived
   `Fintype (RegionSpec B)` and `Fintype.piFinset`), with total membership;

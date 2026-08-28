@@ -1,7 +1,7 @@
 /-
-# MSO definability on a one-loop slice is eventually periodic (paper Lemma 6.2)
+# MSO definability on a one-loop slice is eventually periodic (`lem:one-loop-finite-state`)
 
-This **factors** the paper's Lemma 6.2 (finite-state predicates on a regular slice
+This **factors** the paper's `lem:one-loop-finite-state` (finite-state predicates on a regular slice
 are Presburger / eventually periodic) into:
 
 * a *proved* automaton fact — acceptance of a deterministic finite acceptor on the
@@ -10,8 +10,8 @@ are Presburger / eventually periodic) into:
 * a single clean textbook *axiom* — Büchi–Elgot–Trakhtenbrot: every MSO-definable
   language is recognised by such an acceptor.
 
-The conclusion `mso_slice_eventuallyPeriodic` is the MSO ingredient the remaining
-`wrp_slice_profile_affine` axiom needs: as `n` grows the truth of any
+The conclusion `mso_slice_eventuallyPeriodic` is the MSO ingredient the
+slice-profile theorem `wrp_slice_profile_affine` needs: as `n` grows the truth of any
 MSO-definable selection condition over the slice is eventually periodic.
 -/
 import RequestProject.MSO
@@ -133,7 +133,7 @@ over words on a **finite alphabet** is recognised by a deterministic finite
 acceptor — the textbook statement (Büchi 1960, Elgot 1961, Trakhtenbrot 1962; see
 e.g. Thomas, *Languages, automata, and logic*, 1997).  This is the headline
 no-swap and inverse-zeta route's only automata axiom; its converse
-`detAuto_state_mso` (below) is a proved **theorem** (2026-08-28), so this is the
+`detAuto_state_mso` (below) is a proved **theorem**, so this is the
 repo's only automata admission.  The `[Fintype Alpha]` hypothesis keeps the axiom verbatim-citable: every
 use site instantiates `Alpha` at a finite marked alphabet (`Step`, `Marked`,
 `Marked2`, `MarkedN m`). -/
@@ -147,7 +147,7 @@ def DetAuto.stateBefore {Alpha : Type*} (M : DetAuto Alpha) (w : List Alpha) (i 
 
 /-! ## Converse Büchi–Elgot–Trakhtenbrot: the run predicate is MSO-definable
 
-Formerly the admitted axiom `detAuto_state_mso`; now a **theorem** (2026-08-28),
+`detAuto_state_mso` is a proved **theorem**,
 by the textbook run encoding: existentially quantify one set variable `X_j` per
 state, assert that the sets describe the (unique) run — the first position lies
 in `X_{q_0}`, each position lies in exactly one `X_j`, and consecutive positions
@@ -612,13 +612,13 @@ private theorem sat_answerF [Fintype Alpha] (M : DetAuto Alpha) {m : ℕ}
 
 end DetAutoStateMSO
 
-/-- **Converse Büchi–Elgot–Trakhtenbrot — now a THEOREM (2026-08-28; formerly
-the sixth admitted axiom).**  The run of a deterministic finite automaton is
+/-- **Converse Büchi–Elgot–Trakhtenbrot — a proved theorem, not an
+axiom.**  The run of a deterministic finite automaton is
 MSO-definable: for a `DetAuto M` over a finite alphabet and a state `q`, the
 predicate "`M` is in state `q` after reading the length-`x` prefix of `w`" is
 MSO-definable in the free position variable `x`.  This is the automaton ⇒ MSO
 half of Büchi–Elgot–Trakhtenbrot — the converse of `buchi` (the MSO ⇒
-automaton half, still admitted).  Proof: the textbook run encoding — one
+automaton half, which is admitted).  Proof: the textbook run encoding — one
 existential set variable per state pinned by first-position, exactly-one, and
 `δ`-consistency conditions (`stateBefore_eq_iff_sets`), rendered in the object
 language by the quantifier block `exSOs` and the finite `orList`/`andList`
@@ -637,7 +637,7 @@ theorem detAuto_state_mso {Alpha : Type*} [Fintype Alpha] (M : DetAuto Alpha) (q
   rw [MSO.Formula.sat_and, MSO.Formula.sat_and, MSO.Formula.sat_and,
     sat_initF, sat_oneF, sat_stepF, sat_answerF]
 
-/-- **Lemma 7.2 (`lem:one-loop-finite-state`, MSO side), factored.**  The truth of an MSO sentence on the
+/-- **`lem:one-loop-finite-state` (MSO side), factored.**  The truth of an MSO sentence on the
 one-loop slice `pre ++ loop^n ++ suf` is eventually periodic in the loop count.
 Proved from the Büchi axiom together with the proved automaton periodicity. -/
 theorem mso_slice_eventuallyPeriodic {Alpha : Type*} [Fintype Alpha] (φ : MSO.Sentence Alpha)

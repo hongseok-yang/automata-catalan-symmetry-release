@@ -1,8 +1,8 @@
 /-
 # Arity-0 elimination: WRP restricted to nonempty inputs is arity-positive
 
-The revision (paper.tex `def:polyregular` line 938, `def:wrp` line
-1217) requires every copy to have arity `k_c ≥ 1`; the Lean model allows
+The paper (paper.tex `def:polyregular`,
+`def:wrp`) requires every copy to have arity `k_c ≥ 1`; the Lean model allows
 arity-`0` copies.  The two conventions can differ only on the empty input,
 where an arity-positive presentation has no atoms (`WRPArityPos.lean`).
 
@@ -15,9 +15,9 @@ the lifted presentation computes the same outputs; on the empty input the
 lifted domain fails.  Hence:
 
 * `isWRPPos_restrict_nonempty` — for every WRP map `T`, the restriction of
-  `T` to nonempty inputs lies in the revision's arity-positive class
+  `T` to nonempty inputs lies in the paper's arity-positive class
   `WRP.IsWRPPos`;
-* `isWRPPos_concat_nonempty` — the revision's `thm:wrp-closures` (iii)
+* `isWRPPos_concat_nonempty` — the paper's `thm:wrp-closures` (iii)
   ("concatenation with fixed separators **on nonempty inputs**",
   paper.tex) inside the arity-positive class: for
   WRP maps `f, g`, the map `w ↦ f(w) ‖ sep ‖ g(w)` restricted to nonempty
@@ -332,7 +332,7 @@ theorem liftPres_isOutput_iff (P : WRP.Presentation Alpha Gamma)
 /-! ## The capstone: WRP on nonempty inputs is arity-positive -/
 
 /-- **Arity-0 elimination.**  For every WRP map `T`, the restriction of `T`
-to nonempty inputs lies in the revision's arity-positive class
+to nonempty inputs lies in the paper's arity-positive class
 (`def:polyregular`/`def:wrp` with every `k_c ≥ 1`). -/
 theorem isWRPPos_restrict_nonempty {T : List Alpha → Option (List Gamma)}
     (h : WRP.IsWRP T) :
@@ -356,8 +356,8 @@ theorem isWRPPos_restrict_nonempty {T : List Alpha → Option (List Gamma)}
       · rintro ⟨⟨hdom, -⟩, hout⟩
         exact ⟨hdom, (liftPres_isOutput_iff P hw out).mp hout⟩
 
-/-- **`thm:wrp-closures` (iii) in the revision's class** (paper.tex
-lines 1490–1493): concatenation with a fixed separator, on nonempty inputs,
+/-- **`thm:wrp-closures` (iii) in the paper's class**
+(paper.tex): concatenation with a fixed separator, on nonempty inputs,
 stays in the arity-positive class `IsWRPPos`. -/
 theorem isWRPPos_concat_nonempty {Alpha Γ : Type} [Fintype Γ] [DecidableEq Γ] (sep : Γ)
     {f g : List Alpha → Option (List Γ)}

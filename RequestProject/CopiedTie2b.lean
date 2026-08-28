@@ -7,11 +7,11 @@ import RequestProject.CopiedGates
 /-!
 # §9 d4 / 2b — arity-1 helpers for the TIE point bridge
 
-This file collects arity-1 ingredients used by the TIE point bridge.  Earlier
-routes targeted a single `(mS % qM, n % pG)`-indexed gate; the active capstone now
-uses the budgeted row-indexed bridge in `CopiedTieSlice`.
+This file collects arity-1 ingredients used by the TIE point bridge.  The
+capstone uses the budgeted row-indexed bridge in `CopiedTieSlice` rather than
+a single `(mS % qM, n % pG)`-indexed gate.
 
-The original hbud-free target could not be a direct port of the n-direction template
+An hbud-free target cannot be a direct port of the n-direction template
 `tie_point_bridge_GA` (`SliceFasSelectorGA`), which threads `hbud` through
 `eqRankD_cell_selector'`.  The budgeted bridge keeps `hbud` explicit at the consumer
 boundary, while these helpers still provide the arity-1 periodicity and selection

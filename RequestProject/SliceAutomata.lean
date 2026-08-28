@@ -81,7 +81,7 @@ theorem partialSum_recurrence' {M : Type*} [AddCommMonoid M] (g : ℕ → M) (m 
   rwa [show m + (N - m) = N from by omega] at this
 
 /-- **Rank accumulation over `n` blocks is affine on residue classes (paper
-Lemma 6.3).**  For a finite-state block transition `blockStep`, start `q₀`, and a
+`lem:one-loop-rank-affine`).**  For a finite-state block transition `blockStep`, start `q₀`, and a
 weight `w : Q → M`, the total weight accumulated over the first `n` blocks,
 `Σ_{i<n} w(blockStep^[i] q₀)`, is — beyond a threshold `m` and on the residue
 class of `m + r` mod a period `p` — affine in the block count: it equals

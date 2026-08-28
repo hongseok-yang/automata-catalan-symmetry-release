@@ -188,7 +188,7 @@ set_option maxHeartbeats 1000000 in
 pinned per-copy budget (the exact conclusion shape of
 `SliceProfileDischargeGA.hbud_of_hgrow`), there is an `AffineOnResiduesZ`-per-coordinate
 sequence `dstarC` equal to `dstarRankGA` on every in-domain `D`-present slice past a
-threshold.  Build script: `GA5_PORTMAP.json`, sections S0–S12. -/
+threshold. -/
 theorem dstarC_exists_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ)
     (hbud : ∀ n, P.toPoly.domain (wrappedFlat n) →
       ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →

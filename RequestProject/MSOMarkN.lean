@@ -1,7 +1,7 @@
 /-
 # `m`-mark recogniser for an `m`-free-variable MSO formula (no new axiom; route GA-1)
 
-The general-arity §7 discharge (the GA route of `FAS_DESIGN.md`) decides per-atom MSO
+The general-arity §7 discharge (the GA route) decides per-atom MSO
 predicates — selection, label, order — for atoms that are `m`-tuples of positions.  This
 file generalises `MSOMark` (one mark) and `MSOMark2` (two marks) to `m` marks.
 

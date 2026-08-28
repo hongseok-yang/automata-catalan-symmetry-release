@@ -1,12 +1,12 @@
 /-
-# The paper-exact WRP classes: total tie-orders (and the revision's `def:wrp`)
+# The paper-exact WRP classes: total tie-orders (and the paper's `def:wrp`)
 
 `paper.tex` requires the tie-order `χ` of a polyregular presentation to
 be a strict total order on the selected atoms **by itself** (`def:polyregular`
-(v), line 961: `χ` "linearly orders the selected atoms"), and `def:wrp` (line
-1217) inherits the requirement, remarking "Since `χ` is a strict total order on
+(v): `χ` "linearly orders the selected atoms"), and `def:wrp`
+inherits the requirement, remarking "Since `χ` is a strict total order on
 selected atoms, `≺` is also a strict total order."  The Lean class `WRP.IsWRP`
-deliberately weakens this (deviation A2 of `PAPER_DEVIATIONS.md`): its
+deliberately weakens this: its
 `WRP.Presentation.Valid` asks totality only of the *combined* order `≺`
 (`wrpOrd`), so `IsWRP` quantifies over a superset of the paper's class and the
 negative theorems are stronger.
@@ -18,9 +18,9 @@ classes and proving the bridges:
   order on `Fin d → ℤ` is a strict total order (general order theory);
 * `WRP.Presentation.valid_of_polyValid` — **the paper's remark in `def:wrp`**:
   if `χ` is a strict total order on selected atoms then so is `≺`;
-* `WRP.IsWRPTieTotal` — the previous draft's `def:wrp` class (`χ` total,
+* `WRP.IsWRPTieTotal` — the tie-total class (`χ` total,
   arities unconstrained), with `IsWRPTieTotal ⊆ IsWRP`;
-* `WRP.IsWRPPaper` — **the revision's `def:wrp` class verbatim**: `χ` a strict
+* `WRP.IsWRPPaper` — **the paper's `def:wrp` class verbatim**: `χ` a strict
   total order *and* every copy of arity `k_c ≥ 1`
   (`Polyreg.Presentation.ArityPos`), with
   `IsWRPPaper ⊆ IsWRPTieTotal ∩ IsWRPPos ⊆ IsWRP`.  Every negative theorem
@@ -115,15 +115,15 @@ theorem Presentation.valid_of_polyValid (P : Presentation Alpha Gamma)
 
 /-! ## The paper-exact classes -/
 
-/-- **The previous draft's `def:wrp` class**: realised by a WRP presentation
+/-- **The tie-total WRP class**: realised by a WRP presentation
 whose tie-order `χ` is itself a strict total order on selected atoms
-(`Polyreg.Presentation.Valid`), with arities unconstrained.  This is the class
-`PAPER_DEVIATIONS.md` A2 contrasts with the deliberately larger `IsWRP`. -/
+(`Polyreg.Presentation.Valid`), with arities unconstrained.  It sits between
+the paper's `IsWRPPaper` and the deliberately larger `IsWRP`. -/
 def IsWRPTieTotal (T : List Alpha → Option (List Gamma)) : Prop :=
   ∃ P : Presentation Alpha Gamma, P.toPoly.Valid ∧
     ∀ w out, T w = some out ↔ (P.toPoly.domain w ∧ P.IsOutput w out)
 
-/-- **The revision's `def:wrp` class verbatim** (paper.tex):
+/-- **The paper's `def:wrp` class verbatim** (paper.tex):
 realised by a WRP presentation over a paper-valid polyregular presentation —
 the tie-order `χ` is a strict total order on selected atoms (`def:polyregular`
 (v)) and every copy has arity `k_c ≥ 1` (`def:polyregular` (i)). -/
@@ -139,13 +139,13 @@ theorem IsWRPTieTotal.isWRP {T : List Alpha → Option (List Gamma)}
   obtain ⟨P, hV, hT⟩ := h
   exact ⟨P, P.valid_of_polyValid hV, hT⟩
 
-/-- The revision's class is contained in the previous draft's class. -/
+/-- The paper's class is contained in the tie-total class. -/
 theorem IsWRPPaper.isWRPTieTotal {T : List Alpha → Option (List Gamma)}
     (h : IsWRPPaper T) : IsWRPTieTotal T := by
   obtain ⟨P, hV, -, hT⟩ := h
   exact ⟨P, hV, hT⟩
 
-/-- The revision's class is contained in the arity-positive class of
+/-- The paper's class is contained in the arity-positive class of
 `WRPArityPos.lean`. -/
 theorem IsWRPPaper.isWRPPos {T : List Alpha → Option (List Gamma)}
     (h : IsWRPPaper T) : IsWRPPos T := by
@@ -241,7 +241,7 @@ theorem IsSRR1.isWRPTieTotal {T : List Alpha → Option (List Gamma)}
 
 /-- **`sRR₁ = SWR` membership is paper-exact membership**: a scan-order
 presentation has a strict-total tie-order and arity `1`, so it realises its
-map inside the revision's `def:wrp` class. -/
+map inside the paper's `def:wrp` class. -/
 theorem IsSRR1.isWRPPaper {T : List Alpha → Option (List Gamma)}
     (h : IsSRR1 T) : IsWRPPaper T := by
   obtain ⟨P, -, -, hscan, hT⟩ := h
@@ -283,8 +283,8 @@ theorem isWRPTieTotal_of_isPolyregular {T : List Alpha → Option (List Gamma)}
   rw [hT w out]
   exact and_congr_right fun _ => (isOutput_zeroRank_iff P w out).symm
 
-/-- **`prop:conservative` within the revision's classes** (paper.tex
-`def:wrp`): a polyregular map of the revision's convention (`χ` total, arities
+/-- **`prop:conservative` within the paper's classes** (paper.tex
+`def:wrp`): a polyregular map of the paper's convention (`χ` total, arities
 positive — `IsPolyregularPos` with its `Valid`) is a paper-exact WRP map with
 rank dimension `0`. -/
 theorem isWRPPaper_of_isPolyregularPos {T : List Alpha → Option (List Gamma)}
@@ -307,10 +307,10 @@ end WRP
 
 The zeta sweep (`thm:zeta-wrp`), the Narayana height sweep
 (`thm:narayana-sweep`), and every additive level sort (`prop:alw-sweep-swr`)
-are `sRR₁`, hence lie in the revision's `def:wrp` class verbatim. -/
+are `sRR₁`, hence lie in the paper's `def:wrp` class verbatim. -/
 
 /-- **`thm:zeta-wrp` in the paper-exact class**: the zeta sweep is a WRP map
-in the revision's `def:wrp` sense (`χ` a strict total order, arities `≥ 1`). -/
+in the paper's `def:wrp` sense (`χ` a strict total order, arities `≥ 1`). -/
 theorem zetaSweep_isWRPPaper :
     WRP.IsWRPPaper (fun w : List Step => some (zetaSweep w)) :=
   zetaSweep_isSRR1.isWRPPaper
@@ -322,7 +322,7 @@ theorem heightSweep_isWRPPaper :
   heightSweep_isSRR1.isWRPPaper
 
 /-- **`prop:alw-sweep-swr` in the paper-exact class**: every additive level
-sort `Φ_ν` is a WRP map in the revision's `def:wrp` sense. -/
+sort `Φ_ν` is a WRP map in the paper's `def:wrp` sense. -/
 theorem additiveSweep_isWRPPaper (nu : Step → ℤ) (dir : Bool) :
     WRP.IsWRPPaper (fun w : List Step => some (additiveSweep nu dir w)) :=
   (additiveSweep_isSRR1 nu dir).isWRPPaper

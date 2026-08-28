@@ -2,7 +2,7 @@
 # mS-direction eventual periodicity (§9 tower, Stage F-mS — foundation)
 
 The fibred tie count needs the equal-rank cell finsets to be *eventually periodic in the
-boundary width* `mS` (not mS-invariant — that is FALSE, see FORMALISATION_WORKLOG update 8 — but
+boundary width* `mS` (not mS-invariant — that is FALSE — but
 periodic with an mS-free period `q_U`).  The whole mS-dependence flows through the post-prefix
 automaton state `δ*(q₀, U^mS)` and the rank accumulated over the `U^mS` prefix and `D^mS` suffix.
 

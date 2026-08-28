@@ -10,12 +10,12 @@ residues in `n` with a period uniform across `mS` — exactly
 The two-loop slice-arithmetic facts are factored into project-agnostic general axioms
 (`SliceSemilinearN.msoDefinableRel2_semilinear_general` for the MSO part,
 `regularRankTerm_value2_graph_semilinear` for the rank value graph; both over a generic
-`BlockLinearWord2` family).  The former project-specific residual on the `d*`-rank value
-graph, `dstarRankGA_m_const_semilinear`, is now a **theorem** (no longer admitted): it is
+`BlockLinearWord2` family).  The project-specific fact about the `d*`-rank value
+graph, `dstarRankGA_m_const_semilinear`, is a **theorem**: it is
 assembled from the first-order characterisation `dstarRankGA'_eq_decodeZ_iff` and the
 project-agnostic building blocks.  The copied-slice instances `msoDefinableRel2_semilinear`
 and `rankOf_eq_dstar2_semilinear` are derived theorems here, obtained by instantiating the
-general axioms at `copiedSliceBLW`.  No project-specific axiom remains in the inverse-zeta
+general axioms at `copiedSliceBLW`.  No project-specific axiom occurs in the inverse-zeta
 tower.
 -/
 import RequestProject.CopiedTieCounting
@@ -27,12 +27,12 @@ open WRP Step SliceSemilinearN MSO
 
 /-! ## Two-loop slice-arithmetic facts
 
-The MSO and rank bridges below are now **theorems**, derived from the project-agnostic
+The MSO and rank bridges below are **theorems**, derived from the project-agnostic
 axioms `SliceSemilinearN.msoDefinableRel2_semilinear_general` and
 `regularRankTerm_value2_graph_semilinear` by instantiating the generic block-linear word
-family at the copied slice (`copiedSliceBLW`).  The former residual
-`dstarRankGA_m_const_semilinear` (the `d*`-rank value graph) is now also a theorem, so no
-project-specific axiom remains. -/
+family at the copied slice (`copiedSliceBLW`).  The project-specific fact
+`dstarRankGA_m_const_semilinear` (the `d*`-rank value graph) is also a theorem, so no
+project-specific axiom occurs here. -/
 
 /-- The copied slice `Uᵐˢ(UD)ⁿDᵐˢ` as a block-linear two-parameter word family. -/
 def copiedSliceBLW : BlockLinearWord2 Step :=
@@ -467,7 +467,7 @@ theorem dAbsentZero2_semilinear (P : WRP.Presentation Step Step) :
   ext v
   simp only [familyGraph2, Set.mem_ofPred_eq, funext_iff, eq_comm]
 
-/-- **Residual (now a theorem):** the fibred `d*`-rank family `dstarRankGA_m P hV` is
+/-- **The `d*`-rank value graph (a theorem):** the fibred `d*`-rank family `dstarRankGA_m P hV` is
 slice-const-semilinear.  Proved from the first-order characterisation
 `dstarRankGA'_eq_decodeZ_iff` (the rank of the `≺`-minimal selected-`D` atom is the
 achieved lex-minimum of the selected-`D` ranks) together with the per-disjunct semilinear
@@ -504,11 +504,10 @@ theorem dstarRankGA_m_const_semilinear (P : WRP.Presentation Step Step) (hV : P.
       rintro ⟨ī, hsi, hDi⟩
       exact hno ⟨⟨c, ī⟩, hsi, hDi⟩
 
-/-- **Rank `= d*` is semilinear on the two-loop slice.**  Now a theorem, derived from the
+/-- **Rank `= d*` is semilinear on the two-loop slice.**  A theorem, derived from the
 project-agnostic `regularRankTerm_eq_value2_semilinear` with the regular rank term
-`P.rank c` (`P.rankReg c`) and the small residual `dstarRankGA_m_const_semilinear`, then
-specialised to `copiedSlice` via `copiedSliceBLW_eval`.  Identical conclusion to the
-former axiom, so every downstream consumer is untouched. -/
+`P.rank c` (`P.rankReg c`) and the small bridge `dstarRankGA_m_const_semilinear`, then
+specialised to `copiedSlice` via `copiedSliceBLW_eval`. -/
 theorem rankOf_eq_dstar2_semilinear (P : WRP.Presentation Step Step) (hV : P.Valid)
     (c : Fin P.toPoly.K) :
     IsSliceFamilySemilinear2 (fun mS n ī =>

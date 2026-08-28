@@ -13,8 +13,8 @@ mobile bulk cluster.  This file provides the shared descriptor type:
   the thresholds, every budget-respecting selected atom is `fun i => (r i).posAt t n`
   for some per-coordinate regions and some base `B ≤ t ≤ n − B`.
 
-Uniqueness/canonicity (the GA-7 partition form) is deliberately deferred; GA-4's rank
-decomposition and GA-5's candidate analysis need only the cover.
+Uniqueness/canonicity (the GA-7 partition form) lives in `SliceCellClassifyGA.lean`;
+GA-4's rank decomposition and GA-5's candidate analysis need only the cover.
 
 Axiom-clean modulo Büchi (inherited from `one_cluster_cells`).
 -/

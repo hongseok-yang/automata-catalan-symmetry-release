@@ -1,7 +1,7 @@
 /-
 # Tuple-based MSO interpretations (ordinary polyregular functions)
 
-Formalisation of Definition 3.8 (Tuple-based MSO interpretation; polyregular) of
+Formalisation of `def:polyregular` (Tuple-based MSO interpretation; polyregular) of
 "A Computational Obstruction to Swapping Area and Dinv:
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
@@ -86,7 +86,7 @@ structure Valid : Prop where
   trichot : ∀ w a b, P.selectedAtom w a → P.selectedAtom w b →
     P.atomOrd w a b ∨ a = b ∨ P.atomOrd w b a
 
-/-- **Declarative output (Def 3.8).**  `out` is the output of `P` on `w` iff it is
+/-- **Declarative output (`def:polyregular`).**  `out` is the output of `P` on `w` iff it is
 the list of labels of the selected atoms, listed without repetition, in
 increasing `χ`-order.  When `P` is `Valid`, this `out` is unique. -/
 def IsOutput (w : List Alpha) (out : List Gamma) : Prop :=
@@ -129,7 +129,7 @@ presentation all of whose copies have **arity 1**.  The arity-1 restriction make
 the presentation a *dimension-1* MSO interpretation: every output atom is a single
 `(copy, input position)` pair, so the output length is linear in the input.  This
 is the model meant by "deterministic MSO string transduction" / "2DFT" in the
-paper's Theorem 5.4 (`thm:zeta-not-regular`). -/
+paper's `cor:zeta-not-regular`. -/
 def IsRegular (f : List Alpha → Option (List Gamma)) : Prop :=
   ∃ P : Presentation Alpha Gamma, P.Valid ∧ (∀ c, P.arity c = 1) ∧
     ∀ w out, f w = some out ↔ (P.domain w ∧ P.IsOutput w out)

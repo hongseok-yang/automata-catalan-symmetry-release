@@ -11,7 +11,7 @@ path realising a valid area sequence, together with the two round-trip facts:
 * `areaSeq_pathOfAreaSeq` : `areaSeq (pathOfAreaSeq a) = a` for valid `a`;
 * `dyck_eq_of_areaSeq_eq` : a Dyck path is determined by its area sequence.
 
-These let Lemma 7.3 build the canonical tight path and prove its uniqueness.
+These let `lem:deficit-zero-targets` build the canonical tight path and prove its uniqueness.
 -/
 import RequestProject.DyckPath
 

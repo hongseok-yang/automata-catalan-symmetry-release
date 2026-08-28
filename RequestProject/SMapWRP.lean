@@ -1,11 +1,11 @@
 /-
 # `S` is itself a WRP map: composition failure inside WRP
 
-The proof of the revision's `thm:wrp-not-closed` closes with: "By Theorem
+The proof of the paper's `thm:wrp-not-closed` closes with: "By Theorem
 `thm:eh` and Proposition `prop:conservative`, `S` itself belongs to `WRP`.
 Hence two `WRP` maps, `D` and `S`, have a composite outside `WRP`, proving
-that the class is not closed under composition" (paper.tex lines
-4691–4694).
+that the class is not closed under composition" (paper.tex, Appendix
+A.4).
 
 This file discharges that observation **without** formalising `thm:eh`
 (Engelfriet–Hoogeboom): we exhibit the word map computed by the machine `S`
@@ -23,7 +23,7 @@ letter at the position; order: the position order; no rank).  Hence
   (`Polyreg.IsRegular`), matching the paper's "every deterministic 2DFT is a
   deterministic MSO string transduction";
 * `sMap_isPolyregular`, `sMap_isWRP`, `sMap_isWRPPos` — so `S ∈ WRP`, also in
-  the revision's arity-positive class;
+  the paper's arity-positive class;
 * `sMap_compD_eq_Fge0` — the composite with the witness `D` is `F_{≥0}`;
 * `wrp_not_closed_under_composition` — the paper's conclusion: two WRP maps
   (`D` and the map computed by `S`) whose composite is not WRP.
@@ -629,7 +629,7 @@ theorem sMap_isPolyregular : Polyreg.IsPolyregular sMap :=
 theorem sMap_isWRP : WRP.IsWRP sMap :=
   WRP.isWRP_of_isPolyregular sMap_isPolyregular
 
-/-- `S` also lies in the revision's arity-positive class. -/
+/-- `S` also lies in the paper's arity-positive class. -/
 theorem sMap_isWRPPos : WRP.IsWRPPos sMap :=
   WRP.isWRPPos_of_isPolyregularPos sMap_isRegular.isPolyregularPos
 
@@ -652,8 +652,8 @@ theorem sMap_compD (w : List Step) : sMap (compD w) = Fge0 w := by
       fun h => hw ((head_compD_eq_g_iff w).mp h)
     rw [sMap, if_neg hg, Fge0, if_neg hw]
 
-/-- **`thm:wrp-not-closed`, the "consequently" (paper.tex lines
-4691–4694), inside WRP**: two WRP maps — the witness `D` and the map computed
+/-- **`thm:wrp-not-closed`, the "consequently" (paper.tex, Appendix
+A.4), inside WRP**: two WRP maps — the witness `D` and the map computed
 by the left-to-right 2DFT `S` — whose composite (= `F_{≥0}`) is not a WRP
 map.  Hence `WRP` is not closed under composition. -/
 theorem wrp_not_closed_under_composition :

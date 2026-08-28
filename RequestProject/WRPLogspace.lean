@@ -9,8 +9,8 @@ witness `Multihead.exists_logspaceMH_not_wrp` into the **unconditional**
 `wrp_strict_below_logspace`.
 
 The evaluator machine follows the ≺-successor round structure of the paper's
-proofs (since the 2026-08-28 revision the Theorem proof uses it too, with the
-improved generic bound `O(n^{2k+1})`; one output letter per round): it keeps
+proof (App. A.2; generic bound `O(n^{2k+1})`, one output letter per
+round): it keeps
 the last emitted atom
 CUR in a block of heads, sweeps all candidate atoms with a best-so-far block
 BEST, compares atoms with the two counters (positive/negative parts of the
@@ -6360,8 +6360,8 @@ end
 end WRPLogspace
 
 open WRPLogspace in
-/-- **`thm:wrp-logspace` (paper.tex; proof App. A.2 lines
-4401–4475): every WRP map is deterministic-logspace computable** in the
+/-- **`thm:wrp-logspace` (paper.tex; proof in App.
+A.2): every WRP map is deterministic-logspace computable** in the
 multihead bounded-counter model.
 
 Formalisation notes.  The paper's input alphabet `Σ` is an arbitrary finite
@@ -6369,11 +6369,10 @@ alphabet; the formalisation instantiates `Σ = Step`, since the repo's
 marked-word machinery (`MSOMarkN`) is `Step`-specific — the generalisation is
 mechanical.  The verified evaluator uses the ≺-successor round structure (one
 output letter per round, keeping the current atom in a head block and
-computing each round's minimum with a best-so-far block) — since the
-2026-08-28 revision this is the paper's own proof of the theorem (previously
-only its Corollary proof; the earlier predecessor-counting proof would also
-have exceeded this model's linearly bounded counters at arity `> 1`, and the
-successor rounds improve the paper's generic time bound to `O(n^{2k+1})`).
+computing each round's minimum with a best-so-far block), exactly as the
+paper's proof does (a predecessor-counting evaluation would exceed this
+model's linearly bounded counters at arity `> 1`; the successor rounds give
+the generic time bound `O(n^{2k+1})`).
 Rank comparisons accumulate the
 positive and negative parts of the rank difference of one lexicographic
 dimension in the two counters and drain them; rank ties are broken by the

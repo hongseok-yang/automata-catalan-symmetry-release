@@ -35,10 +35,10 @@ def IsSemilinearNd (d : ℕ) (S : Set (Fin d → ℕ)) : Prop :=
 def IsSemilinear2 (S : Set (ℕ × ℕ)) : Prop :=
   IsSemilinearNd 2 {v | (v 0, v 1) ∈ S}
 
-/-! ## Theorem 7.6 (`thm:wrp-slice-semilinearity`): semilinearity for
+/-! ## `thm:wrp-slice-semilinearity`: semilinearity for
 linear-growth WRP — see `wrp_slice_profile_semilinear` in `NoSwapWRP.lean` -/
-/-! ## Lemma 8.6 (`lem:semilinear-envelope`): semilinear finite-section envelopes
-(`lem:semilinear-envelope`, paper.tex) -/
+/-! ## `lem:semilinear-envelope`: semilinear finite-section envelopes
+(paper.tex) -/
 
 /-- **`lem:semilinear-envelope` (paper.tex), in a
 deliberately WEAKENED sufficient form.**  If `S ⊆ ℕ²` is semilinear and every
@@ -54,7 +54,7 @@ take `S = {(m, 2m)} ∪ {(m, 2m+1)}` — semilinear, every section the nonempty
 singleton `{⌊b/2⌋}`, so every residue class mod every period qualifies; even
 periods force slope `1/2 ∉ ℤ` on the even class, and odd periods mix parities,
 where `⌊b/2⌋` is not affine at all.  Hence the paper's "constants α, γ" must
-be read as rationals (see `PAPER_DEVIATIONS.md` § A5). -/
+be read as rationals. -/
 theorem semilinear_envelope (S : Set (ℕ × ℕ)) (hS : IsSemilinear2 S)
     -- `_hfinite` is kept for fidelity to the paper's hypotheses, but the
     -- "some affine element" construction below does not need it.
@@ -162,8 +162,8 @@ theorem semilinear_envelope (S : Set (ℕ × ℕ)) (hS : IsSemilinear2 S)
     filter_upwards [hfreq] with b hb hbr hbne
     exact absurd ⟨hbr, hbne⟩ hb
 
-/-! ## Lemma 8.7: The triangular profile is not semilinear
-(`lem:triangular-not-semilinear`, paper.tex) -/
+/-! ## `lem:triangular-not-semilinear`: The triangular profile is not semilinear
+(paper.tex) -/
 
 /-- The lower bound defining membership in `S_tri`. -/
 theorem S_tri_lower_bound {a b : ℕ} (h : (a, b) ∈ S_tri) :
@@ -289,10 +289,10 @@ theorem S_tri_not_semilinear : ¬ IsSemilinear2 S_tri := by
   nlinarith [ha_affine, hbquad, hq_quad,
     mul_nonneg (show (0 : ℤ) ≤ q - 1 from by omega) hquad_pos]
 
-/-! ## The revision's dichotomy form of `lem:semilinear-envelope`
+/-! ## The paper's dichotomy form of `lem:semilinear-envelope`
 (paper.tex)
 
-paper.tex strengthens `lem:semilinear-envelope` to a per-residue-
+paper.tex states `lem:semilinear-envelope` as a per-residue-
 class **dichotomy**: for a period `M` determined by `S`, on every residue
 class modulo `M` either the sections `S_b` are empty for all sufficiently
 large `b` in the class, or they are nonempty for all sufficiently large `b`
@@ -300,9 +300,10 @@ in the class (and the envelope is eventually affine).
 
 `semilinear_envelope_dichotomy` below proves the dichotomy, with the affine
 clause in the same weakened "some section element on a fixed rational line"
-form as `semilinear_envelope` (see that lemma's docstring and
-`PAPER_DEVIATIONS.md` § A5 for why the rational form is forced; the genuine
-eventually-affine *minimum* remains a documented deviation).
+form as `semilinear_envelope` (see that lemma's docstring
+for why the rational form is forced; the genuine
+eventually-affine *minimum* is a deliberate deviation from the paper's
+phrasing).
 
 The dichotomy needs no lattice-point counting: choose `M` divisible by every
 nonzero second coordinate of every step vector.  If a class contains section
@@ -360,7 +361,7 @@ private theorem linearSet_shift {β : Fin 2 → ℕ} {st : Finset (Fin 2 → ℕ
     rw [hveq]
   omega
 
-/-- **The revision's `lem:semilinear-envelope` dichotomy
+/-- **The paper's `lem:semilinear-envelope` dichotomy
 (paper.tex).**  For semilinear `S ⊆ ℕ²` with finite
 sections there is a period `M ≥ 1` such that on every residue class modulo
 `M`, exactly one of: (i) the sections are eventually empty along the class;

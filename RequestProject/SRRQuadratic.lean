@@ -1,8 +1,8 @@
 /-
 # Quadratic-time evaluation of scan-order SWR maps (`cor:srr-quadratic`)
 
-Formalisation of Corollary `cor:srr-quadratic` (paper.tex, statement
-line ~1588; proof Appendix A.2, lines ~4470–4540) of "A Computational Obstruction to Swapping Area and Dinv": every SWR (= `WRP.IsSRR1`) map whose selection
+Formalisation of Corollary `cor:srr-quadratic` (paper.tex;
+proof in Appendix A.2) of "A Computational Obstruction to Swapping Area and Dinv": every SWR (= `WRP.IsSRR1`) map whose selection
 and labelling are decided by a single left-to-right finite-state pass — the
 choice at each position determined by the prefix ending there
 (`PrefixPassData`) — is computable in deterministic time `O(n²)` and
@@ -4152,8 +4152,8 @@ theorem mach_spaceBound : SpaceBound (mach S (Gamma := Gamma)) 1 :=
 end SRRQuadratic
 
 open SRRQuadratic in
-/-- **Corollary `cor:srr-quadratic`** (paper.tex, statement line
-~1588; proof Appendix A.2, lines ~4470–4540).  Σ is instantiated to `Step`,
+/-- **Corollary `cor:srr-quadratic`** (paper.tex; proof in
+Appendix A.2).  Σ is instantiated to `Step`,
 as everywhere in this development.
 
 Every SWR (= `WRP.IsSRR1`) map whose selection and labelling are decided by a

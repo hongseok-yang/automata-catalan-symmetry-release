@@ -1,7 +1,7 @@
 /-
 # The §7 profile discharge, general arity — stage 0: the pinned interfaces
 
-The adjudicated GA build order (see `GA58_ADJUDICATION.json`) starts by PINNING the
+The GA build order starts by PINNING the
 semantic interfaces every later milestone must agree against:
 
 * `selAtomsGA` / `mem_selAtomsGA` — the selected-atom `Finset` of `W_n` over all

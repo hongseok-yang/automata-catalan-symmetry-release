@@ -1,8 +1,7 @@
 /-
 # The marked copied slice (§9 tower, Stage C)
 
-The marked-word decomposition of the copied slice and the boundary reduction
-(`CS_DESIGN.json`, CS-2).  `copiedSlice mS n = U^{mS-1} ++ wrappedFlat n ++
+The marked-word decomposition of the copied slice and the boundary reduction.  `copiedSlice mS n = U^{mS-1} ++ wrappedFlat n ++
 D^{mS-1}`, so its `k`-marked form factors into three `markSeg` segments; when
 every mark coordinate lies in the MIDDLE window, the boundary segments are
 unmarked and acceptance reduces — via `SliceReRoot.reRoot` through the

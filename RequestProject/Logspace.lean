@@ -2,9 +2,9 @@
 # Deterministic logspace transductions and the separation half of
 # `thm:wrp-strict-below-logspace`
 
-Machine model and separation witness for the revision's Theorem "Below
+Machine model and separation witness for the paper's Theorem "Below
 logspace" (`thm:wrp-strict-below-logspace`, paper.tex,
-proof Appendix A.3 lines 4538–4601): `WRP` is a proper subclass of the
+proof in Appendix A.3): `WRP` is a proper subclass of the
 word-to-word maps computable in deterministic logspace.
 
 **The model** (`CounterDFT`): a deterministic two-way transducer with a single
@@ -375,7 +375,7 @@ theorem sMap_isLogspace : IsLogspaceMap WRPComp.sMap :=
   isLogspaceMap_of_twoDFT WRPComp.compS
     (fun y out => (WRPComp.compS_computes_iff_sMap y out).symm)
 
-/-! ## The 1-counter machine for `F_{≥0}` (Appendix A.3, lines 4581–4587)
+/-! ## The 1-counter machine for `F_{≥0}` (Appendix A.3)
 
 One scan pass maintains the running prefix height in the counter; a `D` read
 at counter `0` would drive the height to `-1` *after* that letter, and whether
@@ -795,8 +795,8 @@ theorem lspFge0_computes_of_not_lnn (w : List Step)
   rw [tapeSym_ge w _ (by omega)]
   exact lspFge0_η_sink_rmark _
 
-/-- **The value computed by `lspFge0` is `F_{≥0}`'s payload** (Appendix A.3,
-lines 4581–4587; cf. `compS_computes_compD`): the relabelled input when every
+/-- **The value computed by `lspFge0` is `F_{≥0}`'s payload** (Appendix
+A.3; cf. `compS_computes_compD`): the relabelled input when every
 proper prefix height is nonnegative, `ε` otherwise. -/
 theorem lspFge0_computes (w : List Step) :
     lspFge0.Computes w
@@ -962,13 +962,13 @@ theorem lspFge0_spaceBound : SpaceBound lspFge0 1 := by
 
 /-- **`F_{≥0}` is a deterministic-logspace map** — the "in logspace" half of
 the proof of `thm:wrp-strict-below-logspace` (paper.tex, Appendix
-A.3 lines 4581–4587: one scan with a height counter and a flag, then a copy
+A.3: one scan with a height counter and a flag, then a copy
 pass): the machine `lspFge0`, with `c = 1` counter and space bound `C = 1`. -/
 theorem Fge0_isLogspace : IsLogspaceMap WRPComp.Fge0 :=
   ⟨1, 1, lspFge0, lspFge0_spaceBound, lspFge0_computes_iff⟩
 
 /-- **The separation half of `thm:wrp-strict-below-logspace`**
-(paper.tex; proof Appendix A.3 lines 4538–4601): there is
+(paper.tex; proof in Appendix A.3): there is
 a deterministic-logspace word-to-word map that is not a WRP map — namely
 `F_{≥0}`, whose nonempty-output preimage `Lnn \ {ε}` is not regular while
 every WRP map has a regular one (`lem:wrp-nonempty-regular`).  Trust: admits
@@ -986,11 +986,11 @@ principle).
 `hinc` is exactly Theorem `thm:wrp-logspace` (Logspace evaluation,
 paper.tex) specialised to this input/output alphabet pair:
 every WRP map is computable in deterministic logspace, i.e. by a
-bounded-counter machine of this file.  It remains open in this repository:
-a verified evaluator needs DFA-based evaluation of the presentation's MSO
-selection/label/order data and a verified selection sort of the atoms by
-rank — a major verified-algorithms project.  Its refinement
-`cor:srr-quadratic` (line 1587) additionally needs a time-cost model, which
+bounded-counter machine of this file.  The containment is proved in the
+richer multihead model (`wrp_isLogspaceMH`, `WRPLogspace.lean`); this file's
+single-head model has no verified bridge from the multihead machine, so the
+staged form keeps the containment as an explicit hypothesis here.  The
+refinement `cor:srr-quadratic` additionally needs a time-cost model, which
 this space-only machine model does not carry.
 
 The strictness half (`exists_logspace_not_wrp`) is proved outright.  Trust:

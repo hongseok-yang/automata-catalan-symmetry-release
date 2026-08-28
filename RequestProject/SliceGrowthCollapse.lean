@@ -18,7 +18,7 @@ This file starts the GA-3 build with its self-contained combinatorial pieces:
 * `shiftGroup_ne` — distinct shift amounts give distinct tuples (the orbit members
   are pairwise distinct atoms), provided the group window is inhabited.
 
-Still to come (the refined GA-3 plan, `FAS_DESIGN.md`): the canonical-configuration
+Not formalised here (the rest of the GA-3 plan): the canonical-configuration
 reachability (park both bulk clusters left by monotone move sequences, then place
 them at arbitrary grid targets), the orbit count, and the contradiction against the
 `IsOutput` length bound.

@@ -1,13 +1,13 @@
 /-
 # Route-B tie counting (§9 tower, F3.9 — the pin-free first-descent count)
 
-The remaining general-arity leaf is `CopiedD4.TieCountAffineBudgeted`: the number
+The target is `CopiedD4.TieCountAffineBudgeted`: the number
 of selected-`U` atoms that precede the first selected-`D` atom in the output order
 `≺` is affine-on-residues in `n`, with a period uniform across rows `mS`.
 
-**Why this file (route B).**  The committed route tried to *pin* the first-`D`
+**Why this file (route B).**  A route that *pins* the first-`D`
 atom `d*` as a residue-determined descriptor (`BoundaryAnchoredDstar`,
-`WholeTupleDstarAtomOrdGate`), which forces coverage of `d*` by a finite candidate
+`WholeTupleDstarAtomOrdGate`) forces coverage of `d*` by a finite candidate
 list and runs into the boundary-anchoring obstructions.  The paper's Section 9
 argument never pins `d*`: it counts "`u ≺` (first `D`)" with the first-`D` atom
 left as a *free* Presburger parameter and applies the bounded Presburger counting
