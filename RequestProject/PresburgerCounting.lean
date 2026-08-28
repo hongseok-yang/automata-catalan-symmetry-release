@@ -1,17 +1,18 @@
 /-
-# The admitted counting input: `lem:presburger-counting`
+# The counting input: `lem:presburger-counting`
 
-This file isolates the single counting fact the formalisation takes on trust, and states
-it in Mathlib vocabulary only (`IsSemilinearSet`, `Nat.card`, `Set.Finite`), so that it
-can be compared with the literature without decoding any project abstraction.  The
-project-side counting statements are derived from it; nothing else in the counting layer
-is admitted.
+This file states the counting fact the development's counting layer rests on, in Mathlib
+vocabulary only (`IsSemilinearSet`, `Nat.card`, `Set.Finite`), so that it can be compared
+with the literature without decoding any project abstraction.  It is a theorem, proved in
+`RequestProject/CountGeneral.lean` and re-exported here under the name the rest of the
+development uses; the project-side counting statements are derived from it.
 
 Also provided here: the coordinate-reindexing transport `isSemilinearSet_comp` and the
-`p = 2` repackaging `count_graph_two_param`, which puts the axiom into the `Fin (k+2)` /
+`p = 2` repackaging `count_graph_two_param`, which puts the theorem into the `Fin (k+2)` /
 `Fin 3` coordinate shape the two-parameter development uses.
 -/
 import Mathlib
+import RequestProject.CountGeneral
 
 namespace PresburgerCounting
 
@@ -38,7 +39,7 @@ theorem isSemilinearSet_comp {ι κ : Type*} (e : ι ≃ κ) {S : Set (ι → �
   rw [← himg]
   exact hS.image _
 
-/-! ## The axiom -/
+/-! ## The counting theorem -/
 
 /-- **`lem:presburger-counting`** — bounded parametric Presburger counting.
 
@@ -57,16 +58,29 @@ to the semilinear condition `R x 0`, and semilinear sets are closed under comple
 The paper's joint `r`-tuple form is not transcribed; the development uses only the
 single-count case.
 
-This is the **one admitted counting input** of the formalisation.  Sources: Woods'
-parametric Presburger counting theorem (the fibre count of a semilinear family is a
-piecewise quasi-polynomial in the parameters, on Presburger-definable pieces), together
-with Ginsburg–Spanier's identification of semilinear sets with the Presburger-definable
-ones.  The linear bound is what makes the conclusion true: it collapses the
-quasi-polynomial degree to `≤ 1`, and a function that is eventually affine on the residue
-classes of a fixed period has a semilinear graph.  Without the bound the statement fails —
-e.g. the semilinear family `A_x = {y : Fin 2 → ℕ | y 0 < x 0 ∧ y 1 < x 0}` has
-`|A_x| = (x 0)^2`, whose graph is not semilinear. -/
-axiom count_graph_semilinear {p q : ℕ}
+The proof is elementary and self-contained; it is assembled in
+`RequestProject/CountGeneral.lean` from `ProperLinearRep`, `SemilinearMinMax`,
+`KernelDichotomy`, `SemilinearGraphArith`, `ProperPieceCount` and `CountBaseCase`, and this
+declaration re-exports `CountGeneral.count_graph_semilinear_proved`.  Three ingredients carry
+it.  First, decomposition into *proper* linear pieces, whose periods are linearly independent,
+so that the points of a piece are in bijection with their coefficient tuples.  Second, a
+kernel dichotomy: two linearly independent integer vectors in the kernel of the parameter map
+would place quadratically many coefficient tuples over one parameter value, which the linear
+bound forbids, so the kernel is cyclic and every fibre of a piece is an arithmetic progression
+whose direction is fixed once and for all, independent of the parameter.  Third, the counts of
+the pieces are combined by inclusion–exclusion over those progressions — carried out through
+the two-set identity `|B ∪ C| + |B ∩ C| = |B| + |C|`, so that a union reduces to shorter
+unions of intersections — after which a single intersection is counted by its progression
+indices, a one-dimensional problem settled by splitting into residue classes of a common
+period and counting each class as an interval with definable endpoints.
+
+No Ehrhart theory, quasi-polynomiality, or parametric Presburger counting theorem is used;
+Mathlib's Ginsburg–Spanier bridge `presburger.definable_iff_isSemilinearSet` supplies the
+first-order closure properties, and nothing else external is needed.  The linear bound is what
+makes the statement true, and it enters exactly once, in the kernel dichotomy.  Without it the
+statement fails — e.g. the semilinear family `A_x = {y : Fin 2 → ℕ | y 0 < x 0 ∧ y 1 < x 0}`
+has `|A_x| = (x 0)^2`, whose graph is not semilinear. -/
+theorem count_graph_semilinear {p q : ℕ}
     (R : (Fin p → ℕ) → (Fin q → ℕ) → Prop)
     (hR : IsSemilinearSet {w : Fin p ⊕ Fin q → ℕ | R (w ∘ Sum.inl) (w ∘ Sum.inr)})
     (hfin : ∀ x : Fin p → ℕ, Set.Finite {y : Fin q → ℕ | R x y})
@@ -74,7 +88,8 @@ axiom count_graph_semilinear {p q : ℕ}
     (hbd : ∀ x : Fin p → ℕ,
       Nat.card {y : Fin q → ℕ | R x y} ≤ C * (Finset.univ.sup x + 1)) :
     IsSemilinearSet {z : Fin (p + 1) → ℕ |
-      Nat.card {y : Fin q → ℕ | R (fun i => z i.castSucc) y} = z (Fin.last p)}
+      Nat.card {y : Fin q → ℕ | R (fun i => z i.castSucc) y} = z (Fin.last p)} :=
+  CountGeneral.count_graph_semilinear_proved R hR hfin C hbd
 
 /-! ## The two-parameter repackaging -/
 

@@ -8,7 +8,7 @@ by Baek, Hwang, La, and Yang (`paper.tex`).
 
 Importing this module elaborates every file of the development.  `lake build`
 succeeds with 0 `sorry` and 0 warnings.  The entire development admits exactly
-five axioms beyond Lean's kernel primitives; each packages a standard external
+four axioms beyond Lean's kernel primitives; each packages a standard external
 result, or a direct consequence of one, some stated through the development's
 own abstractions so that they apply directly where they are needed:
 
@@ -18,14 +18,20 @@ own abstractions so that they apply directly where they are needed:
   relation over a block-linear word family is semilinear (Ginsburg–Spanier);
 * `SliceSemilinearN.regularRankTerm_value2_graph_semilinear` — its ℤ-valued
   sibling for regular rank terms;
-* `PresburgerCounting.count_graph_semilinear` — bounded parametric Presburger
-  counting, `lem:presburger-counting` transcribed in Mathlib vocabulary (the
-  single-count case, stated for all `p q : ℕ`); it is the **only** counting
-  input, and both the joint-graph form
-  (`TwoParamSemilinearity.twoParamCountGraph_proved`) and the row-uniform form
-  (`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) are derived from it;
 * `polyreg_regular_preimage` — polyregular preimages of regular languages are
   regular (Bojańczyk).
+
+The counting layer admits nothing.  `PresburgerCounting.count_graph_semilinear`
+— bounded parametric Presburger counting, `lem:presburger-counting` transcribed
+in Mathlib vocabulary (the single-count case, stated for all `p q : ℕ`) — is a
+theorem, proved in `CountGeneral.lean` on top of `ProperLinearRep.lean`,
+`SemilinearMinMax.lean`, `KernelDichotomy.lean`, `SemilinearGraphArith.lean`,
+`ProperPieceCount.lean` and `CountBaseCase.lean` by proper linear decomposition,
+the kernel dichotomy forced by the linear fibre bound, and inclusion–exclusion
+over arithmetic progressions; no Ehrhart or quasi-polynomial input is used.  It
+is the **only** counting input, and both the joint-graph form
+(`TwoParamSemilinearity.twoParamCountGraph_proved`) and the row-uniform form
+(`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) are derived from it.
 
 The headline results and where they live:
 
@@ -108,6 +114,8 @@ import RequestProject.CopiedTieGate
 import RequestProject.CopiedTieGateF
 import RequestProject.CopiedTieSemilinear2
 import RequestProject.CopiedTieSlice
+import RequestProject.CountBaseCase
+import RequestProject.CountGeneral
 import RequestProject.DyckPath
 import RequestProject.EnvelopeMin
 import RequestProject.Examples
@@ -116,6 +124,7 @@ import RequestProject.HeightSweepTwoPyramid
 import RequestProject.InverseZeta
 import RequestProject.InverseZetaFas
 import RequestProject.InverseZetaNotWRP
+import RequestProject.KernelDichotomy
 import RequestProject.Logspace
 import RequestProject.LogspaceTM
 import RequestProject.MHCOneHead
@@ -132,9 +141,15 @@ import RequestProject.NoSwapWRP
 import RequestProject.OneLoopSlice
 import RequestProject.Polyregular
 import RequestProject.PrefixAdditiveRank
+import RequestProject.PresburgerCounting
+import RequestProject.ProperLinearRep
+import RequestProject.ProperPieceCount
 import RequestProject.SMapWRP
 import RequestProject.SRR1
 import RequestProject.SRRQuadratic
+import RequestProject.SemilinearGraphAffine
+import RequestProject.SemilinearGraphArith
+import RequestProject.SemilinearMinMax
 import RequestProject.Semilinearity
 import RequestProject.SliceAffine
 import RequestProject.SliceAffineSelect

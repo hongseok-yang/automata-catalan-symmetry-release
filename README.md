@@ -45,7 +45,7 @@ so `lake build RequestProject.Main` elaborates the whole development.
 
 ## Trust base
 
-Every result is proved from Lean's kernel primitives plus exactly **five**
+Every result is proved from Lean's kernel primitives plus exactly **four**
 axioms.  Each packages a standard external result, or a direct consequence of
 one, about MSO, finite automata, semilinear sets, prefix-additive rank
 functions, and polyregular maps; some are stated through the development's
@@ -56,26 +56,37 @@ own abstractions so that they apply directly where they are needed:
 | `SliceMSO.buchi` | an MSO-definable language is recognised by a DFA | Büchi–Elgot–Trakhtenbrot |
 | `msoDefinableRel2_semilinear_general` | an MSO-definable relation over a block-linear word family is semilinear | Büchi + Ginsburg–Spanier |
 | `regularRankTerm_value2_graph_semilinear` | the ℤ-valued sibling for regular rank terms | ibid. |
-| `PresburgerCounting.count_graph_semilinear` | bounded parametric Presburger counting (`lem:presburger-counting`) | Woods / Ginsburg–Spanier |
 | `polyreg_regular_preimage` | polyregular preimages of regular languages are regular | Bojańczyk |
 
 The automaton-to-MSO direction of Büchi–Elgot–Trakhtenbrot is a proved
 theorem of the development (`detAuto_state_mso`); only the MSO-to-automaton
 direction is admitted.
 
-`count_graph_semilinear` is the single counting input, and it is stated in
-Mathlib vocabulary alone (`IsSemilinearSet`, `Nat.card`) so that it can be
-compared with the literature without reference to this development.  The two
-counting statements the towers consume are *derived* from it: the joint count
-graph of a two-parameter family (`twoParamCountGraph_proved`) by instantiating
-it at two parameters, and the row-uniform form
-(`isSliceFamilySemilinear2_count_global`) from that together with the
-axiom-clean `semilinearGraph3_affineOnResiduesAt_uniform`, which turns a
-semilinear count graph in ℕ³ into rows that are eventually affine on the
-residues of one row-uniform period.  Counting is needed only for the
-general-arity tie count of §9: the arity-1 inverse-zeta capstone and the whole
-one-parameter slice analysis behind `thm:wrp-slice-semilinearity` are free of
-it.
+**Counting is not admitted.**  `PresburgerCounting.count_graph_semilinear`
+(`lem:presburger-counting`) is a theorem, stated in Mathlib vocabulary alone
+(`IsSemilinearSet`, `Nat.card`) so that it can be compared with the literature
+without reference to this development, and proved in `CountGeneral.lean` from
+`ProperLinearRep.lean`, `SemilinearMinMax.lean`, `KernelDichotomy.lean`,
+`SemilinearGraphArith.lean`, `ProperPieceCount.lean` and `CountBaseCase.lean`.
+The proof is elementary: decompose into proper linear pieces, whose linearly
+independent periods make coefficient tuples unique; observe that the linear
+fibre bound forbids two independent integer vectors in the kernel of the
+parameter map, so the kernel is cyclic and every fibre is an arithmetic
+progression with a parameter-independent direction; then combine pieces by
+inclusion–exclusion over those progressions and count each residue class as an
+interval with definable endpoints.  No Ehrhart theory or quasi-polynomiality is
+used — only Mathlib's Ginsburg–Spanier bridge
+`presburger.definable_iff_isSemilinearSet` for first-order closure.
+
+The two counting statements the towers consume are *derived* from it: the joint
+count graph of a two-parameter family (`twoParamCountGraph_proved`) by
+instantiating it at two parameters, and the row-uniform form
+(`isSliceFamilySemilinear2_count_global`) from that together with
+`semilinearGraph3_affineOnResiduesAt_uniform`, which turns a semilinear count
+graph in ℕ³ into rows that are eventually affine on the residues of one
+row-uniform period.  Counting is needed only for the general-arity tie count of
+§9: the arity-1 inverse-zeta capstone and the whole one-parameter slice analysis
+behind `thm:wrp-slice-semilinearity` are free of it.
 
 To check what any theorem depends on:
 
@@ -91,7 +102,7 @@ echo 'import RequestProject.Main
 | `thm:wrp-no-swap` (no WRP area–dinv swap) | `wrp_no_area_dinv_swap` | `NoSwapWRP.lean` | `buchi` |
 | `cor:model-free-obstruction` (model-free form) | `model_free_obstruction` | `NoSwapWRP.lean` | none |
 | `cor:inverse-zeta-not-wrp` (arity 1) | `CopiedD4.inverse_zeta_not_wrp_arity1` | `CopiedD4.lean` | `buchi` |
-| `cor:inverse-zeta-not-wrp` (general arity) | `CopiedTieSemilinear2.inverse_zeta_not_wrp` | `CopiedTieSemilinear2.lean` | `buchi`, the two general semilinearity axioms, `count_graph_semilinear` |
+| `cor:inverse-zeta-not-wrp` (general arity) | `CopiedTieSemilinear2.inverse_zeta_not_wrp` | `CopiedTieSemilinear2.lean` | `buchi`, the two general semilinearity axioms |
 | `thm:zeta-wrp` (ζ ∈ sRR₁ ⊆ WRP) | `zetaMap_realisedByWRP`, `zetaSweep_isSRR1` | `ZetaWRP.lean`, `SRR1.lean` | none |
 | `prop:two-pyramid-criterion` (shared lower-bound criterion) | `two_pyramid_criterion` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
 | `thm:zeta-not-polyregular`, `cor:zeta-not-regular` | `zetaMap_not_polyregular`, `zetaMap_not_regular` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
@@ -107,7 +118,7 @@ echo 'import RequestProject.Main
 | `thm:wrp-not-closed` (composition) | `wrp_not_closed_composition` | `WRPNotClosedComp.lean` | `buchi` |
 | `thm:bounded-rank-collapse`, `cor:rank-necessary` | `WRPBoundedRank.bounded_rank_collapse`, `.rank_necessary` | `WRPBoundedRank.lean` | none / `polyreg_regular_preimage` |
 | `thm:wrp-slice-semilinearity` | `wrp_slice_profile_semilinear` | `NoSwapWRP.lean` | `buchi` |
-| `thm:two-parameter-semilinearity` | `two_param_profile_semilinear_unconditional` | `TwoParamSemilinearity.lean` | the two general semilinearity axioms, `count_graph_semilinear` |
+| `thm:two-parameter-semilinearity` | `two_param_profile_semilinear_unconditional` | `TwoParamSemilinearity.lean` | the two general semilinearity axioms |
 | `lem:one-loop-finite-state`, `lem:one-loop-presburger` | `OneLoopSlice.one_loop_*` | `OneLoopSlice.lean` | the two general semilinearity axioms |
 | `thm:narayana-sweep` | `valleys_heightSweep_eq_doubleRises`, `heightSweep_bijOn`, `heightSweep_isSRR1` | `NarayanaSweep.lean`, `NarayanaBijection.lean`, `SRR1.lean` | none |
 

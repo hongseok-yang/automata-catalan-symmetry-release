@@ -29,7 +29,7 @@ The paper's proof has two halves.
 * **Counting** (`lem:presburger-counting` in its tuple form, as applied in the
   paper's §9 proof): a semilinear `(m, n, ī)`-family with linearly bounded finite fibres has a
   **semilinear count graph** `{(m, n, #fibre)}`.  This is the `p = 2` instance of the
-  admitted counting axiom `PresburgerCounting.count_graph_semilinear`, and is derived from
+  counting theorem `PresburgerCounting.count_graph_semilinear`, and is derived from
   it here as `twoParamCountGraph_proved`.  The main theorem
   `two_param_profile_semilinear` still takes the principle as the explicit hypothesis
   `TwoParamCountGraph`, so that the residual counting boundary is visible in its
@@ -37,7 +37,7 @@ The paper's proof has two halves.
   else — the semantic bridges `firstAscent/tailU ↔` atom counts, the growth budget, and
   the ℕ⁴ assembly — is proved.
 
-As an **unconditional** corollary of the repo's weaker counting axiom, every row of
+As an **unconditional** corollary of the repo's weaker counting input, every row of
 `S_T` is semilinear: `two_param_profile_row_semilinear` proves that for each fixed
 `m ≥ 1` the set `{(fas(T(W_{m,n})), tailU(T(W_{m,n}))) : n ≥ 1}` is `IsSemilinear2` —
 the two-parameter mirror of `wrp_slice_profile_semilinear` (`NoSwapWRP.lean`), which it
@@ -910,7 +910,7 @@ paper's `lem:presburger-counting`, exactly as used in the proof of
 two-parameter atom family with finite fibres of linearly bounded size has a semilinear
 count graph `{(m, n, #fibre_{m,n})} ⊆ ℕ³`.
 
-It is proved as `twoParamCountGraph_proved`, by instantiating the admitted
+It is proved as `twoParamCountGraph_proved`, by instantiating
 `lem:presburger-counting` (`PresburgerCounting.count_graph_semilinear`) at `p = 2`,
 `q = k`.  It is strictly stronger than the row-wise consequence
 `SliceSemilinearN.isSliceFamilySemilinear2_count_global`, which yields only affinity of
@@ -970,8 +970,8 @@ theorem two_param_profile_semilinear_of_count_graphs
 
 /-- **Theorem `thm:two-parameter-semilinearity`** (paper.tex),
 formalised relative to the two-parameter counting principle `TwoParamCountGraph`
-(see its docstring: it is the paper's `lem:presburger-counting` in graph form, the one
-ingredient not available from the repo's admitted axioms).
+(see its docstring: it is the paper's `lem:presburger-counting` in graph form;
+`twoParamCountGraph_proved` discharges it).
 
 Let `T` be a WRP transduction defined on the whole two-parameter family
 `W_{m,n} = copiedSlice m n` (`hdom`; the paper's implicit domain assumption) with
@@ -1180,7 +1180,7 @@ end RowTheorem
 
 /-- **The two-parameter counting principle, proved.**  `TwoParamCountGraph` is exactly
 `SliceSemilinearN.sliceFamilyCount2_graph_semilinear`, the `p = 2`, `q = k` instance of
-`PresburgerCounting.count_graph_semilinear` (the single admitted transcription of
+`PresburgerCounting.count_graph_semilinear` (the transcription of
 `lem:presburger-counting`), with the bound hypothesis unbundled. -/
 theorem twoParamCountGraph_proved : TwoParamCountGraph := by
   intro k Φ hΦ hfin hbd
@@ -1190,9 +1190,10 @@ theorem twoParamCountGraph_proved : TwoParamCountGraph := by
 /-- **Theorem `thm:two-parameter-semilinearity`
 (paper.tex), unconditional** — `two_param_profile_semilinear` discharged with the
 counting principle `twoParamCountGraph_proved`.  Trust base (verified by
-`#print axioms`): the kernel axioms, the two general slice-definability axioms
-`msoDefinableRel2_semilinear_general` / `regularRankTerm_value2_graph_semilinear`,
-and the counting axiom `PresburgerCounting.count_graph_semilinear`. -/
+`#print axioms`): the kernel axioms and the two general slice-definability axioms
+`msoDefinableRel2_semilinear_general` / `regularRankTerm_value2_graph_semilinear`.
+The counting input `PresburgerCounting.count_graph_semilinear` is a theorem and
+contributes nothing to the trust base. -/
 theorem two_param_profile_semilinear_unconditional
     (T : List Step → Option (List Step)) (hT : WRP.IsWRP T)
     (hgrow : ∃ C, ∀ m n out, 1 ≤ m → T (copiedSlice m n) = some out →

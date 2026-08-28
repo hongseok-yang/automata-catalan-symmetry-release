@@ -2,7 +2,7 @@
 
 This file records, section by section, how `paper.tex` is rendered in the
 Lean development, and the modelling conventions the rendering uses.  The
-build is complete: **0 `sorry`, 0 warnings, five project axioms** (listed in
+build is complete: **0 `sorry`, 0 warnings, four project axioms** (listed in
 [`README.md`](README.md), which also tables the headline results with their
 trust bases).
 
@@ -78,9 +78,10 @@ over an arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
 (`one_loop_finite_state`, `one_loop_rank_graph`,
 `one_loop_presburger_sel`/`_label`/`_rankLt`/`_rankEq`/`_tie`/`_wrpOrd`,
 from the two general semilinearity axioms).
-`lem:presburger-counting` is the single admitted counting input, transcribed
-in Mathlib vocabulary as `PresburgerCounting.count_graph_semilinear` (see
-Conventions).  Both forms the towers consume are derived from it: the joint
+`lem:presburger-counting` is the single counting input, transcribed
+in Mathlib vocabulary as `PresburgerCounting.count_graph_semilinear` and proved
+in `CountGeneral.lean` (see Conventions).  Both forms the towers consume are
+derived from it: the joint
 count-graph form (`TwoParamSemilinearity.twoParamCountGraph_proved`) by
 instantiating it at two parameters, and the row-uniform form
 (`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) from that together
@@ -181,12 +182,13 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    machine evaluators, the separating witnesses); the automaton-to-MSO
    direction is the proved theorem `detAuto_state_mso`.  The two general
    semilinearity axioms enter the general-arity §9 assembly,
-   `thm:two-parameter-semilinearity`, and `OneLoopSlice.lean`;
-   `count_graph_semilinear` enters the same two places, through the derived
-   row-uniform and joint-graph forms.  The arity-1 inverse-zeta capstone
+   `thm:two-parameter-semilinearity`, and `OneLoopSlice.lean`.  The counting
+   input `count_graph_semilinear` enters the same two places, through the
+   derived row-uniform and joint-graph forms, but it is a theorem and so adds
+   nothing to the trust base.  The arity-1 inverse-zeta capstone
    `CopiedD4.inverse_zeta_not_wrp_arity1` needs no counting input at all
    (`buchi` only), and neither does the one-parameter slice analysis behind
-   `thm:wrp-slice-semilinearity`: counting is admitted only for the
+   `thm:wrp-slice-semilinearity`: counting is used only for the
    general-arity tie count of §9.
    `polyreg_regular_preimage` enters only the §5 and §6 lower bounds (and
    hence `thm:wrp-strict-over-poly` and `cor:rank-necessary`, which invoke
@@ -195,15 +197,24 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    `thm:wrp-closures`, `thm:bounded-rank-collapse`, and the regular-preimage
    clause of `thm:wrp-not-closed`.
 
-10. **The counting axiom against `lem:presburger-counting`.**
+10. **The counting theorem against `lem:presburger-counting`.**
     `PresburgerCounting.count_graph_semilinear` is stated with Mathlib's
     `IsSemilinearSet` and `Nat.card` only, so it can be compared with the
     literature (Woods; Ginsburg–Spanier) without reference to this
-    development.  Two differences from the paper's text, both deliberate:
-    the paper's `p, q ≥ 1` is dropped, so the axiom also covers `p = 0` and
-    `q = 0` — harmless, since both degenerate cases are provable outright
-    (for `p = 0` the graph is a singleton; for `q = 0` the count is the
-    indicator of a semilinear condition, and semilinear sets are closed
+    development.  It is **proved**, not admitted: `CountGeneral.lean` derives
+    it from `ProperLinearRep.lean`, `SemilinearMinMax.lean`,
+    `KernelDichotomy.lean`, `SemilinearGraphArith.lean`,
+    `ProperPieceCount.lean` and `CountBaseCase.lean` by proper linear
+    decomposition (linearly independent periods, hence unique coefficient
+    tuples), a kernel dichotomy in which the linear fibre bound rules out two
+    independent integer kernel directions — so every fibre is an arithmetic
+    progression with a parameter-independent step — and inclusion–exclusion
+    over those progressions, residue class by residue class.  No Ehrhart or
+    quasi-polynomial input is needed.  Two differences from the paper's text,
+    both deliberate: the paper's `p, q ≥ 1` is dropped, so the statement also
+    covers `p = 0` and `q = 0` — harmless, since both degenerate cases are
+    elementary (for `p = 0` the graph is a singleton; for `q = 0` the count is
+    the indicator of a semilinear condition, and semilinear sets are closed
     under complement) — and the paper's joint `r`-tuple form is not
     transcribed, the development needing only the single-count case.  The
     linear bound is load-bearing rather than cosmetic: without it the

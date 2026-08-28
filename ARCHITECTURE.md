@@ -118,9 +118,16 @@ The slice analysis that powers both §8 and §9.
   two-parameter slice-family notion, and the general admitted facts.
 * `PresburgerCounting.lean`, `SemilinearGraphAffine.lean`,
   `SliceCountGlobal.lean` — `lem:presburger-counting` (the single counting
-  axiom), the passage from a semilinear function graph in `ℕ³` to rows that are
-  eventually affine on the residues of one row-uniform period, and the two
-  counting consequences the towers consume.
+  input, a theorem), the passage from a semilinear function graph in `ℕ³` to
+  rows that are eventually affine on the residues of one row-uniform period,
+  and the two counting consequences the towers consume.
+* `ProperLinearRep.lean`, `SemilinearMinMax.lean`, `KernelDichotomy.lean`,
+  `SemilinearGraphArith.lean`, `ProperPieceCount.lean`, `CountBaseCase.lean`,
+  `CountGeneral.lean` — the proof of `lem:presburger-counting`: unique
+  representation in proper linear sets, Presburger-definable extremal
+  selection, the kernel dichotomy forced by the linear fibre bound, signed
+  arithmetic on semilinear function graphs, the per-piece count, the
+  one-dimensional case, and the reduction of arbitrary fibre dimension to it.
 * `SliceAutomata.lean`, `SliceRank.lean`, `SliceMSO.lean`, `SliceOrder.lean`
   — the finite-state core: eventual periodicity of DFA states along
   `pre·loopⁿ·suf`, affine-on-residues rank accumulation, the Büchi axiom and

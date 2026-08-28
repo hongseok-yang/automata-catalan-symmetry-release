@@ -406,7 +406,7 @@ theorem isSemilinearNd_forall_last {d : ℕ} {S : Set (Fin (d + 1) → ℕ)}
 /-- **Fibre cardinality as a `Finset` count.**  When the family `Φ` at slice `n` is
 supported inside a finite range `F`, its set-fibre cardinality `Nat.card {ī : Φ n ī}`
 equals the `Finset.filter` count over `F` — the form the `TieCountAffineBudgeted`
-sum is written in.  Bridges the counting axiom to step 4. -/
+sum is written in.  Bridges the counting input to step 4. -/
 theorem natCard_setOf_eq_filter_card {k : ℕ} (Φ : ℕ → (Fin k → ℕ) → Prop)
     (n : ℕ) (F : Finset (Fin k → ℕ))
     (hsupp : ∀ ī, Φ n ī → ī ∈ F) :

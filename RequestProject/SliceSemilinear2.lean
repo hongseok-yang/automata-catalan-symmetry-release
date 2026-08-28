@@ -403,7 +403,7 @@ semilinear (Ginsburg–Spanier).  Both hypotheses are load-bearing: `[Fintype Al
 needed for the MSO⇒automaton step, and the block-linear shape of `F` is needed for the
 slice language to be regular (an arbitrary `slice : ℕ → ℕ → List Alpha` can encode a
 non-semilinear position set).  This is the same kind of standard, project-agnostic fact
-as the counting axiom `PresburgerCounting.count_graph_semilinear`. -/
+as the Büchi–Elgot–Trakhtenbrot axiom `SliceMSO.buchi`. -/
 axiom msoDefinableRel2_semilinear_general {Alpha : Type*} [Fintype Alpha] {k : ℕ}
     (F : BlockLinearWord2 Alpha)
     {R : List Alpha → (Fin k → ℕ) → Prop} (hR : MSO.MSODefinableRel k R) :

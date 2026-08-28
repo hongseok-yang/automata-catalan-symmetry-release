@@ -4428,7 +4428,7 @@ the declaration of AI use at the end of the paper; since every proof is
 checked by Lean's kernel, the guarantees described in this section do not
 depend on how the proofs were found.  The formalisation is distributed with
 the paper.\footnote{\url{https://github.com/hongseok-yang/automata-catalan-symmetry-release}}
-It comprises roughly $100{,}000$ lines of Lean in $159$ source files, pins an
+It comprises roughly $105{,}000$ lines of Lean in $166$ source files, pins an
 exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so that the
 build is reproducible, and contains no unproved placeholder: every statement
 in the development is fully proved from Lean's kernel and the short list of
@@ -4457,7 +4457,10 @@ closed forms behind the $\zeta$ and $H$ lower bounds
 (Lemmas~\ref{lem:zeta-two-pyramid} and~\ref{lem:H-two-pyramid}), and the
 regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
 proofs, the last both instantiated at the family $W_n$ and verbatim over an
-arbitrary slice $u\,v^n z$.  Background results quoted from the literature, such as
+arbitrary slice $u\,v^n z$.  The single-count case of
+Lemma~\ref{lem:presburger-counting} is proved rather than assumed, by a route
+different from the one taken in Section~\ref{sec:slice-semilinearity}; see the
+discussion of the trust base below.  Background results quoted from the literature, such as
 Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
 enter through the admitted axioms below.  The worked examples of the paper
 are certified by Lean's executable decision procedures.  Two documentation
@@ -4480,7 +4483,7 @@ Thm.~\ref{thm:wrp-closures} (basic closures) &
   \texttt{isWRP\_reverse}, \texttt{isWRP\_disjointUnion},
   \texttt{isWRP\_concat} & none \\
 Thm.~\ref{thm:wrp-strict-over-poly} (above $\polyreg$) &
-  \texttt{polyreg\_strict\_subset\_wrp} & (v) \\
+  \texttt{polyreg\_strict\_subset\_wrp} & (iv) \\
 Thm.~\ref{thm:wrp-logspace} (logspace evaluation) &
   \texttt{wrp\_isLogspaceMH}, \texttt{wrp\_isLogspaceTM},
   \texttt{wrp\_logspace\_polytime}, \texttt{wrp\_logspaceTM\_polytime} &
@@ -4497,24 +4500,24 @@ Thm.~\ref{thm:wrp-not-closed} (closure failure, composition) &
 Thm.~\ref{thm:bounded-rank-collapse} (bounded-rank collapse) &
   \texttt{bounded\_rank\_collapse} & none \\
 Cor.~\ref{cor:rank-necessary} (unbounded rank needed) &
-  \texttt{rank\_necessary} & (v) \\
+  \texttt{rank\_necessary} & (iv) \\
 Thm.~\ref{thm:zeta-wrp} (zeta in $\SWR$) &
   \texttt{zetaMap\_realisedByWRP}, \texttt{zetaSweep\_isSRR1} & none \\
 Prop.~\ref{prop:alw-sweep-swr} (additive level sorts in $\SWR$) &
   \texttt{additiveSweep\_isSRR1} & none \\
 Prop.~\ref{prop:two-pyramid-criterion} (two-pyramid criterion) &
-  \texttt{two\_pyramid\_criterion} & (v) \\
+  \texttt{two\_pyramid\_criterion} & (iv) \\
 Thm.~\ref{thm:zeta-not-polyregular} (zeta beyond $\polyreg$) &
-  \texttt{zetaMap\_not\_polyregular} & (v) \\
+  \texttt{zetaMap\_not\_polyregular} & (iv) \\
 Cor.~\ref{cor:zeta-not-regular} (zeta beyond $\MSO$) &
-  \texttt{zetaMap\_not\_regular} & (v) \\
+  \texttt{zetaMap\_not\_regular} & (iv) \\
 Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
   \texttt{heightSweep\_bijOn},
   \texttt{valleys\_heightSweep\_eq\_doubleRises},
   \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
 Thm.~\ref{thm:H-not-polyregular} (height sweep beyond $\polyreg$) &
   \texttt{heightSweep\_not\_polyregular},
-  \texttt{heightSweep\_not\_regular} & (v) \\
+  \texttt{heightSweep\_not\_regular} & (iv) \\
 Thm.~\ref{thm:wrp-slice-semilinearity} (first-ascent semilinearity) &
   \texttt{wrp\_slice\_profile\_semilinear} & (i) \\
 Cor.~\ref{cor:model-free-obstruction} (model-free obstruction) &
@@ -4523,15 +4526,15 @@ Thm.~\ref{thm:wrp-no-swap} (no area--dinv swap) &
   \texttt{wrp\_no\_area\_dinv\_swap} & (i) \\
 Thm.~\ref{thm:two-parameter-semilinearity} (two-parameter semilinearity) &
   \texttt{two\_param\_profile\_semilinear\_unconditional} &
-  (ii), (iii), (iv) \\
+  (ii), (iii) \\
 Cor.~\ref{cor:inverse-zeta-not-wrp} (arity one) &
   \texttt{inverse\_zeta\_not\_wrp\_arity1} & (i) \\
 Cor.~\ref{cor:inverse-zeta-not-wrp} (general arity) &
-  \texttt{inverse\_zeta\_not\_wrp} & (i)--(iv) \\
+  \texttt{inverse\_zeta\_not\_wrp} & (i)--(iii) \\
 \bottomrule
 \end{tabularx}
 \caption{The headline results and their Lean counterparts.  The last column
-lists the admitted axioms (i)--(v), described in the text, on which each
+lists the admitted axioms (i)--(iv), described in the text, on which each
 Lean proof depends beyond the kernel; ``none'' marks results proved with no
 admitted axiom.  Lean names are cited without namespace prefixes; the
 repository documentation maps the numbered statements of the paper, including
@@ -4541,9 +4544,9 @@ the intermediate lemmas, to their formal counterparts.}
 
 \paragraph{Trust base.}
 The completed development is built from Lean's kernel primitives plus exactly
-five explicitly admitted axioms.  These axioms package standard external
+four explicitly admitted axioms.  These axioms package standard external
 results or their consequences concerning $\MSO$, finite automata, semilinear
-sets, prefix-additive rank functions, and polyregular maps.  Some are stated
+sets, and polyregular maps.  Some are stated
 using the development's own abstractions so that they can be applied directly
 to the formalised arguments below.
 \begin{enumerate}[label=(\roman*)]
@@ -4561,24 +4564,27 @@ Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
 \item \texttt{regularRankTerm\_value2\_graph\_semilinear}: the $\Z^d$-valued
 sibling of (ii), semilinearity of the value graphs of prefix-additive rank
 functions read along such a family.
-\item \texttt{count\_graph\_semilinear}: Lemma~\ref{lem:presburger-counting}
-itself, in its single-count case.  Unlike (ii) and (iii), it is stated
-entirely in the vocabulary of the Lean standard library --- semilinear sets
-and cardinalities --- with no notion from this development, so that it can be
-compared directly against the literature.
 \item \texttt{polyreg\_regular\_preimage}: the preimage of a regular language
 under a polyregular map is regular~\cite{Bojanczyk2018}.
 \end{enumerate}
-Axiom (iv) is the point at which the formalisation consumes the same external
-input as the informal development: Lemma~\ref{lem:presburger-counting} is
-derived in Section~\ref{sec:slice-semilinearity} from Woods' Presburger
-counting theorem~\cite[Theorem~1.10]{Woods2015}, and the formalisation admits
-the lemma rather than re-proving that counting machinery.  The two counting
-statements the development actually uses --- the joint count graph of a
-two-parameter family, and the row-uniform form in which each row of that
-graph is eventually affine on the residue classes of a single period --- are
-both \emph{proved} from (iv); the passage from the joint graph to the
-row-uniform form is axiom-free.  Which
+The counting layer admits nothing.  Section~\ref{sec:slice-semilinearity}
+derives Lemma~\ref{lem:presburger-counting} from Woods' Presburger counting
+theorem~\cite[Theorem~1.10]{Woods2015}, but the formalisation does not follow
+that route and does not assume the lemma: it \emph{proves} the single-count
+case outright, by an argument that needs no Ehrhart theory and no
+quasi-polynomials.  Mathlib supplies the decomposition of a semilinear set
+into pieces whose periods are linearly independent, so each piece is in
+bijection with its coefficient tuples and no point is counted twice.  On such
+a piece the linear bound forces a dichotomy: two independent directions in
+the kernel of the map from coefficients to parameters would place
+quadratically many points over a single parameter of linear size, so the
+kernel has rank at most one, and every fibre is therefore an arithmetic
+progression whose direction does not depend on the parameter.  Counting the
+union of finitely many such progressions is then elementary.  Both counting
+statements the development uses --- the joint count graph of a two-parameter
+family, and the row-uniform form in which each row of that graph is
+eventually affine on the residue classes of a single period --- follow, and
+are likewise free of any axiom.  Which
 axioms each headline result uses is recorded in Table~\ref{tab:lean} and can
 be audited mechanically with Lean's \texttt{\#print axioms} command.  The
 combinatorial core needs none of them: the closure and collapse theorems, the
@@ -4592,7 +4598,7 @@ no-swap theorem and the arity-one case of
 Corollary~\ref{cor:inverse-zeta-not-wrp} use only the
 B\"uchi--Elgot--Trakhtenbrot axiom (i), and the polyregular lower bounds for
 $\zeta$ and $H$ (Theorems~\ref{thm:zeta-not-polyregular}
-and~\ref{thm:H-not-polyregular}) use only the preimage axiom (v).
+and~\ref{thm:H-not-polyregular}) use only the preimage axiom (iv).
 
 \paragraph{Statement fidelity.}
 A machine-checked proof certifies exactly its formal statement, so we record
@@ -4622,7 +4628,7 @@ deterministic $\MSO$ transductions, the class that Theorem~\ref{thm:eh}
 identifies with the two-way machines; the identification itself is quoted,
 not re-proved.  The two-pyramid criterion
 (Proposition~\ref{prop:two-pyramid-criterion}) is formalised without its
-growth hypothesis: the formal proof applies the preimage axiom (v) to the
+growth hypothesis: the formal proof applies the preimage axiom (iv) to the
 polyregular realiser directly, without passing through the linear-growth
 collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.
 Theorem~\ref{thm:wrp-logspace} is proved for both machine
