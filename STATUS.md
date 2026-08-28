@@ -2,7 +2,7 @@
 
 This file records, section by section, how `paper.tex` is rendered in the
 Lean development, and the modelling conventions the rendering uses.  The
-build is complete: **0 `sorry`, 0 warnings, six project axioms** (listed in
+build is complete: **0 `sorry`, 0 warnings, five project axioms** (listed in
 [`README.md`](README.md), which also tables the headline results with their
 trust bases).
 
@@ -78,9 +78,16 @@ over an arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
 (`one_loop_finite_state`, `one_loop_rank_graph`,
 `one_loop_presburger_sel`/`_label`/`_rankLt`/`_rankEq`/`_tie`/`_wrpOrd`,
 from the two general semilinearity axioms).
-`lem:presburger-counting` is admitted, as the axioms
-`isSliceFamilySemilinear2_count` (per-row form) and
-`twoParamCountGraph_admitted` (joint count-graph form).
+`lem:presburger-counting` is the single admitted counting input, transcribed
+in Mathlib vocabulary as `PresburgerCounting.count_graph_semilinear` (see
+Conventions).  Both forms the towers consume are derived from it: the joint
+count-graph form (`TwoParamSemilinearity.twoParamCountGraph_proved`) by
+instantiating it at two parameters, and the row-uniform form
+(`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) from that together
+with the axiom-clean `semilinearGraph3_affineOnResiduesAt_uniform`
+(`SemilinearGraphAffine.lean`), which turns a semilinear count graph in `ℕ³`
+into rows that are eventually affine on the residues of one row-uniform
+period.
 `lem:semilinear-envelope` — `semilinear_envelope_dichotomy`
 (`Semilinearity.lean`) and `EnvelopeMin.semilinear_envelope_min`.
 `thm:wrp-slice-semilinearity` — `wrp_slice_profile_semilinear`
@@ -174,9 +181,13 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    machine evaluators, the separating witnesses); the automaton-to-MSO
    direction is the proved theorem `detAuto_state_mso`.  The two general
    semilinearity axioms enter the general-arity §9 assembly,
-   `thm:two-parameter-semilinearity`, and `OneLoopSlice.lean`; the two
-   counting axioms enter the general-arity §9 assembly (per-row form) and
-   `thm:two-parameter-semilinearity` (joint-graph form).
+   `thm:two-parameter-semilinearity`, and `OneLoopSlice.lean`;
+   `count_graph_semilinear` enters the same two places, through the derived
+   row-uniform and joint-graph forms.  The arity-1 inverse-zeta capstone
+   `CopiedD4.inverse_zeta_not_wrp_arity1` needs no counting input at all
+   (`buchi` only), and neither does the one-parameter slice analysis behind
+   `thm:wrp-slice-semilinearity`: counting is admitted only for the
+   general-arity tie count of §9.
    `polyreg_regular_preimage` enters only the §5 and §6 lower bounds (and
    hence `thm:wrp-strict-over-poly` and `cor:rank-necessary`, which invoke
    them).  The combinatorial core (§2, §6's exchange and bijection theorems,
@@ -184,7 +195,22 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    `thm:wrp-closures`, `thm:bounded-rank-collapse`, and the regular-preimage
    clause of `thm:wrp-not-closed`.
 
-10. **Decidable examples.**  The paper's worked examples are verified by
+10. **The counting axiom against `lem:presburger-counting`.**
+    `PresburgerCounting.count_graph_semilinear` is stated with Mathlib's
+    `IsSemilinearSet` and `Nat.card` only, so it can be compared with the
+    literature (Woods; Ginsburg–Spanier) without reference to this
+    development.  Two differences from the paper's text, both deliberate:
+    the paper's `p, q ≥ 1` is dropped, so the axiom also covers `p = 0` and
+    `q = 0` — harmless, since both degenerate cases are provable outright
+    (for `p = 0` the graph is a singleton; for `q = 0` the count is the
+    indicator of a semilinear condition, and semilinear sets are closed
+    under complement) — and the paper's joint `r`-tuple form is not
+    transcribed, the development needing only the single-count case.  The
+    linear bound is load-bearing rather than cosmetic: without it the
+    statement is false, as the family `A_x = {y | y 0 < x 0 ∧ y 1 < x 0}`
+    with `|A_x| = (x 0)²` shows.
+
+11. **Decidable examples.**  The paper's worked examples are verified by
     `decide`/`native_decide` rather than by hand (`Examples.lean`,
     plus spot checks in `NarayanaSweep.lean`, `ZetaClassification.lean`, and
     `HeightSweepTwoPyramid.lean`).

@@ -121,15 +121,29 @@ theorem fas_pred_split_fibred (P : WRP.Presentation Step Step) (hV : P.Valid)
   · rw [if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩), if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩),
       if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩)]
 
+/-- **The global selected-atom budget** at constant `C`: on every in-domain copied
+slice, any `Nodup` list of selected atoms of one copy has length `≤ C · (mS + n + 1)`.
+
+This is exactly what `CopiedDischarge.hbud_of_hgrow_m` produces from linear output
+growth, and it is global in both `mS` and `n`. -/
+def GlobalSelectedBudget (P : WRP.Presentation Step Step) (C : ℕ) : Prop :=
+    ∀ mS n, P.toPoly.domain (copiedSlice mS n) →
+      ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →
+        (∀ x ∈ l, P.toPoly.selectedAtom (copiedSlice mS n) ⟨c, x⟩) →
+        l.length ≤ C * (mS + n + 1)
+
 /-- The tie-count package needed by the copied-slice FAS assembly.  The existing
 arity-1 bridge supplies this package; the general inverse-zeta route needs the
-same package without an arity restriction. -/
+same package without an arity restriction.
+
+The budget is consumed **globally**, before the period `p0` and the row threshold `Mbr`
+are chosen: the general-arity supplier reads its period off the joint `(mS, n)` count
+graph, so the period may not depend on the row.  The arity-1 route is unaffected — it
+chooses its period from the bridge data and only ever uses the budget one row at a
+time. -/
 def TieCountAffineBudgeted (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ) : Prop :=
+    GlobalSelectedBudget P C →
     ∃ (p0 Mbr : ℕ), 1 ≤ p0 ∧ 1 ≤ Mbr ∧ ∀ (mS : ℕ), Mbr ≤ mS →
-      (∀ n, P.toPoly.domain (copiedSlice mS n) →
-        ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →
-          (∀ x ∈ l, P.toPoly.selectedAtom (copiedSlice mS n) ⟨c, x⟩) →
-          l.length ≤ C * (mS + n + 1)) →
       ∃ (tie' : ℕ → ℕ) (N : ℕ), AffineOnResiduesAt p0 tie' ∧
         ∀ n, N ≤ n → P.toPoly.domain (copiedSlice mS n) →
           (∃ a, P.toPoly.selectedAtom (copiedSlice mS n) a ∧
@@ -151,12 +165,13 @@ arity-free plug-in point for the future general bridge supplier. -/
 theorem tie_count_affine_budgeted_of_bridge (P : WRP.Presentation Step Step) (hV : P.Valid)
     (C : ℕ) (hbridge : CopiedTieSlice.TiePointBridgeBudgetedIndexed P hV C) :
     TieCountAffineBudgeted P hV C := by
+  intro hbud
   obtain ⟨B, Bh, M, _mthr, pG, q_U, q_D, Q, Ndeep, Mbr, hpG, hMbr1, Gidx, hbrIdx⟩ :=
     hbridge
   let ι := CopiedTieSlice.BridgeRowIndex P B Bh M pG q_U q_D Q Ndeep
   obtain ⟨p0, hp0, hcount⟩ :=
     CopiedCounts.tie_count_fibred_of_gate_budgeted_indexed P hV C ι pG hpG Gidx Mbr hMbr1 hbrIdx
-  exact ⟨p0, Mbr, hp0, hMbr1, hcount⟩
+  exact ⟨p0, Mbr, hp0, hMbr1, fun mS hm => hcount mS hm (fun n => hbud mS n)⟩
 
 /-- **Whole-tuple d\*-route supplier interface** (the live arity-free target).
 
@@ -219,13 +234,11 @@ theorem tie_count_affine_budgeted_of_update_zero_bundle
   tie_count_affine_budgeted_of_bridge P hV C
     (CopiedTieSlice.tie_point_bridge_budgeted_indexed_of_update_zero_bundle P hV C hUpdate)
 
-/-- The FAS-count package produced once total, strict, and tie counts are assembled. -/
+/-- The FAS-count package produced once total, strict, and tie counts are assembled.
+The budget is consumed globally, matching `TieCountAffineBudgeted`. -/
 def FasCountAffineBudgeted (P : WRP.Presentation Step Step) (_hV : P.Valid) (C : ℕ) : Prop :=
+    GlobalSelectedBudget P C →
     ∃ (p0 Mbr : ℕ), 1 ≤ p0 ∧ 1 ≤ Mbr ∧ ∀ (mS : ℕ), Mbr ≤ mS →
-      (∀ n, P.toPoly.domain (copiedSlice mS n) →
-        ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →
-          (∀ x ∈ l, P.toPoly.selectedAtom (copiedSlice mS n) ⟨c, x⟩) →
-          l.length ≤ C * (mS + n + 1)) →
       ∃ (fas' : ℕ → ℕ) (N : ℕ), AffineOnResiduesAt p0 fas' ∧
         ∀ n, N ≤ n → fas' n = CopiedDischarge.gatedFasCountGA_m P mS n
 
@@ -236,9 +249,10 @@ theorem fas_count_affine_fibred_budgeted_of_tie (P : WRP.Presentation Step Step)
     (hV : P.Valid) (C : ℕ) (htieBudgeted : TieCountAffineBudgeted P hV C) :
     FasCountAffineBudgeted P hV C := by
   classical
+  intro hbud
   obtain ⟨pt, hpt, htot⟩ := CopiedCounts.totalSelectedU_count_fibred P
   obtain ⟨ps, hps, hstrict⟩ := CopiedCounts.strict_count_fibred P hV
-  obtain ⟨pti, Mbr, hpti, hMbr1, htie⟩ := htieBudgeted
+  obtain ⟨pti, Mbr, hpti, hMbr1, htie⟩ := htieBudgeted hbud
   obtain ⟨mdom, pdom, hpdom, hdomEP⟩ := CopiedGates.domain_EP_fibred P
   obtain ⟨mDp, pDp, hpDp, hDpEP⟩ := CopiedGates.Dpresent_EP_fibred P
   set p0 : ℕ := pt * ps * pti * pdom * pDp with hp0def
@@ -262,11 +276,11 @@ theorem fas_count_affine_fibred_budgeted_of_tie (P : WRP.Presentation Step Step)
     exact dvd_mul_of_dvd_left (dvd_mul_left pdom (pt * ps * pti)) pDp
   have hpDp0 : pDp ∣ p0 := by
     rw [hp0def]; exact dvd_mul_left pDp (pt * ps * pti * pdom)
-  refine ⟨p0, Mbr, hp0, hMbr1, fun mS hm hbud => ?_⟩
+  refine ⟨p0, Mbr, hp0, hMbr1, fun mS hm => ?_⟩
   have h1mS : 1 ≤ mS := le_trans hMbr1 hm
-  obtain ⟨tot', Nt, htotA, htotE⟩ := htot C mS h1mS hbud
-  obtain ⟨strict', Ns, hstA, hstE⟩ := hstrict C mS h1mS hbud
-  obtain ⟨tie', Nti, htiA, htiE⟩ := htie mS hm hbud
+  obtain ⟨tot', Nt, htotA, htotE⟩ := htot C mS h1mS (fun n => hbud mS n)
+  obtain ⟨strict', Ns, hstA, hstE⟩ := hstrict C mS h1mS (fun n => hbud mS n)
+  obtain ⟨tie', Nti, htiA, htiE⟩ := htie mS hm
   -- lift the three affine pieces to the merged period p0
   have htotA' : AffineOnResiduesAt p0 tot' := htotA.of_dvd hpt hpt0 hp0
   have hstA' : AffineOnResiduesAt p0 strict' := hstA.of_dvd hps hps0 hp0
@@ -479,11 +493,11 @@ theorem copied_slice_row_affine_of_fas (P : WRP.Presentation Step Step) (hV : P.
     (hfasBudgeted : ∀ C, FasCountAffineBudgeted P hV C) :
     ∃ Mbr, 1 ≤ Mbr ∧ RowAffineFrom Mbr T := by
   obtain ⟨C, hC⟩ := hgrow
-  obtain ⟨p0, Mbr, hp0, hMbr1, hfas⟩ := hfasBudgeted C
+  have hbud : GlobalSelectedBudget P C := CopiedDischarge.hbud_of_hgrow_m P hV T C hPT hC
+  obtain ⟨p0, Mbr, hp0, hMbr1, hfas⟩ := hfasBudgeted C hbud
   have hpMbr : 1 ≤ p0 * Mbr := Nat.mul_pos hp0 hMbr1
   refine ⟨Mbr, hMbr1, p0 * Mbr, Nat.le_mul_of_pos_left Mbr hp0, hpMbr, fun m hm => ?_⟩
-  have hbud := CopiedDischarge.hbud_of_hgrow_m P hV T C hPT hC
-  obtain ⟨fas', N, hAff, hAgree⟩ := hfas m hm (fun n => hbud m n)
+  obtain ⟨fas', N, hAff, hAgree⟩ := hfas m hm
   have hAff' : AffineOnResiduesAt (p0 * Mbr) fas' :=
     hAff.of_dvd hp0 (dvd_mul_right p0 Mbr) hpMbr
   obtain ⟨N', hNN', hrebase⟩ := SlicePeriodStar.AffineOnResiduesAt.rebase hpMbr hAff' N

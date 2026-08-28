@@ -28,14 +28,12 @@ The paper's proof has two halves.
 
 * **Counting** (`lem:presburger-counting` in its tuple form, as applied in the
   paper's §9 proof): a semilinear `(m, n, ī)`-family with linearly bounded finite fibres has a
-  **semilinear count graph** `{(m, n, #fibre)}`.  The repo's admitted counting axiom
-  `isSliceFamilySemilinear2_count` is strictly weaker: it yields, for each *fixed* `m`,
-  affinity of `n ↦ #fibre` on residues (with a period uniform in `m`) — the base and
-  slope may depend on `m` arbitrarily, so joint `(m, n)`-semilinearity does *not* follow
-  (a genuine gap: e.g. `count(m,n) = [n < f(m)]` is row-wise and column-wise eventually
-  affine for any monotone `f` but has a non-semilinear graph).  Rather than admit a new
-  axiom (forbidden here), the graph form is taken as an **explicit hypothesis**
-  `TwoParamCountGraph` of the main theorem `two_param_profile_semilinear`.  Everything
+  **semilinear count graph** `{(m, n, #fibre)}`.  This is the `p = 2` instance of the
+  admitted counting axiom `PresburgerCounting.count_graph_semilinear`, and is derived from
+  it here as `twoParamCountGraph_proved`.  The main theorem
+  `two_param_profile_semilinear` still takes the principle as the explicit hypothesis
+  `TwoParamCountGraph`, so that the residual counting boundary is visible in its
+  statement; `two_param_profile_semilinear_unconditional` discharges it.  Everything
   else — the semantic bridges `firstAscent/tailU ↔` atom counts, the growth budget, and
   the ℕ⁴ assembly — is proved.
 
@@ -62,6 +60,7 @@ of the project's standard admitted axioms.
 -/
 import RequestProject.CopiedTieSemilinear2
 import RequestProject.CopiedDischarge
+import RequestProject.SliceCountGlobal
 
 namespace TwoParamSemilinearity
 
@@ -911,15 +910,16 @@ paper's `lem:presburger-counting`, exactly as used in the proof of
 two-parameter atom family with finite fibres of linearly bounded size has a semilinear
 count graph `{(m, n, #fibre_{m,n})} ⊆ ℕ³`.
 
-This is a true standard fact (parametric Presburger counting; Woods 2015), but it is
-**not derivable** from the repo's admitted weaker counting axiom
-`isSliceFamilySemilinear2_count`, which fixes the row `mS` and yields only affinity of
-`n ↦ #fibre` on residues with row-dependent base/slope (joint `(m,n)`-semilinearity
-genuinely does not follow: `count(m,n) = if n < f m then 1 else 0` is row- and
-column-wise eventually affine for any monotone `f`, with a non-semilinear graph for
-non-affine `f`).  Since this formalisation may not add axioms, the principle is taken
-as an explicit hypothesis of `two_param_profile_semilinear`; it is the **only**
-unproved ingredient there. -/
+It is proved as `twoParamCountGraph_proved`, by instantiating the admitted
+`lem:presburger-counting` (`PresburgerCounting.count_graph_semilinear`) at `p = 2`,
+`q = k`.  It is strictly stronger than the row-wise consequence
+`SliceSemilinearN.isSliceFamilySemilinear2_count_global`, which yields only affinity of
+`n ↦ #fibre` on residues of a row-uniform period, with row-dependent base/slope: joint
+`(m,n)`-semilinearity genuinely does not follow from that, since
+`count(m,n) = if n < f m then 1 else 0` is row- and column-wise eventually affine for
+any monotone `f`, with a non-semilinear graph for non-affine `f`.  The principle is kept
+as an explicit hypothesis of `two_param_profile_semilinear`, marking the counting
+boundary in that statement; it is the **only** unproved ingredient there. -/
 def TwoParamCountGraph : Prop :=
   ∀ (k : ℕ) (Φ : ℕ → ℕ → (Fin k → ℕ) → Prop),
     SliceSemilinearN.IsSliceFamilySemilinear2 Φ →
@@ -1007,15 +1007,15 @@ theorem two_param_profile_semilinear
       (fun c _ => hcount _ _ (selUPhi_semilinear P c) (fun mS n => selUPhi_finite P c mS n)
         ⟨C, fun mS n => selUPhi_card_le P hV T C hPT hC c mS n⟩)
 
-/-! ## F. Unconditional row semilinearity from the admitted counting axiom
+/-! ## F. Unconditional row semilinearity from the row-wise counting consequence
 
-What the repo's weaker counting axiom `isSliceFamilySemilinear2_count` *does* give,
-with no extra hypothesis: for every fixed `m ≥ 1`, the row
+What the row-wise consequence `SliceSemilinearN.isSliceFamilySemilinear2_count_global`
+already gives: for every fixed `m ≥ 1`, the row
 `{(fas(T(W_{m,n})), tailU(T(W_{m,n}))) : n ≥ 1}` of `S_T` is semilinear — the
 two-parameter generalisation of `wrp_slice_profile_semilinear` (`NoSwapWRP.lean`),
-which is the row `m = 1` (`W_{1,n} = W_n`).  The period is even uniform across `m`
-(that is what the axiom's quantifier order gives), but the base/slope data is not,
-which is exactly why the joint statement needs `TwoParamCountGraph`. -/
+which is the row `m = 1` (`W_{1,n} = W_n`).  The period is even uniform across `m`,
+but the base/slope data is not, which is exactly why the joint statement needs
+`TwoParamCountGraph`. -/
 
 section RowTheorem
 
@@ -1084,8 +1084,9 @@ growth on and totality over the two-parameter family, every row `m = mS ≥ 1` o
 first-ascent profile is semilinear:
 `{(fas(T(W_{mS,n})), tailU(T(W_{mS,n}))) : n ≥ 1} ∈ IsSemilinear2`.
 
-This is what the repo's admitted counting axiom `isSliceFamilySemilinear2_count`
-yields with no further hypothesis; at `mS = 1` it recovers the shape of
+This is what the row-wise counting consequence
+`SliceSemilinearN.isSliceFamilySemilinear2_count_global` yields, the global fibre bound
+being supplied by `fasPhi_card_le` / `selUPhi_card_le`; at `mS = 1` it recovers the shape of
 `wrp_slice_profile_semilinear` on the wrapped-flat slice `W_n = W_{1,n}`.  (The `n ≥ 1`
 restriction matches the one-parameter kernel `isSemilinear2_of_affineInPeriod`.) -/
 theorem two_param_profile_row_semilinear
@@ -1099,13 +1100,15 @@ theorem two_param_profile_row_semilinear
   classical
   obtain ⟨P, hV, hPT⟩ := hT
   obtain ⟨C, hC⟩ := hgrow
-  -- the admitted counting axiom, per copy, for both families
+  -- the counting principle, per copy, for both families
   choose pf hpf1 hpf using fun c : Fin P.toPoly.K =>
-    SliceSemilinearN.isSliceFamilySemilinear2_count (fasPhi_semilinear P c) C
-      (fun mS n => fasPhi_finite P c mS n)
+    SliceSemilinearN.isSliceFamilySemilinear2_count_global (fasPhi_semilinear P c)
+      (fun mS n => fasPhi_finite P c mS n) C
+      (fun mS n => fasPhi_card_le P hV T C hPT hC c mS n)
   choose pu hpu1 hpu using fun c : Fin P.toPoly.K =>
-    SliceSemilinearN.isSliceFamilySemilinear2_count (selUPhi_semilinear P c) C
-      (fun mS n => selUPhi_finite P c mS n)
+    SliceSemilinearN.isSliceFamilySemilinear2_count_global (selUPhi_semilinear P c)
+      (fun mS n => selUPhi_finite P c mS n) C
+      (fun mS n => selUPhi_card_le P hV T C hPT hC c mS n)
   have hp1 : 1 ≤ ∏ c : Fin P.toPoly.K, pf c := Finset.one_le_prod' fun c _ => hpf1 c
   have hp2 : 1 ≤ ∏ c : Fin P.toPoly.K, pu c := Finset.one_le_prod' fun c _ => hpu1 c
   have hp : 1 ≤ (∏ c : Fin P.toPoly.K, pf c) * ∏ c : Fin P.toPoly.K, pu c := by
@@ -1117,14 +1120,14 @@ theorem two_param_profile_row_semilinear
       (fun n => fasCnt P mS n) := by
     unfold fasCnt
     refine SliceSemilinearN.affineOnResiduesAt_sum Finset.univ hp _ (fun c _ => ?_)
-    exact (hpf c mS (fun n => fasPhi_card_le P hV T C hPT hC c mS n)).of_dvd (hpf1 c)
+    exact (hpf c mS).of_dvd (hpf1 c)
       ((Finset.dvd_prod_of_mem _ (Finset.mem_univ c)).mul_right _) hp
   have hUaff : SlicePeriodStar.AffineOnResiduesAt
       ((∏ c : Fin P.toPoly.K, pf c) * ∏ c : Fin P.toPoly.K, pu c)
       (fun n => totUCnt P mS n) := by
     unfold totUCnt
     refine SliceSemilinearN.affineOnResiduesAt_sum Finset.univ hp _ (fun c _ => ?_)
-    exact (hpu c mS (fun n => selUPhi_card_le P hV T C hPT hC c mS n)).of_dvd (hpu1 c)
+    exact (hpu c mS).of_dvd (hpu1 c)
       ((Finset.dvd_prod_of_mem _ (Finset.mem_univ c)).mul_left _) hp
   obtain ⟨mf, hmf⟩ := hFaff
   obtain ⟨mu, hmu⟩ := hUaff
@@ -1173,31 +1176,23 @@ theorem two_param_profile_row_semilinear
 
 end RowTheorem
 
-/-! ## The counting principle as an admitted project axiom -/
+/-! ## The counting principle, derived from `lem:presburger-counting` -/
 
-/-- **Admitted axiom (project-agnostic).**  The paper's
-`lem:presburger-counting` (paper.tex) in the joint-graph form its
-§9 proof uses: a semilinear `(m, n, ī)`-family with finite fibres of linearly
-bounded cardinality has a semilinear count graph `{(m, n, #fibre)} ⊆ ℕ³`.
-
-Standing: the same as `SliceSemilinearN.isSliceFamilySemilinear2_count` (the
-per-row counting axiom, likewise
-admitted): a standard fact of parametric Presburger counting (Woods;
-Ehrhart-type theory in the linear-bound regime, where the degree collapses and the
-count graph is semilinear), whose native proof is a from-scratch lattice-point
-counting engine assessed as research-grade.  It is **project-agnostic**: the
-statement quantifies over arbitrary `IsSliceFamilySemilinear2` families, with no
-WRP-presentation/`copiedSlice` token.  It is not derivable from the per-row axiom
-(the docstring of `TwoParamCountGraph` records the counterexample), which is why it
-is admitted separately rather than reduced. -/
-axiom twoParamCountGraph_admitted : TwoParamCountGraph
+/-- **The two-parameter counting principle, proved.**  `TwoParamCountGraph` is exactly
+`SliceSemilinearN.sliceFamilyCount2_graph_semilinear`, the `p = 2`, `q = k` instance of
+`PresburgerCounting.count_graph_semilinear` (the single admitted transcription of
+`lem:presburger-counting`), with the bound hypothesis unbundled. -/
+theorem twoParamCountGraph_proved : TwoParamCountGraph := by
+  intro k Φ hΦ hfin hbd
+  obtain ⟨C, hC⟩ := hbd
+  exact SliceSemilinearN.sliceFamilyCount2_graph_semilinear hΦ hfin C hC
 
 /-- **Theorem `thm:two-parameter-semilinearity`
 (paper.tex), unconditional** — `two_param_profile_semilinear` discharged with the
-admitted counting axiom `twoParamCountGraph_admitted`.  Trust base (verified by
+counting principle `twoParamCountGraph_proved`.  Trust base (verified by
 `#print axioms`): the kernel axioms, the two general slice-definability axioms
 `msoDefinableRel2_semilinear_general` / `regularRankTerm_value2_graph_semilinear`,
-and `twoParamCountGraph_admitted`. -/
+and the counting axiom `PresburgerCounting.count_graph_semilinear`. -/
 theorem two_param_profile_semilinear_unconditional
     (T : List Step → Option (List Step)) (hT : WRP.IsWRP T)
     (hgrow : ∃ C, ∀ m n out, 1 ≤ m → T (copiedSlice m n) = some out →
@@ -1206,6 +1201,6 @@ theorem two_param_profile_semilinear_unconditional
     IsSemilinearNd 4 {v : Fin 4 → ℕ |
       ∃ m n out, 1 ≤ m ∧ T (copiedSlice m n) = some out ∧
         v 0 = m ∧ v 1 = n ∧ v 2 = firstAscent out ∧ v 3 = tailU out} :=
-  two_param_profile_semilinear T hT twoParamCountGraph_admitted hgrow hdom
+  two_param_profile_semilinear T hT twoParamCountGraph_proved hgrow hdom
 
 end TwoParamSemilinearity

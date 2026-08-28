@@ -271,23 +271,11 @@ theorem IsSliceFamilySemilinear2.exists_extra_tuple {k m : ℕ}
   ext w
   simp only [familyGraph2, Set.mem_ofPred_eq, not_forall, not_not]
 
-/-! ## Two-parameter bounded counting (admitted) and the `Finset` bridge -/
+/-! ## `AffineOnResiduesAt` helpers and the `Finset` bridge for the count assembly
 
-/-- **Bounded Presburger counting, two-parameter form** (Ginsburg–Spanier,
-`lem:presburger-counting`).  Admitted as a standard fact.  For a semilinear
-`(mS, n, ī)`-family with finite fibres, the `n`-period of the count is fixed by the
-(`mS`-independent) semilinear structure, so a single `p0` works **uniformly across
-`mS`**; the per-`mS` linear bound `≤ C·(mS+n+1)` ensures the count for that row is
-affine (degree ≤ 1) rather than higher-degree.  The per-`mS` bound (rather than a
-global one) matches `TieCountAffineBudgeted`, which exposes its budget per row. -/
-axiom isSliceFamilySemilinear2_count {k : ℕ}
-    {Φ : ℕ → ℕ → (Fin k → ℕ) → Prop} (hΦ : IsSliceFamilySemilinear2 Φ) (C : ℕ)
-    (hfin : ∀ mS n, Set.Finite {ī : Fin k → ℕ | Φ mS n ī}) :
-    ∃ p0 : ℕ, 1 ≤ p0 ∧ ∀ mS : ℕ,
-      (∀ n, Nat.card {ī : Fin k → ℕ | Φ mS n ī} ≤ C * (mS + n + 1)) →
-      SlicePeriodStar.AffineOnResiduesAt p0 (fun n => Nat.card {ī : Fin k → ℕ | Φ mS n ī})
-
-/-! ## `AffineOnResiduesAt` helpers for the count assembly -/
+The counting principle itself lives in `SliceCountGlobal`, on top of the single
+transcription `PresburgerCounting.count_graph_semilinear` of `lem:presburger-counting`.
+What follows is the elementary `Nat.card`/`Finset` plumbing its consumers need. -/
 
 /-- The zero function is affine on residues. -/
 theorem affineOnResiduesAt_zero (p : ℕ) :
@@ -414,8 +402,8 @@ along `F.eval mS n` ranges over a regular two-loop slice language, whose Parikh 
 semilinear (Ginsburg–Spanier).  Both hypotheses are load-bearing: `[Fintype Alpha]` is
 needed for the MSO⇒automaton step, and the block-linear shape of `F` is needed for the
 slice language to be regular (an arbitrary `slice : ℕ → ℕ → List Alpha` can encode a
-non-semilinear position set).  This is the same kind of fact as the kept counting axiom
-`isSliceFamilySemilinear2_count`, and is project-agnostic in exactly the same way. -/
+non-semilinear position set).  This is the same kind of standard, project-agnostic fact
+as the counting axiom `PresburgerCounting.count_graph_semilinear`. -/
 axiom msoDefinableRel2_semilinear_general {Alpha : Type*} [Fintype Alpha] {k : ℕ}
     (F : BlockLinearWord2 Alpha)
     {R : List Alpha → (Fin k → ℕ) → Prop} (hR : MSO.MSODefinableRel k R) :

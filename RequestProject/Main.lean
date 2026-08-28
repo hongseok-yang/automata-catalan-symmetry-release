@@ -8,7 +8,7 @@ by Baek, Hwang, La, and Yang (`paper.tex`).
 
 Importing this module elaborates every file of the development.  `lake build`
 succeeds with 0 `sorry` and 0 warnings.  The entire development admits exactly
-six axioms beyond Lean's kernel primitives; each packages a standard external
+five axioms beyond Lean's kernel primitives; each packages a standard external
 result, or a direct consequence of one, some stated through the development's
 own abstractions so that they apply directly where they are needed:
 
@@ -18,10 +18,12 @@ own abstractions so that they apply directly where they are needed:
   relation over a block-linear word family is semilinear (Ginsburg–Spanier);
 * `SliceSemilinearN.regularRankTerm_value2_graph_semilinear` — its ℤ-valued
   sibling for regular rank terms;
-* `SliceSemilinearN.isSliceFamilySemilinear2_count` — bounded Presburger
-  counting (`lem:presburger-counting`), per-row form;
-* `TwoParamSemilinearity.twoParamCountGraph_admitted` — its joint-graph form
-  for the two-parameter family;
+* `PresburgerCounting.count_graph_semilinear` — bounded parametric Presburger
+  counting, `lem:presburger-counting` transcribed in Mathlib vocabulary (the
+  single-count case, stated for all `p q : ℕ`); it is the **only** counting
+  input, and both the joint-graph form
+  (`TwoParamSemilinearity.twoParamCountGraph_proved`) and the row-uniform form
+  (`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) are derived from it;
 * `polyreg_regular_preimage` — polyregular preimages of regular languages are
   regular (Bojańczyk).
 
@@ -143,6 +145,7 @@ import RequestProject.SliceCellClassifyGA
 import RequestProject.SliceCellConvGA
 import RequestProject.SliceConv
 import RequestProject.SliceCount
+import RequestProject.SliceCountGlobal
 import RequestProject.SliceCountSlice
 import RequestProject.SliceDstar
 import RequestProject.SliceDstarBridge

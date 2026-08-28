@@ -116,6 +116,11 @@ The slice analysis that powers both §8 and §9.
   `SliceSemilinear2.lean` — linear and semilinear sets in `ℕ^d`, the bridge
   to Mathlib's `IsSemilinearSet` (Ginsburg–Spanier closures), the
   two-parameter slice-family notion, and the general admitted facts.
+* `PresburgerCounting.lean`, `SemilinearGraphAffine.lean`,
+  `SliceCountGlobal.lean` — `lem:presburger-counting` (the single counting
+  axiom), the passage from a semilinear function graph in `ℕ³` to rows that are
+  eventually affine on the residues of one row-uniform period, and the two
+  counting consequences the towers consume.
 * `SliceAutomata.lean`, `SliceRank.lean`, `SliceMSO.lean`, `SliceOrder.lean`
   — the finite-state core: eventual periodicity of DFA states along
   `pre·loopⁿ·suf`, affine-on-residues rank accumulation, the Büchi axiom and

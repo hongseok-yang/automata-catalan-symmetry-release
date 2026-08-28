@@ -2,10 +2,11 @@
 # Route-B step 4: the two-parameter tie predicate, and discharging the tie count
 
 The two-parameter mirror of `CopiedTieSemilinear`: the per-copy tie predicate is
-`IsSliceFamilySemilinear2` (semilinear in `(mS, n, ī)`), so the two-parameter
-bounded-counting axiom `isSliceFamilySemilinear2_count` yields a tie count affine on
+`IsSliceFamilySemilinear2` (semilinear in `(mS, n, ī)`), so the counting principle
+`SliceSemilinearN.isSliceFamilySemilinear2_count_global` yields a tie count affine on
 residues in `n` with a period uniform across `mS` — exactly
-`CopiedD4.TieCountAffineBudgeted`.
+`CopiedD4.TieCountAffineBudgeted`.  The linear fibre bound it needs comes from the
+global selected-atom budget `CopiedD4.GlobalSelectedBudget`.
 
 The two-loop slice-arithmetic facts are factored into project-agnostic general axioms
 (`SliceSemilinearN.msoDefinableRel2_semilinear_general` for the MSO part,
@@ -19,7 +20,7 @@ general axioms at `copiedSliceBLW`.  No project-specific axiom occurs in the inv
 tower.
 -/
 import RequestProject.CopiedTieCounting
-import RequestProject.SliceSemilinear2
+import RequestProject.SliceCountGlobal
 
 namespace CopiedTieSemilinear2
 
@@ -663,34 +664,36 @@ theorem tieCountAffineBudgeted_route_b
     (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ) :
     CopiedD4.TieCountAffineBudgeted P hV C := by
   classical
-  choose pc hpc1 hpc using fun c =>
-    SliceSemilinearN.isSliceFamilySemilinear2_count (tieΦ_semilinear P hV c) C
-      (fun mS n => tieΦ_finite P hV c mS n)
-  refine ⟨∏ c : Fin P.toPoly.K, pc c, 1,
-    Finset.one_le_prod' (fun c _ => hpc1 c), le_refl 1, fun mS _hmS hbudget => ?_⟩
-  have hpcdvd : ∀ c, pc c ∣ ∏ c : Fin P.toPoly.K, pc c :=
-    fun c => Finset.dvd_prod_of_mem _ (Finset.mem_univ c)
-  have hp0 : 1 ≤ ∏ c : Fin P.toPoly.K, pc c := Finset.one_le_prod' (fun c _ => hpc1 c)
-  -- per-copy count bound: domain rows from the budget, non-domain rows are empty
-  have hbound : ∀ c n,
+  intro hbudget
+  -- per-copy count bound: domain rows from the global budget, non-domain rows are empty
+  have hbound : ∀ c mS n,
       Nat.card {ī : Fin (P.toPoly.arity c) → ℕ | tieΦ P hV c mS n ī} ≤ C * (mS + n + 1) := by
-    intro c n
+    intro c mS n
     by_cases hdom : P.toPoly.domain (copiedSlice mS n)
     · have hfin := tieΦ_finite P hV c mS n
       rw [Nat.card_coe_set_eq, Set.ncard_eq_toFinset_card _ hfin,
         ← Finset.length_toList hfin.toFinset]
-      refine hbudget n hdom c hfin.toFinset.toList hfin.toFinset.nodup_toList (fun x hx => ?_)
+      refine hbudget mS n hdom c hfin.toFinset.toList hfin.toFinset.nodup_toList
+        (fun x hx => ?_)
       rw [Finset.mem_toList, Set.Finite.mem_toFinset] at hx
       exact ⟨tieΦ_validAtom hx, hx.1.1.1⟩
     · have hempty : {ī : Fin (P.toPoly.arity c) → ℕ | tieΦ P hV c mS n ī} = ∅ := by
         ext ī; simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
         exact fun h => hdom h.2
       rw [hempty]; simp
+  choose pc hpc1 hpc using fun c =>
+    SliceSemilinearN.isSliceFamilySemilinear2_count_global (tieΦ_semilinear P hV c)
+      (fun mS n => tieΦ_finite P hV c mS n) C (hbound c)
+  refine ⟨∏ c : Fin P.toPoly.K, pc c, 1,
+    Finset.one_le_prod' (fun c _ => hpc1 c), le_refl 1, fun mS _hmS => ?_⟩
+  have hpcdvd : ∀ c, pc c ∣ ∏ c : Fin P.toPoly.K, pc c :=
+    fun c => Finset.dvd_prod_of_mem _ (Finset.mem_univ c)
+  have hp0 : 1 ≤ ∏ c : Fin P.toPoly.K, pc c := Finset.one_le_prod' (fun c _ => hpc1 c)
   refine ⟨fun n => ∑ c : Fin P.toPoly.K,
     Nat.card {ī : Fin (P.toPoly.arity c) → ℕ | tieΦ P hV c mS n ī}, 0, ?_, ?_⟩
   · -- affine on residues at the common period
     refine SliceSemilinearN.affineOnResiduesAt_sum Finset.univ hp0 _ (fun c _ => ?_)
-    exact (hpc c mS (fun n => hbound c n)).of_dvd (hpc1 c) (hpcdvd c) hp0
+    exact (hpc c mS).of_dvd (hpc1 c) (hpcdvd c) hp0
   · -- agreement with the TieCountAffineBudgeted sum
     intro n _hn hdom _hDpres
     refine Finset.sum_congr rfl (fun c _ => ?_)
