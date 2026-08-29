@@ -4659,19 +4659,13 @@ such.
 
 \item \emph{Woods' Presburger counting theorem}~\cite[Theorem~1.10]{Woods2015}
 and the Ehrhart theory behind it~\cite{Ehrhart1962}.
-Section~\ref{sec:slice-semilinearity} derives
-Lemma~\ref{lem:presburger-counting} from them; the development proves that
-lemma instead, in the single-count case, which is all its arguments need, and
-by a route that uses neither.  It first decomposes the relation $A$ into pieces
-with linearly independent period vectors, so the points of each piece have
-unique coefficient tuples.  On one such piece, the bound
-$|A_x|\le C(\|x\|_\infty+1)$ forces the kernel of the parameter map to
-have rank at most one: two independent kernel directions would create
-quadratically many points above a parameter of linear size.  Each fibre is
-therefore an arithmetic progression with a parameter-independent step.
-Inclusion--exclusion then counts finite unions of these progressions.  Thus,
-the proof uses no quasi-polynomial machinery, and the entire counting layer is
-axiom-free.
+Section~\ref{sec:slice-semilinearity} uses them to derive
+Lemma~\ref{lem:presburger-counting}.  The Lean development instead proves
+directly the single-count case needed here, by decomposing the semilinear
+relation into simple pieces and reducing the fibre count to elementary
+counting of arithmetic progressions.  Thus, the formal proof of
+Lemma~\ref{lem:presburger-counting} uses neither Woods' theorem nor Ehrhart
+theory and requires no admitted axiom.
 
 \item \emph{A signed companion of} (ii).  Axiom (ii) is about sets of
 positions, whereas the rank comparisons of
@@ -4683,13 +4677,9 @@ prefix-additive rank function $\kappa$: that
           \kappa^{F(m,n)}(i_1,\ldots,i_k)=v\bigr\}
 \]
 is semilinear, with $v\in\Z^d$ encoded by a pair of vectors in $\N^d$.  This
-follows from (ii) and the two proved ingredients above.  Indeed, a
-prefix-additive rank function is a fixed signed combination of prefix ranks and
-bounded local corrections.  Each prefix rank is a weighted sum of counts of
-earlier positions, grouped by source state and input letter.  These groups are
-$\MSO$-definable by the proved automata-to-logic direction, their position sets
-are semilinear along the family by~(ii), and the counting lemma makes their
-counts semilinear as well.
+follows from axiom~(ii), the automata-to-logic direction of
+B\"uchi--Elgot--Trakhtenbrot proved in the development, and
+Lemma~\ref{lem:presburger-counting}.
 
 \item \emph{The linear-growth collapse}
 (Theorem~\ref{thm:polyregular-linear-collapse}) and \emph{closure of polyregular
@@ -4697,8 +4687,6 @@ maps under composition}~\cite{Bojanczyk2018}, both used in the proof of
 Proposition~\ref{prop:two-pyramid-criterion}.  The formal proof of that
 proposition applies (iii) twice rather than composing and collapsing, and so
 needs neither; see the discussion of statement fidelity below.
-Theorem~\ref{thm:eh} is excluded for the same kind of reason, discussed under
-Scope above.
 \end{itemize}
 
 Table~\ref{tab:lean} records which axioms each headline result uses, and that
