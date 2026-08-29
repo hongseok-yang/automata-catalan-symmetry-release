@@ -4471,7 +4471,7 @@ instead discharged by compiled evaluation (\texttt{native\_decide}), so each of
 those additionally trusts the Lean compiler.  No result in
 Table~\ref{tab:lean} below depends on one.  This section summarises what is formalised,
 on which axiomatic base, and where the formal statements deliberately differ
-from the statements ofthis paper.
+from the statements of this paper.
 
 \paragraph{Scope.}
 The development formalises the theory of the paper from the ground up rather than verifying an
@@ -4495,15 +4495,14 @@ closed forms behind the $\zeta$ and $H$ lower bounds
 (Lemmas~\ref{lem:zeta-two-pyramid} and~\ref{lem:H-two-pyramid}), and the
 regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
 proofs, the last of these in two forms: instantiated at the family $W_n$, and
-in the general form of the paper, over an arbitrary slice $u\,v^n z$.  The single-count case of
-Lemma~\ref{lem:presburger-counting} is proved by a route
-different from the one taken in Section~\ref{sec:slice-semilinearity}; see the
-discussion of the trust base below.  Background results quoted from the literature are not re-proved; where the
-arguments need them, they enter through the admitted axioms below.
-Theorem~\ref{thm:eh} is the exception: it is not one of those axioms, because
-the formal statements quantify directly over deterministic $\MSO$
-transductions, and it is used only to read them as statements about two-way
-machines; see the discussion of statement fidelity below.  The paper's numeric worked
+in the general form of the paper, over an arbitrary slice $u\,v^n z$.
+Background results quoted from the literature enter either through the three
+admitted axioms listed below or as results the development proves for itself;
+the two paragraphs on the trust base say which is which.
+Theorem~\ref{thm:eh} is neither: the formal statements quantify directly over
+deterministic $\MSO$ transductions, and the theorem is used only to read them
+as statements about two-way machines; see the discussion of statement fidelity
+below.  The paper's numeric worked
 examples, such as the $\area$, $\dinv$, and $\zeta$ computations, and the small
 sweep computations, are certified by Lean's executable decision procedures;
 the paper's structural examples, such as the reverse-complement presented both
@@ -4586,63 +4585,113 @@ the intermediate lemmas, to their formal counterparts.}
 \end{table}
 
 \paragraph{Trust base.}
-Every mathematical result in the completed development is built from Lean's
-kernel and its three standard axioms (\texttt{propext},
-\texttt{Classical.choice}, and \texttt{Quot.sound}), together with exactly
-three explicitly admitted axioms of our own, each a standard external result
-about $\MSO$, finite automata, semilinear sets, or polyregular maps.  The
-second is stated using the development's own abstractions so that it can be
-applied directly to the formalised arguments that follow.
+Every mathematical result in the development is built from Lean's kernel and
+its three standard axioms (\texttt{propext}, \texttt{Classical.choice}, and
+\texttt{Quot.sound}), together with exactly three admitted axioms of our own.
+What a machine-checked development assumes is part of what it certifies, so we
+state all three in full.  Below, $w\models\varphi(p_1,\ldots,p_k)$ means that
+the word $w$ satisfies the $\MSO$ formula $\varphi$ when its free first-order
+variables are interpreted by the positions $p_1,\ldots,p_k$.
 \begin{enumerate}[label=(\roman*)]
-\item \texttt{buchi}: every $\MSO$-definable language over a finite alphabet
-is recognised by a DFA, the logic-to-automata direction of the
-B\"uchi--Elgot--Trakhtenbrot theorem~\cite{Thomas1997}.  The converse
-direction, that the run of a DFA is $\MSO$-definable, is proved in the
-development.
-\item \texttt{msoDefinableRel2\_semilinear\_general}: for a two-parameter
-family of words assembled from fixed blocks that repeat affinely in the two
-parameters, as in the family $W_{m,n}$ of
-Definition~\ref{def:two-parameter-family}, the set of tuples consisting of the
-two parameters together with a $k$-tuple of positions satisfying a fixed
-$\MSO$ formula is a semilinear subset of $\N^{k+2}$.  This combines (i) with
-the Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
-\item \texttt{polyreg\_regular\_preimage}: the preimage of a regular language
-under a polyregular map is regular~\cite{Bojanczyk2018}.
-\end{enumerate}
-One statement close to (ii) is deliberately not assumed.  The $\Z^d$-valued
-companion of (ii) --- semilinearity of the value graph of a prefix-additive
-rank function read along such a family --- is proved instead, from (i), (ii)
-and counting.  A rank function unfolds into a fixed signed combination of
-prefix ranks and bounded local corrections.  A prefix rank is the weighted
-sum, over the finitely many pairs of source state and letter, of the number of
-positions below the queried one that carry that pair.  Those position sets are
-$\MSO$-definable by the converse direction of (i), which the development
-proves; (ii) turns that definability into semilinearity along the family; and
-their counts are then semilinear by the counting result described next, the
-fibres being sets of positions in a slice word whose length is affine in the
-two parameters.  The companion is therefore a theorem rather than a fourth
-axiom, but it does rest on (ii).
+\item \texttt{buchi}.  For every finite alphabet $\Sigma$ and every $\MSO$
+sentence $\varphi$ over $\Sigma$, there is a DFA accepting exactly the words
+$w\in\Sigma^*$ with $w\models\varphi$.  This is the logic-to-automata direction
+of the B\"uchi--Elgot--Trakhtenbrot theorem~\cite{Thomas1997}.
 
-The counting layer rests on no axiom.  Section~\ref{sec:slice-semilinearity}
-derives Lemma~\ref{lem:presburger-counting} from Woods' Presburger counting
-theorem~\cite[Theorem~1.10]{Woods2015}, but the formalisation does not follow
-that route and does not assume the lemma: it \emph{proves} the single-count
-case outright, by an argument that needs no Ehrhart theory and no
-quasi-polynomials.  Mathlib supplies the decomposition of a semilinear set
-into pieces whose periods are linearly independent, so each piece is in
-bijection with its coefficient tuples and no point is counted twice.  On such
-a piece, the hypothesis that the number of points above a parameter grows at
-most linearly forces the kernel of the map from coefficient tuples to
-parameters to have rank at most one: two independent directions in that
-kernel would place quadratically many points above a single parameter of
-linear size.  Every fibre is therefore an arithmetic progression whose
-direction does not depend on the parameter.  Counting the
-union of finitely many such progressions is then elementary.  Both counting
-statements that the development uses follow from this, and are likewise free
-of any axiom: the joint count graph of a two-parameter family, and the
-row-uniform form of that graph, in which the counts for each fixed value of
-the first parameter are eventually affine on the residue classes of a single
-period.
+\item \texttt{msoDefinableRel2\_semilinear\_general}.  Fix a finite alphabet
+$\Sigma$, and call a map $F\colon\N^2\to\Sigma^*$ \emph{block-linear} if there
+are words $b_1,\ldots,b_r\in\Sigma^*$ and constants
+$\alpha_i,\beta_i,c_i\in\N$ with
+\[
+   F(m,n)=b_1^{\,\alpha_1m+\beta_1n+c_1}\,
+          b_2^{\,\alpha_2m+\beta_2n+c_2}\cdots
+          b_r^{\,\alpha_rm+\beta_rn+c_r}.
+\]
+For every block-linear $F$ and every $\MSO$ formula $\varphi(x_1,\ldots,x_k)$
+over $\Sigma$ with $k$ free first-order variables, the set
+\[
+   \bigl\{(m,n,p_1,\ldots,p_k)\in\N^{k+2}\;:\;
+          F(m,n)\models\varphi(p_1,\ldots,p_k)\bigr\}
+\]
+is semilinear.  The family $W_{m,n}$ of
+Definition~\ref{def:two-parameter-family} is the block-linear map with blocks
+$U$, $UD$, $D$ and coefficients $(1,0,0)$, $(0,1,0)$, $(1,0,0)$, and the slice
+$W_n$ of Section~\ref{sec:wrapped-flat} is its row $m=1$.  The axiom composes
+(i) with the Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}: marking the
+$k$ positions turns $\varphi$ into a sentence over $\Sigma\times\{0,1\}^k$, the
+marked words obtained from $F$ form a regular language read along two nested
+loops, and the Parikh image of a regular language is semilinear.  Both
+hypotheses are load-bearing: finiteness of $\Sigma$ for the first step, and the
+block-linear shape of $F$ for the second, since an unrestricted
+$F\colon\N^2\to\Sigma^*$ can encode a non-semilinear set of positions.
+
+\item \texttt{polyreg\_regular\_preimage}.  For finite alphabets
+$\Sigma$ and $\Gamma$, a polyregular partial map
+$f\colon\Sigma^*\rightharpoonup\Gamma^*$, and a regular language
+$L\subseteq\Gamma^*$, the language
+$\{w\in\Sigma^*: f(w)\text{ is defined and }f(w)\in L\}$ is
+regular~\cite{Bojanczyk2018}.
+\end{enumerate}
+
+\paragraph{What is proved rather than assumed.}
+The arguments in the body of this paper quote several further results from the
+literature, and the slice analysis needs one statement close to (ii) that is
+not among the axioms either.  All of them are proved, so the formalisation
+assumes strictly less than the arguments given here.
+\begin{itemize}
+\item \emph{The converse direction of B\"uchi--Elgot--Trakhtenbrot}, that the
+run of a DFA is $\MSO$-definable.  The paper uses it for the restriction clause
+of Theorem~\ref{thm:wrp-closures} and in the proof of
+Theorem~\ref{thm:bounded-rank-collapse}; the development proves it, so both of
+those results are axiom-free.
+
+\item \emph{The Ginsburg--Spanier theorem}, quoted in
+Section~\ref{sec:slice-semilinearity} to identify the semilinear sets with the
+Presburger-definable ones.  It is a proved theorem in Mathlib and is used as
+such.
+
+\item \emph{Woods' Presburger counting theorem}~\cite[Theorem~1.10]{Woods2015}
+and the Ehrhart theory behind it~\cite{Ehrhart1962}.
+Section~\ref{sec:slice-semilinearity} derives
+Lemma~\ref{lem:presburger-counting} from them; the development proves that
+lemma instead, in the single-count case, which is all its arguments need, and
+by a route that uses neither.  Decompose the relation $A$ into pieces whose period vectors are
+linearly independent, so that the points of a piece correspond bijectively to
+coefficient tuples and none is counted twice.  On such a piece the hypothesis
+$|A_x|\le C(\lVert x\rVert_\infty+1)$ forces the kernel of the map from
+coefficient tuples to parameters to have rank at most one, since two
+independent kernel directions would place quadratically many points over a
+single parameter of linear size.  Every fibre is then an arithmetic progression
+whose step is independent of the parameter, and finite unions of such
+progressions are counted by inclusion--exclusion.  No quasi-polynomial appears,
+and the whole counting layer of the development is axiom-free.
+
+\item \emph{A signed companion of} (ii).  Axiom (ii) is about sets of
+positions, whereas the rank comparisons of
+Sections~\ref{sec:slice-semilinearity} and~\ref{sec:inverse-zeta} need the
+analogous statement for the $\Z^d$-valued rank $\kappa$ of an atom: that
+\[
+   \bigl\{(m,n,p_1,\ldots,p_k,v)\;:\;
+          \kappa\bigl(F(m,n),p_1,\ldots,p_k\bigr)=v\bigr\}
+\]
+is semilinear, with $v\in\Z^d$ encoded by a pair of vectors in $\N^d$.  This
+follows from (ii) and the two proved ingredients above.  A prefix-additive rank
+function is a fixed signed combination of prefix ranks and bounded local
+corrections; a prefix rank is a weighted sum, over the finitely many pairs of
+source state and letter, of the number of earlier positions carrying that pair;
+those position sets are $\MSO$-definable by the converse direction of (i) and
+hence semilinear along the family by (ii), and their counts are then semilinear
+by the counting lemma.
+
+\item \emph{The linear-growth collapse}
+(Theorem~\ref{thm:polyregular-linear-collapse}) and \emph{closure of polyregular
+maps under composition}~\cite{Bojanczyk2018}, both used in the proof of
+Proposition~\ref{prop:two-pyramid-criterion}.  The formal proof of that
+proposition applies (iii) twice rather than composing and collapsing, and so
+needs neither; see the discussion of statement fidelity below.
+Theorem~\ref{thm:eh} is excluded for the same kind of reason, discussed under
+Scope above.
+\end{itemize}
 
 Table~\ref{tab:lean} records which axioms each headline result uses, and that
 record can be audited mechanically with Lean's \texttt{\#print axioms}
@@ -4701,12 +4750,10 @@ not re-proved.  The two-pyramid criterion
 (Proposition~\ref{prop:two-pyramid-criterion}) is formalised without its
 growth hypothesis: the formal proof applies the preimage axiom (iii) to the
 polyregular realiser directly, without passing through the linear-growth
-collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.  The
-formal criterion is therefore more general than
-Proposition~\ref{prop:two-pyramid-criterion}, and this is why neither the
-linear-growth collapse (Theorem~\ref{thm:polyregular-linear-collapse}) nor the
-regular-preimage property of two-way transducers appears among the admitted
-axioms.
+collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.  The formal
+criterion is therefore more general than
+Proposition~\ref{prop:two-pyramid-criterion}; it is also what removes the
+collapse and the composition closure from the trust base, as noted above.
 Theorem~\ref{thm:wrp-logspace} is proved for both machine models of
 Section~\ref{sec:wrp-evaluation}, with the input alphabet fixed to $\{U,D\}$
 and apart from its output-length clause $|T(w)|=O(n^k)$, which is not
