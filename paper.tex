@@ -2315,26 +2315,10 @@ At level $0$, only $U_1$ at position $1$ and $U_2$ at position $2m+1$ start
 at height $0$.  Decreasing position lists $U_2$ and then $U_1$, so this level
 contributes $UU$.
 
-For every level $h\ge1$, the order of the steps that exist is obtained by
-deleting the absent members from $D_2,U_2,D_1,U_1$.  Indeed,
-\[
-  \underbrace{2m+2n-h+1}_{D_2}>\underbrace{2m+h+1}_{U_2}
-  \iff h<n,
-  \qquad
-  \underbrace{2m+h+1}_{U_2}>\underbrace{2m-h+1}_{D_1}
-  \iff h>0,
-\]
-\[
-  \underbrace{2m-h+1}_{D_1}>\underbrace{h+1}_{U_1}
-  \iff h<m.
-\]
-The step $U_2$ exists exactly when $h\le n-1$, and $U_1$ exactly when
-$h\le m-1$.  The first inequality therefore holds whenever $U_2$ exists, the
-second for every $h\ge1$, and the third whenever $U_1$ exists.  The three
-remaining comparisons are immediate from the position differences
-$D_2-D_1=2n$, $U_2-U_1=2m$ and $D_2-U_1=2m+2n-2h>0$.  Thus, whichever members
-are absent, the surviving letters at each positive level occur in the relative
-order $D,U,D,U$.
+For every level $h\ge1$, each run contributes at most one step.  Since the four
+runs occur in $P_{m,n}$ in the order $U_1,D_1,U_2,D_2$, the right-to-left
+tie-order lists the steps that exist in the order obtained by deleting absent
+members from $D_2,U_2,D_1,U_1$.
 
 Suppose first that $n\le m$.  The levels $1\le h\le n-1$ each contain all
 four steps and together contribute $(DU)^{2n-2}$.  If $n<m$, level $n$
@@ -2352,11 +2336,9 @@ $(DU)^{2m-2}$.  Level $m$ contributes $DUD$, the levels
 $m+1\le h\le n-1$ each contribute $DU$, and level $n$ contributes $D$.
 Hence
 \[
-\begin{aligned}
    H(P_{m,n})
-   &=UU(DU)^{2m-2}DUD(DU)^{n-1-m}D\\
-   &=UU(DU)^{2m-1}DD(UD)^{n-m-1},
-\end{aligned}
+   =UU(DU)^{2m-2}DUD(DU)^{n-1-m}D
+   =UU(DU)^{2m-1}DD(UD)^{n-m-1},
 \]
 where the tail is empty when $n=m+1$.  This settles both cases.
 \end{proof}
