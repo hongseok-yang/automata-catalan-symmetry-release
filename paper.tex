@@ -4466,11 +4466,12 @@ files.  It pins an exact toolchain (Lean~4 v4.33.1 and the matching Mathlib
 release) so that the build is reproducible, and it contains no \texttt{sorry},
 Lean's placeholder for an unproved statement.  Every mathematical result is
 proved from Lean's kernel rules and the short list of admitted axioms described
-below.  The numerical worked examples are instead discharged by compiled
-evaluation (\texttt{native\_decide}) and therefore additionally trust the Lean
-compiler; none of the results in Table~\ref{tab:lean} relies on compiled
-evaluation.  This section describes the scope of the formalisation, its trust
-base, and the places where its statements differ from those in the paper.
+below.  The numerical worked examples involving $\area$, $\dinv$, $\zeta$, and
+the sweep maps are instead discharged by compiled evaluation
+(\texttt{native\_decide}) and therefore additionally trust the Lean compiler;
+none of the results in Table~\ref{tab:lean} relies on compiled evaluation.  This
+section describes the scope of the formalisation, its trust base, and the
+places where its statements differ from those in the paper.
 
 \paragraph{Scope.}
 The development formalises the theory of the paper from the ground up rather
@@ -4500,7 +4501,7 @@ proofs.  The regular-slice lemmas are proved both for the family $W_n$ and in
 the general form used in the paper, over an arbitrary slice $u\,v^n z$.
 
 Within the Lean development, background results quoted from the literature are
-handled in three ways: exactly three are admitted as axioms, some are proved in
+handled in three ways: some are admitted as axioms, some are proved in
 Lean or Mathlib, and others are bypassed because the formal proof takes a
 different route.  The paragraphs ``Trust base'' and ``What is proved or
 avoided'' explain these three cases.
@@ -4514,12 +4515,8 @@ the Lean proofs use only the three admitted axioms listed below, whereas the
 paper's 2DFT conclusions additionally rely on the external equivalence in
 Theorem~\ref{thm:eh}.
 
-The numerical examples involving $\area$, $\dinv$, $\zeta$, and the sweep
-maps are certified by Lean's executable decision procedures.  Structural
-examples, such as the two presentations of reverse-complement as a 2DFT and an
-$\MSO$ string transduction, are not formalised.  The repository documentation
-maps the numbered statements of the paper to their formal counterparts,
-section by section.
+Structural examples, such as the two presentations of reverse-complement as a
+2DFT and an $\MSO$ string transduction, are not formalised.
 
 \begin{table}[t]
 \centering
@@ -4684,40 +4681,22 @@ Lemma~\ref{lem:presburger-counting}.
 \item \emph{The linear-growth collapse}
 (Theorem~\ref{thm:polyregular-linear-collapse}) and \emph{closure of polyregular
 maps under composition}~\cite{Bojanczyk2018}, both used in the proof of
-Proposition~\ref{prop:two-pyramid-criterion}.  The formal proof of that
-proposition applies (iii) twice rather than composing and collapsing, and so
-needs neither; see the discussion of statement fidelity below.
+Proposition~\ref{prop:two-pyramid-criterion}.  The formal proof needs neither;
+see the discussion of statement fidelity below.
 \end{itemize}
 
-Table~\ref{tab:lean} records which axioms each headline result uses, and that
-record can be audited mechanically with Lean's \texttt{\#print axioms}
-command.  Several substantial parts of the development are axiom-free: the
-basic closure and bounded-rank collapse theorems; the memberships of $\zeta$ and
-$H$; Theorem~\ref{thm:narayana-sweep}; the two-pyramid closed forms
-(Lemmas~\ref{lem:zeta-two-pyramid} and~\ref{lem:H-two-pyramid}); and the
-deficit-zero lemmas of Section~\ref{sec:main}, including the model-free
-obstruction (Corollary~\ref{cor:model-free-obstruction}).  The two simulations
-that transfer the logspace evaluator between the machine models are also
-axiom-free.  The evaluator theorem itself uses~(i) to turn the $\MSO$ data of a
-presentation into finite automata.
-
-The headline no-swap theorem and the arity-one case of
-Corollary~\ref{cor:inverse-zeta-not-wrp} use only the
-B\"uchi--Elgot--Trakhtenbrot axiom (i), and the polyregular lower bounds for
-$\zeta$ and $H$ (Theorems~\ref{thm:zeta-not-polyregular}
-and~\ref{thm:H-not-polyregular}) use only the preimage axiom (iii).
+The dependencies in Table~\ref{tab:lean} can be audited mechanically with
+Lean's \texttt{\#print axioms} command.  Among the supporting results not
+listed separately there, the two-pyramid closed forms, the deficit-zero lemmas,
+and the two simulations between the machine models are axiom-free.  The
+evaluator theorem itself uses~(i) to turn the $\MSO$ data of a presentation
+into finite automata.
 
 \paragraph{Statement fidelity.}
-A machine-checked proof certifies exactly its formal statement.  Most of the
-formal statements follow the paper directly; the following differences matter
-when interpreting the headline results.
+A machine-checked proof certifies exactly its formal statement.  The following
+differences between the statements in the paper and their Lean counterparts
+therefore matter when interpreting the headline results.
 \begin{itemize}[leftmargin=*,itemsep=0.5em]
-\item \emph{Partial maps and realisation.}
-Transductions are modelled as total functions from input words to optional
-output words; an absent value means ``undefined''.  Realisation
-(Definition~\ref{def:relative}) constrains a transduction only on the stated
-domain.
-
 \item \emph{Two versions of $\WRP$.}
 The verbatim class follows Definition~\ref{def:wrp}: copy names have positive
 arity, and $\chi$ is a strict total order on selected atoms.  The working class
