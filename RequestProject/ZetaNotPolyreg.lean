@@ -6,8 +6,9 @@ zeta map is **not** realisable by any ordinary polyregular transduction on the
 Dyck domain, over the GENUINE semantic `Polyreg.IsPolyregular` (`def:polyregular`).
 
 The repository deliberately does **not** transcribe the paper's 2DFT /
-composition / regular-preimage / linear-growth-collapse proof (there is no
-two-way-transducer model in the repo).  Instead we use a single standard,
+composition / regular-preimage / linear-growth-collapse proof.  (A two-way
+transducer model does exist, in `TwoDFT.lean`, but this argument never
+descends to it.)  Instead we use a single standard,
 project-agnostic closure fact — `polyreg_regular_preimage`, the polyregular
 analogue of `SliceMSO.buchi` — applied twice, plus the `sec:zeta-not-polyregular`
 combinatorics (`inRegularProbe_zetaMap_twoPyramid`, `inRegularProbe_isRegular`,

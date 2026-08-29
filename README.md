@@ -43,60 +43,49 @@ A green build **is** the verification: the development compiles with **zero
 `sorry` and zero warnings**.  `RequestProject/Main.lean` imports every module,
 so `lake build RequestProject.Main` elaborates the whole development.
 
-## Trust base
+## What the formalisation assumes
 
-Every result is proved from Lean's kernel primitives plus exactly **three**
-axioms.  Each names a standard external result about MSO, finite automata,
-semilinear sets, and polyregular maps:
+The paper proves its results from scratch apart from a handful of standard
+results it takes from the literature.  This table lists those results and what
+becomes of each in Lean.  Only three are assumed; two others are not needed at
+all, because the formal proof takes a different route.
 
-| Axiom | Statement | Standard reference |
+| Result the paper uses | Where the paper uses it | In the formalisation |
 |---|---|---|
-| `SliceMSO.buchi` | an MSO-definable language is recognised by a DFA | Büchi–Elgot–Trakhtenbrot |
-| `msoDefinableRel2_semilinear_general` | an MSO-definable relation over a block-linear word family is semilinear | Büchi + Ginsburg–Spanier |
-| `polyreg_regular_preimage` | polyregular preimages of regular languages are regular | Bojańczyk |
+| Büchi–Elgot–Trakhtenbrot, logic to automata: an MSO-definable language is recognised by a finite automaton | §3, and throughout the slice analysis of §7 | **assumed** (`SliceMSO.buchi`) |
+| Büchi–Elgot–Trakhtenbrot, automata to logic | §4's restriction clause, and the prefix-rank argument | proved (`SliceMSO.detAuto_state_mso`) |
+| Semilinear sets are exactly the Presburger-definable ones (Ginsburg–Spanier) | §7 | proved in Mathlib (`presburger.definable_iff_isSemilinearSet`) |
+| The two above, combined over a slice: MSO-definable position tuples along a block-linear family form a semilinear family | §7 and §9 | **assumed** (`msoDefinableRel2_semilinear_general`) |
+| Polyregular maps have regular preimages of regular languages (Bojańczyk) | §5 and §6 lower bounds | **assumed** (`polyreg_regular_preimage`) |
+| Polyregular maps are closed under composition (Bojańczyk) | §5's two-pyramid criterion | not needed |
+| Linear-growth collapse for polyregular maps (Bojańczyk) | §5's two-pyramid criterion | not needed |
+| Woods' parametric Presburger counting, and Ehrhart theory behind it | §7's proof of the counting lemma | not needed |
+| Engelfriet–Hoogeboom: MSO transductions are exactly the two-way transducers | §3, and to read the "not two-way-realisable" corollaries | not used as a proof step — see the note below |
 
-The automaton-to-MSO direction of Büchi–Elgot–Trakhtenbrot is a proved
-theorem of the development (`detAuto_state_mso`); only the MSO-to-automaton
-direction is admitted.
+So the trust base is **three axioms**, each a standard external result:
 
-The ℤ-valued companion of the second axiom — the value graph of a regular rank
-term along a block-linear family — is a theorem rather than an assumption.
-`RankTermGraph.lean` proves
-`SliceSemilinearN.regularRankTerm_value2_graph_semilinear` by unfolding a rank
-term into a fixed signed combination of prefix ranks and bounded local
-corrections; a prefix rank is the `ω`-weighted sum, over the finitely many
-`(state, letter)` pairs, of the number of positions below the queried one
-carrying that pair (`SlicePrefixRankGraph.lean`), those position sets are
-MSO-definable by the proved `detAuto_state_mso`, and their counts are semilinear
-by `count_graph_semilinear` (`SliceMSOCount.lean`), the fibres being positions of
-a slice word whose length is affine in the two parameters.
+| Axiom | Statement |
+|---|---|
+| `SliceMSO.buchi` | an MSO-definable language over a finite alphabet is recognised by a DFA |
+| `msoDefinableRel2_semilinear_general` | MSO-definable position tuples over a block-linear word family form a semilinear family |
+| `polyreg_regular_preimage` | the preimage of a regular language under a polyregular map is regular |
 
-The counting layer rests on no axiom.
-`PresburgerCounting.count_graph_semilinear` is `lem:presburger-counting`,
-stated in Mathlib vocabulary alone (`IsSemilinearSet`, `Nat.card`) so that it
-can be compared with the literature without reference to this development.
-`CountGeneral.lean` proves it from `ProperLinearRep.lean`,
-`SemilinearMinMax.lean`, `KernelDichotomy.lean`, `SemilinearGraphArith.lean`,
-`ProperPieceCount.lean` and `CountBaseCase.lean`.  The argument is elementary:
-a semilinear set decomposes into proper linear pieces, whose linearly
-independent periods make coefficient tuples unique; the linear fibre bound
-forbids two independent integer vectors in the kernel of the parameter map, so
-that kernel is cyclic and every fibre is an arithmetic progression with a
-parameter-independent direction; the pieces then combine by inclusion–exclusion
-over those progressions, each residue class counting as an interval with
-definable endpoints.  The only external ingredient is Mathlib's
-Ginsburg–Spanier bridge `presburger.definable_iff_isSemilinearSet`, used for
-first-order closure; no Ehrhart theory or quasi-polynomiality enters.
+Two of the paper's external inputs disappear because the formalisation proves
+things differently.  The counting lemma `lem:presburger-counting`, which the
+paper derives from Woods' theorem, is proved outright by an elementary argument
+(see C1 below), so no quasi-polynomial input is needed.  And the lower bounds
+on ζ and on the height sweep, which the paper obtains by composing with an
+encoder and collapsing the composite to a two-way machine, are obtained in Lean
+by applying the polyregular preimage closure twice — so neither the collapse
+nor composition closure is needed (C2).
 
-Two consequences of it are what the towers consume: the joint count graph of a
-two-parameter family (`twoParamCountGraph_proved`), obtained by instantiating
-it at two parameters, and the row-uniform form
-(`isSliceFamilySemilinear2_count_global`), obtained from that together with
-`semilinearGraph3_affineOnResiduesAt_uniform`, which turns a semilinear count
-graph in ℕ³ into rows that are eventually affine on the residues of one
-row-uniform period.  Counting enters only the general-arity tie count of §9;
-the arity-1 inverse-zeta capstone and the whole one-parameter slice analysis
-behind `thm:wrp-slice-semilinearity` are independent of it.
+Engelfriet–Hoogeboom is a third case, and a different one: it is not an
+assumption the formalisation discharges, but the bridge that lets the reader
+interpret two of the results.  The Lean statements about ζ and `H` are about
+arity-1 MSO transductions; reading them as statements about two-way machines
+is exactly what that theorem licenses, and it is quoted rather than proved
+(A6).  The two-way machine model itself *is* formalised and is used, as the
+witness for the composition failure in `thm:wrp-not-closed` (A7).
 
 To check what any theorem depends on:
 
@@ -104,6 +93,11 @@ To check what any theorem depends on:
 echo 'import RequestProject.Main
 #print axioms wrp_no_area_dinv_swap' | lake env lean --stdin
 ```
+
+One caveat on "three axioms": it holds for every mathematical result in the
+development.  The paper's numeric worked examples are discharged by compiled
+evaluation, so each such example additionally trusts the Lean compiler; no
+headline theorem depends on one.
 
 ## Headline results
 
@@ -132,11 +126,102 @@ echo 'import RequestProject.Main
 | `lem:one-loop-finite-state`, `lem:one-loop-presburger` | `OneLoopSlice.one_loop_*` | `OneLoopSlice.lean` | `msoDefinableRel2_semilinear_general` |
 | `thm:narayana-sweep` | `valleys_heightSweep_eq_doubleRises`, `heightSweep_bijOn`, `heightSweep_isSRR1` | `NarayanaSweep.lean`, `NarayanaBijection.lean`, `SRR1.lean` | none |
 
-The paper's `def:wrp` is formalised twice, deliberately: the working class
-`WRP.IsWRP` (the induced output order `≺` is required to totally order the
-*selected* atoms — a superset of the paper's class, so every negative theorem
-over it is stronger) and the verbatim paper class `WRP.IsWRPPaper`
-(`WRPTieTotal.lean`).  Every headline theorem is restated over the verbatim
-class in `WRPPaperTheorems.lean` / `WRPPaperNotClosed.lean` with the same
-trust bases.  See [`STATUS.md`](STATUS.md) for the full correspondence and
-the modelling conventions.
+The Narayana row cites the hypothesis-free forms `valleys_heightSweep` and
+`doubleRises_heightSweep` (`NarayanaBijection.lean`); `NarayanaSweep.lean` also
+carries versions of the same identities with an explicit `semilength P ≥ 1`.
+The logspace rows prove the paper's "polynomial time" clause with an explicit
+bound of the shape `cardQ · (n+2)^h · (C·(n+1)+1)^c`, where the head count `h`
+depends on the presentation's arity; the output-length clause `|T(w)| = O(n^k)`
+of `thm:wrp-logspace` is not formalised.
+
+## How the formalisation differs from the paper
+
+A machine-checked proof certifies exactly its formal statement, so the
+differences matter.  They fall into three kinds.  The full list, with Lean
+names and file references, is in [`STATUS.md`](STATUS.md); the entries below
+are the ones worth knowing before reading either document.
+
+### Definitions
+
+* **A1.** Transductions are modelled as total functions into "output word or
+  undefined", and *realising* a map on a set of inputs constrains the
+  transduction only there.
+* **A2.** `def:wrp` is formalised twice: a verbatim class asking exactly what
+  the paper asks, and a working class asking only that the combined output
+  order be total on selected atoms.  The working class is a *superset*, which
+  makes negative theorems over it stronger.  No map is exhibited that
+  separates the two, so the inclusion is not known to be strict.
+* **A3.** Lean permits copies of arity 0 where the paper requires arity ≥ 1.
+  The two conventions are proved to differ only on the empty input, and the
+  extra freedom is genuinely used by one witness.
+* **A6.** "Deterministic two-way transducer" is rendered as the arity-1 MSO
+  transduction class, with the machine equivalence quoted rather than proved.
+* **A9.** The paper's prefix-additive rank functions and Lean's regular rank
+  terms are proved to define the same class, in both directions.
+* **A12.** The inverse zeta map is never defined; its corollary is rendered as
+  left inversion, which is a weaker hypothesis to refute and avoids depending
+  on ζ's classical bijectivity.
+* **A13.** That ζ is a bijection is not formalised, and `bounce` does not occur
+  in the development.  Nothing depends on either.
+
+### Statements
+
+* **B13.** The two-pyramid criterion drops the paper's growth hypothesis
+  entirely, because the formal proof never enters the two-way class.
+* **B15.** The no-swap theorem assumes no bijectivity, matching the paper.
+* **B16.** The inverse-zeta corollary comes in a general-arity form and an
+  arity-1 form; the latter is stated about arity-1 presentations rather than
+  about a class, and rests on a smaller trust base.
+* **B14.** The slice-semilinearity theorem is proved in a stronger form —
+  "defined on at least one member of the family" rather than on all — with the
+  paper's literal form exported separately.  The weaker hypothesis cannot be
+  dropped, and the repository gives the refuting example.
+* **B21.** Every negative theorem is stated over the larger working class, with
+  verbatim-class restatements at identical trust bases.
+* **B6.** `thm:wrp-closures` is the least complete: the arity bound that the
+  paper's statement carries is not tracked, definition by cases and
+  letter-deleting relabellings are missing, and because closure statements are
+  positive, proving them for the larger class does not yield the paper's
+  statement — paper-class versions exist only for relabelling and
+  concatenation.
+* **B4, B5.** The output-length clause of `thm:wrp-logspace` is not formalised,
+  and the complexity layer fixes the input alphabet to `{U, D}` where the paper
+  allows any finite alphabet.
+* **B1, B2.** Engelfriet–Hoogeboom and the linear-growth collapse have no Lean
+  counterpart; neither is needed.
+* **B3.** Of `prop:conservative`, only the direction actually used is proved.
+
+### Proofs
+
+* **C1.** The counting lemma is proved from scratch rather than quoted from
+  Woods: decompose a semilinear set into pieces with linearly independent
+  periods, use the linear bound once to force the kernel to be at most
+  one-dimensional, then count arithmetic progressions by inclusion–exclusion.
+* **C2.** The two-pyramid criterion trades three of the paper's external
+  theorems for one, applying the polyregular preimage closure twice instead of
+  composing and collapsing.
+* **C4.** The slice-semilinearity theorem does not follow the paper's proof at
+  all.  Instead of Presburger definability plus counting, it uses the
+  linear-growth bound structurally and reduces to finitely many cells — which
+  is why it needs only the Büchi axiom.
+* **C5.** The paper's own §7 one-loop lemmas *are* stated verbatim, but they are
+  short consequences of the semilinearity axiom rather than independent proofs,
+  and nothing else depends on them.
+* **C6.** The inverse-zeta capstone bypasses the machinery the paper builds for
+  it, finishing with an arithmetic contradiction; both of the paper's
+  ingredients are formalised but unused.
+* **C7.** The Narayana sweep is proved without the paper's contour-forest normal
+  form.
+* **C9.** The quadratic scan-order evaluator is a different algorithm from the
+  paper's, with no counters and an explicit constant.
+* **C12.** The integer-valued companion of the semilinearity axiom is a theorem,
+  but its proof applies that axiom twice — it removes an assumption, it does not
+  make the layer assumption-free.
+* **C13.** Counting is used by the rank-term value graph, and so by
+  `thm:two-parameter-semilinearity` and the one-loop lemmas as well as the
+  general-arity §9 tie count.  It does not enter the one-parameter slice
+  analysis behind the no-swap theorem, nor the arity-1 inverse-zeta capstone.
+
+Some formalised results sit on no critical path: `thm:two-parameter-semilinearity`,
+the one-loop lemmas, the full semilinear-envelope lemma, and three of the five
+closure clauses are certified statements that nothing else consumes.

@@ -33,7 +33,11 @@ The worked examples are checked by `decide`/`native_decide` in
 * `lem:wrp-nonempty-regular` — `WRPNonemptyRegular.lean`.
 * `thm:wrp-logspace` — multihead model: `wrp_isLogspaceMH` +
   `wrp_logspace_polytime` (`WRPLogspace.lean`, a fully verified evaluator
-  with the ≺-successor round structure and the `O(n^{2k+1})` generic bound);
+  with the ≺-successor round structure and an explicit step bound
+  `cardQ · (n+2)^h · (C·(n+1)+1)^c`, where the head count `h` depends on the
+  presentation's arity and `c = 2`; the paper's clause asks only for
+  polynomial time, which this delivers).  The output-length clause
+  `|T(w)| = O(n^k)` of `thm:wrp-logspace` is not formalised;
   worktape model: `wrp_isLogspaceTM` + `wrp_logspaceTM_polytime`
   (`WRPWorktape.lean`, through the simulation
   `MHCOneHead.lean` + `MHCToTM.lean` → `LogspaceTM.lean`).  All four use the
@@ -60,9 +64,10 @@ The worked examples are checked by `decide`/`native_decide` in
 `thm:zeta-not-polyregular` / `cor:zeta-not-regular` —
 `ZetaNotPolyreg.lean` (see Conventions on the 2DFT reading).
 
-**§6 (Narayana sweep).**  `thm:narayana-sweep` —
-`valleys_heightSweep_eq_doubleRises` / `doubleRises_heightSweep_eq_valleys`
-(`NarayanaSweep.lean`), the bijection `heightSweep_bijOn`
+**§6 (Narayana sweep).**  `thm:narayana-sweep` — `valleys_heightSweep` /
+`doubleRises_heightSweep` (`NarayanaBijection.lean`; the forms in
+`NarayanaSweep.lean` carry an extra `semilength P ≥ 1`), the bijection
+`heightSweep_bijOn`
 (`NarayanaBijection.lean`), the WRP presentation (`NarayanaWRP.lean`), and
 `heightSweep_isSRR1` (`SRR1.lean`); `lem:H-two-pyramid` —
 `heightSweep_twoPyramid` (`HeightSweepTwoPyramid.lean`); `lem:H-probe` —
@@ -80,8 +85,10 @@ over an arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
 from `msoDefinableRel2_semilinear_general`).
 `lem:presburger-counting` is `PresburgerCounting.count_graph_semilinear`,
 transcribed in Mathlib vocabulary and proved in `CountGeneral.lean` (see
-Conventions).  The two forms the towers consume follow from it: the joint
-count-graph form (`TwoParamSemilinearity.twoParamCountGraph_proved`) by
+Conventions).  The two forms the towers consume follow from it: the two-parameter
+count-graph form (`TwoParamSemilinearity.twoParamCountGraph_proved`, a single
+count at two parameters — not the paper's simultaneous `r`-tuple form, which
+is not transcribed) by
 instantiating it at two parameters, and the row-uniform form
 (`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) from that together
 with the axiom-clean `semilinearGraph3_affineOnResiduesAt_uniform`
@@ -94,7 +101,8 @@ period.
 (`NoSwapWRP.lean`).
 
 **§8 (no-swap).**  `lem:wrapped-flat-stats` (`WrappedFlat.lean`),
-`lem:dinv-coarea`, `lem:deficit-zero-targets` (`TightTargets.lean`),
+`lem:dinv-coarea` (`dinv_le_coarea`, `WrappedFlat.lean`),
+`lem:deficit-zero-targets` (`TightTargets.lean`),
 `cor:forced-triangular-pairs`, `lem:triangular-not-semilinear`
 (`S_tri_not_semilinear`, `Semilinearity.lean`),
 `cor:model-free-obstruction` (`model_free_obstruction`, `NoSwapWRP.lean`,
@@ -120,10 +128,14 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    class, so negative theorems over it are formally stronger.  The verbatim
    class `WRP.IsWRPPaper` (χ itself a strict total order, and every arity
    positive) is also formalised (`WRPTieTotal.lean`), the inclusion is
-   proved, and every headline theorem is restated over it
+   proved, and every **negative** headline theorem is restated over it
    (`WRPPaperTheorems.lean`, `WRPPaperNotClosed.lean`) with unchanged trust
    bases; the positive memberships (ζ, `H`, the additive level sorts) are
-   proved in the verbatim class directly.
+   proved in the verbatim class directly.  Closure statements are positive, so
+   proving them over the larger class does *not* give the paper's statement:
+   paper-class closure forms exist only for relabelling and concatenation.
+   No map is exhibited in the working class but outside the paper's, so the
+   inclusion is a superset, not a known strict one.
 
 2. **Transductions are `Option`-valued.**  A transduction is a
    `List Alpha → Option (List Beta)`; `none` is "undefined".  Realising a
@@ -163,11 +175,17 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    normal form `b₀ + b_n·n + Σ b_ℓ j_ℓ` is proof-internal in the paper and is
    not separately formalised.
 
-7. **`lem:semilinear-envelope` constants are rational.**  The
-   eventually-affine minimum is stated in integer-cleared form
-   (`M · min S_b = p·b + γ` on residue classes); the all-integer reading is
-   false (the `⌊b/2⌋` section is a counterexample), so the rational form is
-   the correct one.
+7. **`lem:semilinear-envelope` constants are rational, and three forms
+   exist.**  The eventually-affine minimum is stated in integer-cleared form,
+   `q · min S_b = p·b + γ` on residue classes with an independently
+   existentially quantified `q > 0` (not the period); the all-integer reading
+   is false — the `⌊b/2⌋` section is a counterexample — so the rational form
+   is the correct one.  Of the three envelope theorems, the one on the
+   critical path of both non-semilinearity results is the weakest,
+   `semilinear_envelope` (`Semilinearity.lean`), which replaces `min S_b` by
+   *some* element of `S_b`; the full minimum form
+   (`EnvelopeMin.semilinear_envelope_min`) and the dichotomy
+   (`semilinear_envelope_dichotomy`) are proved but unused.
 
 8. **`cor:srr-quadratic` lives in the multihead model.**  Its quadratic step
    count uses the paper's unit-cost word comparisons, realised by
@@ -184,13 +202,14 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    general-arity §9 assembly, `thm:two-parameter-semilinearity`, and
    `OneLoopSlice.lean`, both directly and through the rank-term value graph
    `regularRankTerm_value2_graph_semilinear`, which is a theorem
-   (`RankTermGraph.lean`).  The counting input `count_graph_semilinear` enters
-   the same two places, through the derived row-uniform and joint-graph forms,
-   but it too is a theorem and so adds nothing to the trust base.  The arity-1 inverse-zeta capstone
-   `CopiedD4.inverse_zeta_not_wrp_arity1` needs no counting input at all
-   (`buchi` only), and neither does the one-parameter slice analysis behind
-   `thm:wrp-slice-semilinearity`: counting is used only for the
-   general-arity tie count of §9.
+   (`RankTermGraph.lean`) whose proof applies the axiom twice.  The counting
+   theorem `count_graph_semilinear` is reached through that value graph, and
+   so underlies `thm:two-parameter-semilinearity`, every one-loop lemma, and
+   the general-arity §9 tie count; being a theorem it adds nothing to the
+   trust base.  Two places are conclusively counting-free, their modules not
+   importing the counting file at all: the arity-1 inverse-zeta capstone
+   `CopiedD4.inverse_zeta_not_wrp_arity1` (`buchi` only) and the
+   one-parameter slice analysis behind `thm:wrp-slice-semilinearity`.
    `polyreg_regular_preimage` enters only the §5 and §6 lower bounds (and
    hence `thm:wrp-strict-over-poly` and `cor:rank-necessary`, which invoke
    them).  The combinatorial core (§2, §6's exchange and bijection theorems,
@@ -227,3 +246,109 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
     `decide`/`native_decide` rather than by hand (`Examples.lean`,
     plus spot checks in `NarayanaSweep.lean`, `ZetaClassification.lean`, and
     `HeightSweepTwoPyramid.lean`).
+
+## Further deviations from the paper
+
+The conventions above cover the deviations that shape how the main theorems
+are read.  This section records the remainder, so that the correspondence can
+be audited without reading the sources.  Direction key: *stronger* = the Lean
+statement implies the paper's and more; *weaker* = the paper's statement is not
+fully delivered; *rendering* = same content in different formal vocabulary;
+*route* = same conclusion by a different proof.
+
+### Definitions
+
+* Lean permits copies of arity 0 and presentations with no copies, where the
+  paper requires at least one copy of arity ≥ 1.  The conventions are proved to
+  differ only on the empty input, and the arity-0 freedom is used by the
+  concatenation witness, which emits its separator from an arity-0 copy.
+  (*superset*)
+* A presentation must be well-formed on every input word; the paper's MSO
+  string-transduction definition asks this only on the domain.  The paper's
+  polyregular definition is itself global, so only the arity-1 class is
+  affected.  The standard repair — folding the domain condition into the
+  selection formulas — is routine but not carried out.  (*weaker, in a small
+  and un-formalised way*)
+* MSO definability is required at position tuples outside the word as well.
+  This is semantically inert, since out-of-range atoms are never selected, and
+  the in-range guard is itself definable and proved so.  (*rendering*)
+* Rank sources and prefix ranks are 0-indexed and defined past the end of the
+  word; both are inert because atoms must lie inside the word.  (*rendering*)
+* The paper's prefix-additive rank functions and Lean's regular rank terms are
+  proved to define the same class, in both directions and at the level of the
+  class.  (*equivalent*)
+* ζ and `H` have memberships of different shapes.  `H` is total, and its
+  membership is asserted on all step words.  For ζ the analogous total claim is
+  **false** — the level scan truncates below level 0, and the repository
+  records the checked counterexample — so membership is asserted for a
+  level-symmetric totalisation and transferred to ζ on Dyck paths.
+  (*rendering*)
+* The output of a presentation is defined declaratively, as a duplicate-free
+  list containing exactly the selected atoms and pairwise ordered by `≺`, with
+  uniqueness proved.  The paper's equivalent description — list in χ-order,
+  then stably sort by rank — is not formalised.  (*rendering*)
+* Automata and regular languages are defined without requiring a finite
+  alphabet.  Every use site is at a finite alphabet, and both MSO axioms do
+  require finiteness; only `polyreg_regular_preimage` is stated over arbitrary
+  types, which is more general than the literature statement it cites.
+  (*rendering; the generality of that axiom is an open fidelity question*)
+* The paper's numeric worked examples are machine-checked.  Its structural
+  examples — the reverse-complement in both presentations, the quadratic map
+  `w ↦ w^{#U(w)}`, and the two-dimensional atom-rank example — are not
+  formalised.  (*weaker than a blanket claim that the examples are certified*)
+
+### Statements
+
+* `prop:conservative` is half formalised: that every polyregular map is WRP is
+  proved, in four class variants; the converse for rank dimension 0 is not
+  stated.  (*weaker*)
+* `thm:wrp-closures` is the least complete result.  The paper states it for
+  arity-bounded subclasses; the Lean theorems track no arity.  Definition by
+  cases over disjoint regular languages and letter-deleting relabellings are
+  missing; source-tagging and concatenation are done for two maps rather than
+  `r`, with a single-letter separator; restriction is stated with an
+  MSO-definable language rather than a regular one, and no automaton-to-formula
+  bridge exists.  (*weaker, on several counts*)
+* The complexity layer fixes the input alphabet to `{U, D}`, where the paper
+  allows any finite alphabet; the strict-below-logspace statements also fix a
+  five-letter output alphabet.  The generalisation is mechanical.  (*weaker as
+  stated*)
+* `lem:inverse-zeta-not-semilinear` is formalised only in two dimensions; the
+  paper's three-dimensional first-ascent graph, and the reduction between them,
+  are not.  The capstone does not need the three-dimensional form.  (*weaker*)
+* `lem:two-parameter-presburger` has no single statement: its clauses appear
+  only in raw input-position coordinates, the (region, offset, repetition-index)
+  encoding being carried out only for the one-parameter family.  (*partial*)
+* The statistics of the wrapped-flat family are proved for every `n`, including
+  `n = 0` where the paper assumes `n ≥ 1`.  (*stronger*)
+* The Narayana symmetry is rendered coefficient by coefficient; the polynomial
+  `Nar_n(q,t)` is never defined.  (*rendering*)
+* The four introduction-level theorems have no separate Lean declarations; each
+  is covered by its body version.  (*no counterpart*)
+
+### Proofs
+
+* The Narayana sweep is proved by sorted-adjacency and level-counting arguments
+  on step words, not by the paper's contour-forest normal form.  (*route*)
+* The quadratic scan-order evaluator is a different algorithm: it loops over
+  the `O(n)` rank levels rather than over output letters, keeps per-copy ranks
+  as signed differences so that a comparison is a single head coincidence, and
+  uses no counters at all.  The bound `D·(n+1)²` comes with an explicit
+  constant.  (*route*)
+* The non-regularity of the two index languages is proved by direct pigeonhole
+  on the recognising automaton; the pumping lemma is never formalised.
+  (*route*)
+* The composition-failure argument replaces a citation with a construction: the
+  word map computed by the two-way machine `S` is identified against its actual
+  runs and given an explicit arity-1 presentation.  This is stronger locally
+  and weaker globally — it is about that machine, not about two-way machines in
+  general.  (*route*)
+* The bounded-rank collapse follows the paper's argument, and the
+  automaton-to-logic step it needs is the direction of Büchi's theorem that the
+  development proves, so it is axiom-free.  (*equivalent*)
+* Several formalised results sit on no critical path:
+  `thm:two-parameter-semilinearity`, all six one-loop lemmas, the full and
+  dichotomy forms of the semilinear-envelope lemma, the two-dimensional
+  inverse-zeta band, and three of the five closure clauses (restriction,
+  reversal, disjoint union).  They are certified statements that nothing else
+  consumes.

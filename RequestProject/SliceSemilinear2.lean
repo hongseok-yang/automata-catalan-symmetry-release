@@ -399,7 +399,7 @@ def BlockLinearWord2.eval {Alpha : Type*} (F : BlockLinearWord2 Alpha) (mS n : �
 semilinear.**  Admitted as a standard fact: by Büchi–Elgot–Trakhtenbrot the relation `R`
 is recognised by a finite automaton on the marked alphabet, and the marked word read
 along `F.eval mS n` ranges over a regular two-loop slice language, whose Parikh image is
-semilinear (Ginsburg–Spanier).  Both hypotheses are load-bearing: `[Fintype Alpha]` is
+semilinear (Parikh; equivalently Presburger-definable, by Ginsburg–Spanier).  Both hypotheses are load-bearing: `[Fintype Alpha]` is
 needed for the MSO⇒automaton step, and the block-linear shape of `F` is needed for the
 slice language to be regular (an arbitrary `slice : ℕ → ℕ → List Alpha` can encode a
 non-semilinear position set).  This is the same kind of standard, project-agnostic fact
