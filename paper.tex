@@ -897,9 +897,12 @@ under composition.  Moreover, if $f$ belongs to this class and
 $L\subseteq\Gamma^*$ is regular, then the inverse image $f^{-1}(L)$ is regular.
 \end{theorem}
 
-The later arguments use precisely these three facts: the equivalence of the
-two descriptions, closure under composition, and preservation of regularity
-under inverse images.
+The later arguments use two of these facts: the equivalence of the two
+descriptions, and preservation of regularity under inverse images.  Closure
+under composition is recorded for completeness; where a composition is
+actually formed, in the proof of
+Proposition~\ref{prop:two-pyramid-criterion}, it is taken at the polyregular
+level instead~\cite{Bojanczyk2018}.
 
 \begin{example}[Reverse-complement, in both presentations]\label{ex:rc-two-ways}
 The reverse-complement $\rc$ of Table~\ref{tab:named-bijections} sends
@@ -4462,8 +4465,11 @@ Lemma~\ref{lem:presburger-counting} is proved rather than assumed, by a route
 different from the one taken in Section~\ref{sec:slice-semilinearity}; see the
 discussion of the trust base below.  Background results quoted from the literature, such as
 Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
-enter through the admitted axioms below.  The worked examples of the paper
-are certified by Lean's executable decision procedures.  Two documentation
+enter through the admitted axioms below.  The paper's numeric worked
+examples --- the $\area$, $\dinv$, and $\zeta$ computations, and the small
+sweep computations --- are certified by Lean's executable decision procedures;
+its structural examples, such as the reverse-complement presented both as a
+2DFT and as an $\MSO$ transduction, are not formalised.  Two documentation
 files in the repository map the numbered statements of the paper to
 their formal counterparts, section by section; Table~\ref{tab:lean} cites Lean
 names without their namespace prefixes.

@@ -288,10 +288,9 @@ fully delivered; *rendering* = same content in different formal vocabulary;
   uniqueness proved.  The paper's equivalent description — list in χ-order,
   then stably sort by rank — is not formalised.  (*rendering*)
 * Automata and regular languages are defined without requiring a finite
-  alphabet.  Every use site is at a finite alphabet, and both MSO axioms do
-  require finiteness; only `polyreg_regular_preimage` is stated over arbitrary
-  types, which is more general than the literature statement it cites.
-  (*rendering; the generality of that axiom is an open fidelity question*)
+  alphabet, and every use site is at a finite alphabet.  All three axioms do
+  require finiteness of the alphabets they quantify over, so none of them is
+  stated more generally than the literature result it names.  (*rendering*)
 * The paper's numeric worked examples are machine-checked.  Its structural
   examples — the reverse-complement in both presentations, the quadratic map
   `w ↦ w^{#U(w)}`, and the two-dimensional atom-rank example — are not

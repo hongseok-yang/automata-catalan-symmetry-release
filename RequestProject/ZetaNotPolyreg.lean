@@ -44,9 +44,10 @@ ordinary polyregular functions.**  The preimage of a regular language under a
 polyregular function is regular.  This is the polyregular analogue of the
 Büchi–Elgot–Trakhtenbrot axiom `SliceMSO.buchi`: a textbook closure property of
 polyregular transductions (Bojańczyk), stated entirely over the generic
-`Polyreg.IsPolyregular` / `IsRegularLang`, with no project-specific tokens. -/
-axiom polyreg_regular_preimage {α β : Type} (f : List α → Option (List β))
-    (R : Set (List β)) :
+`Polyreg.IsPolyregular` / `IsRegularLang`, with no project-specific tokens.
+Both alphabets are required to be finite, as in the literature statement. -/
+axiom polyreg_regular_preimage {α β : Type} [Fintype α] [Fintype β]
+    (f : List α → Option (List β)) (R : Set (List β)) :
     Polyreg.IsPolyregular f → IsRegularLang R →
     IsRegularLang {w | ∃ out, f w = some out ∧ out ∈ R}
 
