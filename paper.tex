@@ -2166,9 +2166,9 @@ Armstrong, Loehr, and Warrington~\cite{ArmstrongLoehrWarrington2015,
 ArmstrongLoehrWarrington2016}: the map that lists the steps of a Dyck path by
 increasing starting height, breaking ties from right to left.  We denote it by
 $H$.  General sweep-map bijectivity implies that $H$ is a bijection of each
-$\D_n$~\cite{ThomasWilliams2018}; its exchange of the two statistics defined
-below follows from the corresponding tree and zeta descriptions
-in~\cite{CeballosFangMuhle2020,Fang2024,SulzgruberThiel2018}.  What is new is
+$\D_n$~\cite{ThomasWilliams2018}; the corresponding tree and zeta descriptions
+show that it exchanges valleys and double rises, defined
+next~\cite{CeballosFangMuhle2020,Fang2024,SulzgruberThiel2018}.  What is new is
 its computational status.
 For the upper bound, $H$ is an additive level sort, hence an $\SWR$ map by
 Proposition~\ref{prop:alw-sweep-swr}.  For the lower bound, we run the
@@ -2176,13 +2176,13 @@ two-pyramid probe of Section~\ref{sec:zeta-not-polyregular} a second time,
 with the roles of the two parameters exchanged.  Together, the two results
 give $H\in\SWR\setminus\polyreg$.
 
-Two statistics of a Dyck word $w=w_1\cdots w_{2n}$ are the number of
-\emph{valleys}
-$\val(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=DU\}|$ and the number of
-\emph{double rises}
-$\dr(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=UU\}|$.  Each counts occurrences of a
-fixed length-two factor, so each is a \emph{local} statistic, in contrast to
-the global $\area$ and $\dinv$.  For $n\ge 1$, writing $w$ in its maximal runs
+For a Dyck word $w=w_1\cdots w_{2n}$, let
+$\val(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=DU\}|$ be its number of
+\emph{valleys} and let
+$\dr(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=UU\}|$ be its number of
+\emph{double rises}.  Each counts occurrences of a fixed length-two factor, so
+each is a \emph{local} statistic, in contrast to the global $\area$ and $\dinv$.
+For $n\ge 1$, writing $w$ in its maximal runs
 $U^{a_1}D^{b_1}\cdots U^{a_k}D^{b_k}$ with $k=\pk(w)$ peaks (the number of $UD$
 factors) gives the elementary identities
 \[
