@@ -2159,34 +2159,44 @@ will give $H$ as a second witness with a different statistic exchange.
 \section{The height sweep and the Narayana symmetry}
 \label{sec:narayana-sweep}
 
-As a second classification example for $\WRP$, consider the starting-height,
-increasing-level, right-to-left member of the sweep family studied by
+This section proves Theorem~\ref{thm:intro-narayana-sweep}.  As a second
+classification example for $\WRP$, we consider a classical sweep map of
 Armstrong, Loehr, and Warrington~\cite{ArmstrongLoehrWarrington2015,
-ArmstrongLoehrWarrington2016}.  We denote it by $H$.  Its bijectivity and
-statistic exchange are known.  Our computational results place it in
-$\SWR\subseteq\WRP$ and outside $\polyreg$.
+ArmstrongLoehrWarrington2016}: the map that lists the steps of a Dyck path by
+increasing starting height, breaking ties from right to left.  We denote it by
+$H$.  That $H$ is a bijection of each $\D_n$, and that it exchanges the two
+statistics defined below, are known.  What is new is its computational status.
+For the upper bound, $H$ is an additive level sort, hence an $\SWR$ map by
+Proposition~\ref{prop:alw-sweep-swr}.  For the lower bound, we run the
+two-pyramid probe of Section~\ref{sec:zeta-not-polyregular} a second time,
+with the roles of the two parameters exchanged.  Together, the two results
+give $H\in\SWR\setminus\polyreg$.
 
-Two local statistics of a Dyck word $w=w_1\cdots w_{2n}$ are the number of
+Two statistics of a Dyck word $w=w_1\cdots w_{2n}$ are the number of
 \emph{valleys}
 $\val(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=DU\}|$ and the number of
 \emph{double rises}
-$\dr(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=UU\}|$.  Each statistic counts occurrences
-of a fixed length-two factor, so each is a \emph{local} statistic, in contrast to the
-global $\area$ and $\dinv$.  For $n\ge 1$, writing $w$ in its maximal runs
+$\dr(w)=|\{i:1\le i<2n,\ w_iw_{i+1}=UU\}|$.  Each counts occurrences of a
+fixed length-two factor, so each is a \emph{local} statistic, in contrast to
+the global $\area$ and $\dinv$.  For $n\ge 1$, writing $w$ in its maximal runs
 $U^{a_1}D^{b_1}\cdots U^{a_k}D^{b_k}$ with $k=\pk(w)$ peaks (the number of $UD$
 factors) gives the elementary identities
 \[
    \val(w)=\pk(w)-1,\qquad \dr(w)=n-\pk(w),\qquad
    \text{so}\quad \val(w)+\dr(w)=n-1.
 \]
-Their joint distribution for $n\ge 1$ is the Narayana polynomial
+These identities are used in the proof in
+Appendix~\ref{app:narayana-sweep-proof}.  They also show that $\val$ and $\dr$
+determine each other on $\D_n$, so the symmetry below says exactly that the
+distribution of $\val$ on $\D_n$ is symmetric about $(n-1)/2$.
+Their joint distribution is the Narayana polynomial
 \[
    \Nar_n(q,t)=\sum_{P\in\D_n}q^{\val(P)}t^{\dr(P)}
    =\sum_{k=1}^{n}\frac1n\binom nk\binom n{k-1}\,q^{k-1}t^{\,n-k},
 \]
 whose symmetry $\Nar_n(q,t)=\Nar_n(t,q)$ is the Narayana analogue of the
-$q,t$-Catalan symmetry.  The empty path gives $\Nar_0(q,t)=1$.  Deutsch gave
-an earlier bijective proof using a
+$q,t$-Catalan symmetry; for $n=0$ the empty path gives $\Nar_0(q,t)=1$.
+Deutsch proved this symmetry bijectively, before the sweep maps, by a
 recursive involution on Dyck paths~\cite{Deutsch1999}.  The map $H$ is a
 different known realisation of the same symmetry, obtained by sorting steps by
 their starting heights.
@@ -2210,7 +2220,7 @@ with the height of $P$ just before each, are
    \end{array}
 \]
 Listing the steps by increasing starting height, and within each height by
-decreasing position (the right-to-left tie-order), then reading their labels,
+decreasing position (the right-to-left tie-order), gives
 \[
    \begin{array}{r|l}
      \text{height }0: & U\ (1)\\
@@ -2219,21 +2229,23 @@ decreasing position (the right-to-left tie-order), then reading their labels,
      \text{height }3: & D\ (4)
    \end{array}
 \]
-gives $H(P)=U\cdot DU\cdot DU\cdot D=UDUDUD$.  The mountain, with two double
+Reading off the labels gives $H(P)=U\cdot DU\cdot DU\cdot D=UDUDUD$.  The mountain, with two double
 rises and no valleys, is sent to the zigzag $UDUDUD$, with $\val=2$ and $\dr=0$:
-the two statistics are exchanged.  The tie-order is what does this.  With the
-left-to-right convention of Example~\ref{ex:height-sweep}, the same additive
-level sort would give $UUDUDD$, which has $\val=\dr=1$ and does not exchange the
-two statistics.  It is the right-to-left reading that makes $H$ exchange them.
+the two statistics are exchanged.  With the left-to-right convention of
+Example~\ref{ex:height-sweep}, the same additive level sort would give
+$UUDUDD$, which has $\val=\dr=1$.  It is the right-to-left reading that makes
+$H$ exchange them.
 \end{example}
 
-We recall the known bijectivity and statistic exchange of this classical
-sweep-map variation.  After translating conventions, the result follows from
-sweep-map invertibility and zeta-map statistic transport, as reviewed in
+Theorem~\ref{thm:narayana-sweep} below is not new.  After a translation of
+conventions, it follows from the invertibility of the sweep maps together with
+the statistic transport of the zeta map, as reviewed in
 Section~\ref{sec:related-work}~\cite{ArmstrongLoehrWarrington2015,
-ThomasWilliams2018,CeballosFangMuhle2020,SulzgruberThiel2018}.  We state the
-result because Proposition~\ref{prop:alw-sweep-swr} then shows that $\WRP$ can
-realise this classical symmetry.
+ThomasWilliams2018,CeballosFangMuhle2020,SulzgruberThiel2018}.  We restate it
+in the conventions of this paper and prove it directly in
+Appendix~\ref{app:narayana-sweep-proof}, so that nothing here rests on an
+unstated translation.  Combined with Proposition~\ref{prop:alw-sweep-swr}, it
+says that a single $\SWR$ map realises a classical Catalan-type symmetry.
 
 \begin{theorem}[The height sweep realises the Narayana symmetry]
 \label{thm:narayana-sweep}
@@ -2247,11 +2259,13 @@ Consequently, $H$ realises the Narayana symmetry
 $\Nar_n(q,t)=\Nar_n(t,q)$.
 \end{theorem}
 
-A self-contained proof in the present conventions is given in
-Appendix~\ref{app:narayana-sweep-proof}.
-
-The two-pyramid criterion also gives a lower bound for $H$.  The required
-closed form mirrors Lemma~\ref{lem:zeta-two-pyramid}.
+The two-pyramid criterion also gives a lower bound for $H$.  Recall the
+two-pyramid paths $P_{m,n}=U^mD^mU^nD^n$ and the criterion of
+Proposition~\ref{prop:two-pyramid-criterion}.  The same family and the same
+regular probe $R$ that separated $\zeta$ from $\polyreg$ serve for $H$, with
+the roles of the two parameters exchanged: the closed form below mirrors the
+one in Lemma~\ref{lem:zeta-two-pyramid} with $m$ and $n$ interchanged, so the
+probe detects $n\le m$ where Lemma~\ref{lem:zeta-probe} detected $m\le n$.
 
 \begin{lemma}[Two-pyramid formula for the height sweep]
 \label{lem:H-two-pyramid}
@@ -2266,8 +2280,13 @@ H(P_{m,n})=
 \end{lemma}
 
 \begin{proof}
-Index the $2m+2n$ steps of $P_{m,n}$ by their positions.  Reading off the
-starting heights of the four runs gives the following table.
+Index the $2m+2n$ steps of $P_{m,n}$ by their positions.  For the weights
+$\nu(U)=+1$ and $\nu(D)=-1$, the level of a step is its starting height, and
+we use the two terms interchangeably below.  For a level $h$, write $U_1$ and
+$D_1$ for the steps of the runs $U^m$ and $D^m$ that start at height $h$, and
+$U_2$ and $D_2$ for the corresponding steps of $U^n$ and $D^n$; each exists
+exactly for the range of $h$ shown.  Reading off the starting heights of the
+four runs gives the following table.
 
 \begin{center}
 \small
@@ -2305,20 +2324,24 @@ deleting the absent members from $D_2,U_2,D_1,U_1$.  Indeed,
   \underbrace{2m-h+1}_{D_1}>\underbrace{h+1}_{U_1}
   \iff h<m.
 \]
-The first inequality holds whenever $U_2$ exists, the second for every
-$h\ge1$, and the third whenever $U_1$ exists.  Thus, the surviving letters at
-each positive level occur in the order $D,U,D,U$.
+The step $U_2$ exists exactly when $h\le n-1$, and $U_1$ exactly when
+$h\le m-1$.  The first inequality therefore holds whenever $U_2$ exists, the
+second for every $h\ge1$, and the third whenever $U_1$ exists.  The three
+remaining comparisons are immediate from the position differences
+$D_2-D_1=2n$, $U_2-U_1=2m$ and $D_2-U_1=2m+2n-2h>0$.  Thus, whichever members
+are absent, the surviving letters at each positive level occur in the relative
+order $D,U,D,U$.
 
 Suppose first that $n\le m$.  The levels $1\le h\le n-1$ each contain all
-four steps and together contribute $(DU)^{2n-2}$.  At level $n$, the letters
-are $DDU$ if $n<m$ and $DD$ if $n=m$.  The levels
-$n+1\le h\le m-1$ each contribute $DU$, and level $m$ contributes $D$.
-When $n<m$, the resulting word is
+four steps and together contribute $(DU)^{2n-2}$.  If $n<m$, level $n$
+contributes $DDU$, the levels $n+1\le h\le m-1$ each contribute $DU$, and
+level $m$ contributes $D$, so that the output is
 \[
    UU(DU)^{2n-2}DD\,U(DU)^{m-1-n}D
    =UU(DU)^{2n-2}DD(UD)^{m-n}.
 \]
-The same formula holds when $n=m$, with an empty tail.
+If $n=m$, level $n$ contributes $DD$ and there is no further level, which is
+the same formula with an empty tail.
 
 Now suppose that $n>m$.  The levels $1\le h\le m-1$ together contribute
 $(DU)^{2m-2}$.  Level $m$ contributes $DUD$, the levels
@@ -2331,7 +2354,7 @@ Hence
    &=UU(DU)^{2m-1}DD(UD)^{n-m-1},
 \end{aligned}
 \]
-where the tail is empty when $n=m+1$.  This proves both cases.
+where the tail is empty when $n=m+1$.  This settles both cases.
 \end{proof}
 
 \begin{lemma}[Regular probe for the height sweep]
@@ -2349,8 +2372,9 @@ $n>m$.  Membership in $R$ is therefore equivalent to $n\le m$.
 \begin{theorem}[The height sweep is beyond $\polyreg$]
 \label{thm:H-not-polyregular}
 The map $H$ is not realised by any polyregular map under the step-word
-encoding.  Consequently, $H\in\SWR\setminus\polyreg$, and $H$ is not
-realisable by any deterministic 2DFT.
+encoding.  Together with Proposition~\ref{prop:alw-sweep-swr}, this gives
+$H\in\SWR\setminus\polyreg$; in particular, $H$ is not realisable by any
+deterministic 2DFT.
 \end{theorem}
 
 \begin{proof}
@@ -2358,21 +2382,27 @@ Let
 \[
    L'=\{a^m\#b^n:m,n\ge1,\ n\le m\}.
 \]
-This language is not regular by the pumping lemma: if $p$ were a pumping
-length, pumping down a nonempty initial block of $a$'s in $a^p\#b^p$ would
-produce $a^{p-t}\#b^p$ for some $t>0$, which violates $n\le m$.  By
-Lemma~\ref{lem:H-probe}, it is
-$\{a^m\#b^n:m,n\ge1,\ H(P_{m,n})\in R\}$.  The map $H$ preserves length, so
+This language is not regular by the standard pumping argument: if $p$ were a
+pumping length, pumping down a nonempty initial block of $a$'s in $a^p\#b^p$
+would produce $a^{p-t}\#b^p$ for some $t>0$, which violates $n\le m$.
+Lemma~\ref{lem:H-probe} identifies $L'$ with
+$\{a^m\#b^n:m,n\ge1,\ H(P_{m,n})\in R\}$.  Since $H$ preserves length,
 Proposition~\ref{prop:two-pyramid-criterion}, applied with $f=H$ and $K=R$,
 shows that no polyregular map realises $H$ on every Dyck path.  The membership
-$H\in\SWR$ follows from Proposition~\ref{prop:alw-sweep-swr}, and every
-deterministic 2DFT is polyregular.
+$H\in\SWR$ follows from Proposition~\ref{prop:alw-sweep-swr}, and the final
+claim follows because every deterministic 2DFT is polyregular.
 \end{proof}
 
 Proposition~\ref{prop:alw-sweep-swr} and
 Theorems~\ref{thm:narayana-sweep} and~\ref{thm:H-not-polyregular} together
 establish the introduction-level statement,
 Theorem~\ref{thm:intro-narayana-sweep}.
+
+The contrast with Theorem~\ref{thm:intro-no-swap} is the point of this
+section.  A single $\WRP$ rank sort realises the Narayana symmetry, whereas
+Section~\ref{sec:main} shows that no $\WRP$ map realises the $q,t$-Catalan
+symmetry by an area--dinv swap.  The obstruction proved there is therefore not
+the bare weakness of the model.
 
 \section[Regular-slice semilinearity for WRP]{Regular-slice semilinearity for $\WRP$}\label{sec:slice-semilinearity}
 
@@ -4424,55 +4454,62 @@ as $H$ and other mixed-sign sweep maps.
 \section{Machine-checked formalisation in Lean}\label{sec:lean}
 
 The results of this paper have been formalised and machine-checked in the
-Lean~4 proof assistant \cite{DeMouraUllrich2021}, building on the Mathlib
-library \cite{MathlibCommunity2020}.  The development was produced
+Lean~4 proof assistant~\cite{DeMouraUllrich2021}, building on the Mathlib
+library~\cite{MathlibCommunity2020}.  The development was produced
 automatically by the AI models Claude, Aristotle, and Codex, as recorded in
-the declaration of AI use at the end of the paper; since every proof is
-checked by Lean's kernel, the guarantees described in this section do not
-depend on how the proofs were found.  The formalisation is distributed with
+the declaration of AI use at the end of the paper.  Since every proof is
+machine-checked, the guarantees described in this section do not depend on how
+those proofs were found.  The formalisation is distributed with
 the paper.\footnote{\url{https://github.com/hongseok-yang/automata-catalan-symmetry-release}}
-It comprises roughly $107{,}000$ lines of Lean in $170$ source files, pins an
-exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so that the
-build is reproducible, and contains no unproved placeholder: every statement
-in the development is fully proved from Lean's kernel and the short list of
-admitted axioms described below.  This section summarises what is formalised,
+It comprises roughly $107{,}000$ lines of Lean in $170$ source files, and it
+pins an exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so
+that the build is reproducible.  It contains no \texttt{sorry}, Lean's
+placeholder for an unproved statement.  Every mathematical result in the
+development is proved from Lean's kernel rules together with the short list of
+admitted axioms described below; the paper's numeric worked examples are
+instead discharged by compiled evaluation (\texttt{native\_decide}), so each of
+those additionally trusts the Lean compiler.  No result in
+Table~\ref{tab:lean} depends on one.  This section summarises what is formalised,
 on which axiomatic base, and where the formal statements deliberately differ
 from the prose.
 
 \paragraph{Scope.}
-The development builds the paper from the ground up rather than verifying an
-isolated statement.  It defines Dyck paths, the statistics $\area$, $\dinv$,
-and $\coarea$, area sequences, the zeta map of Definition~\ref{def:zeta}, the
-height sweep $H$ of Section~\ref{sec:narayana-sweep}, and
-the families $W_n$, $W_{m,n}$, and $P_{m,n}$; $\MSO$ on words together with the
+The development formalises the theory of the paper from the ground up rather than verifying an
+isolated statement.  On the combinatorial side it defines Dyck paths, the statistics $\area$,
+$\dinv$, and $\coarea$, area sequences, the zeta map of
+Definition~\ref{def:zeta}, the height sweep $H$ of
+Section~\ref{sec:narayana-sweep}, and the families $W_n$, $W_{m,n}$, and
+$P_{m,n}$.  On the machine side it defines $\MSO$ on words together with the
 marked-word encodings of free variables (Section~\ref{sec:mso}); polyregular
 presentations (Definition~\ref{def:polyregular}) and deterministic two-way
 transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
 functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
-(Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine
-models of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
-results of the paper: Table~\ref{tab:lean} lists the headline
-theorems with their Lean names, and the intermediate lemmas
-supporting those results are formalised as well.  In
+(Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine models
+of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
+results of the paper.  Table~\ref{tab:lean} lists the headline theorems with
+their Lean names; the intermediate lemmas that support them are formalised as
+well.  In
 particular, the deficit-zero analysis of Section~\ref{sec:main}, the
 first-ascent computations of Section~\ref{sec:inverse-zeta}, the two-pyramid
 closed forms behind the $\zeta$ and $H$ lower bounds
 (Lemmas~\ref{lem:zeta-two-pyramid} and~\ref{lem:H-two-pyramid}), and the
 regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
-proofs, the last both instantiated at the family $W_n$ and verbatim over an
-arbitrary slice $u\,v^n z$.  The single-count case of
+proofs, the last of these in two forms: instantiated at the family $W_n$, and
+in the general form of the paper, over an arbitrary slice $u\,v^n z$.  The single-count case of
 Lemma~\ref{lem:presburger-counting} is proved rather than assumed, by a route
 different from the one taken in Section~\ref{sec:slice-semilinearity}; see the
-discussion of the trust base below.  Background results quoted from the literature, such as
-Theorem~\ref{thm:eh}, are not re-proved; where the arguments need them, they
-enter through the admitted axioms below.  The paper's numeric worked
+discussion of the trust base below.  Background results quoted from the literature are not re-proved; where the
+arguments need them, they enter through the admitted axioms below.
+Theorem~\ref{thm:eh} is the exception: it is not one of those axioms, because
+the formal statements quantify directly over deterministic $\MSO$
+transductions, and it is used only to read them as statements about two-way
+machines; see the discussion of statement fidelity below.  The paper's numeric worked
 examples --- the $\area$, $\dinv$, and $\zeta$ computations, and the small
 sweep computations --- are certified by Lean's executable decision procedures;
-its structural examples, such as the reverse-complement presented both as a
-2DFT and as an $\MSO$ transduction, are not formalised.  Two documentation
-files in the repository map the numbered statements of the paper to
-their formal counterparts, section by section; Table~\ref{tab:lean} cites Lean
-names without their namespace prefixes.
+the paper's structural examples, such as the reverse-complement presented both
+as a 2DFT and as an $\MSO$ transduction, are not formalised.  Two
+documentation files in the repository map the numbered statements of the paper
+to their formal counterparts, section by section.
 
 \begin{table}[t]
 \centering
@@ -4519,8 +4556,8 @@ Cor.~\ref{cor:zeta-not-regular} (zeta beyond $\MSO$) &
   \texttt{zetaMap\_not\_regular} & (iii) \\
 Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
   \texttt{heightSweep\_bijOn},
-  \texttt{valleys\_heightSweep\_eq\_doubleRises},
-  \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
+  \texttt{valleys\_heightSweep},
+  \texttt{doubleRises\_heightSweep} & none \\
 Thm.~\ref{thm:H-not-polyregular} (height sweep beyond $\polyreg$) &
   \texttt{heightSweep\_not\_polyregular},
   \texttt{heightSweep\_not\_regular} & (iii) \\
@@ -4549,38 +4586,44 @@ the intermediate lemmas, to their formal counterparts.}
 \end{table}
 
 \paragraph{Trust base.}
-The completed development is built from Lean's kernel primitives plus exactly
-three explicitly admitted axioms, each a standard external result about
-$\MSO$, finite automata, semilinear sets, and polyregular maps.  The second is
-stated using the development's own abstractions so that it can be applied
-directly to the formalised arguments below.
+Every mathematical result in the completed development is built from Lean's
+kernel and its three standard axioms (\texttt{propext},
+\texttt{Classical.choice}, and \texttt{Quot.sound}), together with exactly
+three explicitly admitted axioms of our own, each a standard external result
+about $\MSO$, finite automata, semilinear sets, or polyregular maps.  The
+second is stated using the development's own abstractions so that it can be
+applied directly to the formalised arguments that follow.
 \begin{enumerate}[label=(\roman*)]
 \item \texttt{buchi}: every $\MSO$-definable language over a finite alphabet
 is recognised by a DFA, the logic-to-automata direction of the
 B\"uchi--Elgot--Trakhtenbrot theorem~\cite{Thomas1997}.  The converse
 direction, that the run of a DFA is $\MSO$-definable, is proved in the
 development.
-\item \texttt{msoDefinableRel2\_semilinear\_general}: over a two-parameter
-family of words assembled from fixed blocks repeated affinely in the two
-parameters, in the manner of the family $W_{m,n}$ of
-Definition~\ref{def:two-parameter-family}, the position tuples satisfying an
-$\MSO$ formula form a semilinear family.  This combines (i) with the
-Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
+\item \texttt{msoDefinableRel2\_semilinear\_general}: for a two-parameter
+family of words assembled from fixed blocks that repeat affinely in the two
+parameters, as in the family $W_{m,n}$ of
+Definition~\ref{def:two-parameter-family}, the set of tuples consisting of the
+two parameters together with a $k$-tuple of positions satisfying a fixed
+$\MSO$ formula is a semilinear subset of $\N^{k+2}$.  This combines (i) with
+the Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
 \item \texttt{polyreg\_regular\_preimage}: the preimage of a regular language
 under a polyregular map is regular~\cite{Bojanczyk2018}.
 \end{enumerate}
-The $\Z^d$-valued companion of (ii) --- semilinearity of the value graph of a
-prefix-additive rank function read along such a family --- is not assumed but
-proved.  A rank function unfolds into a fixed signed combination of prefix
-ranks and bounded local corrections; a prefix rank is the weighted sum, over
-the finitely many pairs of source state and letter, of the number of positions
-below the queried one carrying that pair; those position sets are
+One statement close to (ii) is deliberately not assumed.  The $\Z^d$-valued
+companion of (ii) --- semilinearity of the value graph of a prefix-additive
+rank function read along such a family --- is proved instead, from (i), (ii)
+and counting.  A rank function unfolds into a fixed signed combination of
+prefix ranks and bounded local corrections.  A prefix rank is the weighted
+sum, over the finitely many pairs of source state and letter, of the number of
+positions below the queried one that carry that pair.  Those position sets are
 $\MSO$-definable by the converse direction of (i), which the development
-proves; and their counts are semilinear by the counting theorem below, the
-fibres being positions of a slice word whose length is affine in the two
-parameters.
+proves; (ii) turns that definability into semilinearity along the family; and
+their counts are then semilinear by the counting result described next, the
+fibres being sets of positions in a slice word whose length is affine in the
+two parameters.  The companion is therefore a theorem rather than a fourth
+axiom, but it does rest on (ii).
 
-The counting layer admits nothing.  Section~\ref{sec:slice-semilinearity}
+The counting layer rests on no axiom.  Section~\ref{sec:slice-semilinearity}
 derives Lemma~\ref{lem:presburger-counting} from Woods' Presburger counting
 theorem~\cite[Theorem~1.10]{Woods2015}, but the formalisation does not follow
 that route and does not assume the lemma: it \emph{proves} the single-count
@@ -4588,25 +4631,30 @@ case outright, by an argument that needs no Ehrhart theory and no
 quasi-polynomials.  Mathlib supplies the decomposition of a semilinear set
 into pieces whose periods are linearly independent, so each piece is in
 bijection with its coefficient tuples and no point is counted twice.  On such
-a piece the linear bound forces a dichotomy: two independent directions in
-the kernel of the map from coefficients to parameters would place
-quadratically many points over a single parameter of linear size, so the
-kernel has rank at most one, and every fibre is therefore an arithmetic
-progression whose direction does not depend on the parameter.  Counting the
+a piece, the hypothesis that the number of points above a parameter grows at
+most linearly forces the kernel of the map from coefficient tuples to
+parameters to have rank at most one: two independent directions in that
+kernel would place quadratically many points above a single parameter of
+linear size.  Every fibre is therefore an arithmetic progression whose
+direction does not depend on the parameter.  Counting the
 union of finitely many such progressions is then elementary.  Both counting
-statements the development uses --- the joint count graph of a two-parameter
-family, and the row-uniform form in which each row of that graph is
-eventually affine on the residue classes of a single period --- follow, and
-are likewise free of any axiom.  Which
-axioms each headline result uses is recorded in Table~\ref{tab:lean} and can
-be audited mechanically with Lean's \texttt{\#print axioms} command.  The
+statements that the development uses follow from this, and are likewise free
+of any axiom: the joint count graph of a two-parameter family, and the
+row-uniform form of that graph, in which the counts for each fixed value of
+the first parameter are eventually affine on the residue classes of a single
+period.
+
+Table~\ref{tab:lean} records which axioms each headline result uses, and that
+record can be audited mechanically with Lean's \texttt{\#print axioms}
+command.  The
 combinatorial core needs none of them: the closure and collapse theorems, the
 memberships of $\zeta$ and $H$, Theorem~\ref{thm:narayana-sweep}, the
 two-pyramid closed forms (Lemmas~\ref{lem:zeta-two-pyramid}
 and~\ref{lem:H-two-pyramid}), the deficit-zero lemmas of
 Section~\ref{sec:main} together with the model-free obstruction
 (Corollary~\ref{cor:model-free-obstruction}), and the machine simulations
-behind Theorem~\ref{thm:wrp-logspace} are all axiom-free.  The headline
+behind Theorem~\ref{thm:wrp-logspace} are all axiom-free, although the
+theorem itself uses~(i).  The headline
 no-swap theorem and the arity-one case of
 Corollary~\ref{cor:inverse-zeta-not-wrp} use only the
 B\"uchi--Elgot--Trakhtenbrot axiom (i), and the polyregular lower bounds for
@@ -4619,40 +4667,57 @@ how the main statements are rendered.  Transductions are modelled as total
 functions from input words to optional output words, with an absent value
 meaning ``undefined''; realisation on a domain (Definition~\ref{def:relative})
 constrains a transduction only on that domain.  Definition~\ref{def:wrp} is
-formalised twice.  A verbatim class renders the definition as stated: the
+formalised twice.  The verbatim class renders the definition as stated: the
 tie-order $\chi$ is itself a strict total order on the selected atoms, and
-every copy name has positive arity.  A working class asks only that the
-combined output order $\prec$, atom rank refined by $\chi$, totally order the
-selected atoms of each input word.  The working class admits more
-presentations, so the negative theorems proved over it are formally stronger.
+every copy name has positive arity.  The working class asks only that the
+combined output order $\prec$ --- atom rank refined by $\chi$ --- should
+totally order the selected atoms of each input word.  The working class allows more
+presentations, so the negative theorems proved for it are formally stronger.
 Every formalised negative headline theorem is also restated over the verbatim
 class with the same admitted axioms, and the positive memberships of $\zeta$,
 $H$, and the additive level sorts are proved in the verbatim class directly.
+Theorem~\ref{thm:wrp-closures} is the least
+completely rendered result: the formal clauses track no arity, restriction is
+stated for an $\MSO$-definable rather than a regular input language,
+definition by cases and letter-deleting relabellings are not formalised, and
+source tagging and concatenation are proved for two maps with a one-letter
+separator rather than for $r$ maps with separator words.  Because closure
+statements are positive, proving them over the working class does not yield
+the verbatim-class statement, which is available only for relabelling and
+concatenation.
 Theorem~\ref{thm:wrp-no-swap} is formalised in its map form: no bijectivity
 is assumed of the hypothetical swap.
-Corollary~\ref{cor:inverse-zeta-not-wrp} is rendered as left inversion: no
-$\WRP$ transduction outputs $P$ on input $\zeta(P)$ for every Dyck path $P$.
+Corollary~\ref{cor:inverse-zeta-not-wrp} is rendered as left inversion: there
+is no $\WRP$ transduction that outputs $P$ on input $\zeta(P)$ for every Dyck
+path $P$.
 This form does not rely on the classical bijectivity of $\zeta$, which the
 development does not formalise, and it implies in particular that
 $\zeta^{-1}$ is not in $\WRP$.  In Corollary~\ref{cor:zeta-not-regular} and
 in the 2DFT clause of Theorem~\ref{thm:H-not-polyregular},
-``deterministic two-way transducer'' is rendered as the arity-one
-deterministic $\MSO$ transductions, the class that Theorem~\ref{thm:eh}
-identifies with the two-way machines; the identification itself is quoted,
+``deterministic two-way transducer'' is rendered as the class of arity-one
+deterministic $\MSO$ transductions, which Theorem~\ref{thm:eh} identifies with
+the two-way machines; the identification itself is quoted,
 not re-proved.  The two-pyramid criterion
 (Proposition~\ref{prop:two-pyramid-criterion}) is formalised without its
 growth hypothesis: the formal proof applies the preimage axiom (iii) to the
 polyregular realiser directly, without passing through the linear-growth
-collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.
-Theorem~\ref{thm:wrp-logspace} is proved for both machine
-models of Section~\ref{sec:wrp-evaluation}: the evaluator is constructed as
-an explicit multihead bounded-counter transducer and verified together with
-its polynomial step bound, and a proved two-stage simulation, head
-elimination followed by binary counters on worktape tracks, transports the
-result to worktape machines.  Corollary~\ref{cor:srr-quadratic} is proved in
-the multihead model, whose unit-cost word comparisons match the cost
-accounting of its paper proof, with a verified quadratic bound on the number
-of machine steps.  The remaining statement-level conventions, for example the
+collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.  The
+formal criterion is therefore more general than
+Proposition~\ref{prop:two-pyramid-criterion}, and this is why neither the
+linear-growth collapse (Theorem~\ref{thm:polyregular-linear-collapse}) nor the
+regular-preimage property of two-way transducers appears among the admitted
+axioms.
+Theorem~\ref{thm:wrp-logspace} is proved for both machine models of
+Section~\ref{sec:wrp-evaluation}, with the input alphabet fixed to $\{U,D\}$
+and apart from its output-length clause $|T(w)|=O(n^k)$, which is not
+formalised.  The evaluator is constructed as an explicit multihead
+bounded-counter transducer and verified together with its polynomial step
+bound.  A proved two-stage simulation --- head elimination, followed by binary
+counters on worktape tracks --- then transports the result to worktape
+machines.  Corollary~\ref{cor:srr-quadratic} is proved in
+the multihead model, with a verified quadratic bound on the number of machine
+steps; the unit-cost word comparisons of that model match the cost accounting
+of the proof given in the paper.  The remaining statement-level conventions, such as the
 graph form in which Lemma~\ref{lem:one-loop-rank-affine} is stated, are
 documented in the repository.
 
