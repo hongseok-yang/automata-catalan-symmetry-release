@@ -4456,7 +4456,7 @@ as $H$ and other mixed-sign sweep maps.
 The results of this paper have been formalised and machine-checked in the
 Lean~4 proof assistant~\cite{DeMouraUllrich2021}, building on the Mathlib
 library~\cite{MathlibCommunity2020}.  The development was produced
-automatically by the AI models Claude, Aristotle, and Codex, as recorded in
+automatically by the AI models Claude, Codex, and Aristotle, as recorded in
 the declaration of AI use at the end of the paper.  Since every proof is
 machine-checked, the guarantees described in this section do not depend on how
 those proofs were found.  The formalisation is distributed with
@@ -4469,17 +4469,17 @@ development is proved from Lean's kernel rules together with the short list of
 admitted axioms described below; the paper's numeric worked examples are
 instead discharged by compiled evaluation (\texttt{native\_decide}), so each of
 those additionally trusts the Lean compiler.  No result in
-Table~\ref{tab:lean} depends on one.  This section summarises what is formalised,
+Table~\ref{tab:lean} below depends on one.  This section summarises what is formalised,
 on which axiomatic base, and where the formal statements deliberately differ
-from the prose.
+from the statements ofthis paper.
 
 \paragraph{Scope.}
 The development formalises the theory of the paper from the ground up rather than verifying an
-isolated statement.  On the combinatorial side it defines Dyck paths, the statistics $\area$,
+isolated statement.  On the combinatorial side, it defines Dyck paths, the statistics $\area$,
 $\dinv$, and $\coarea$, area sequences, the zeta map of
 Definition~\ref{def:zeta}, the height sweep $H$ of
 Section~\ref{sec:narayana-sweep}, and the families $W_n$, $W_{m,n}$, and
-$P_{m,n}$.  On the machine side it defines $\MSO$ on words together with the
+$P_{m,n}$.  On the machine side, it defines $\MSO$ on words together with the
 marked-word encodings of free variables (Section~\ref{sec:mso}); polyregular
 presentations (Definition~\ref{def:polyregular}) and deterministic two-way
 transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
