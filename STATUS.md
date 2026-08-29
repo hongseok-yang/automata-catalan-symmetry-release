@@ -47,9 +47,9 @@ The worked examples are checked by `decide`/`native_decide` in
 * `thm:wrp-strict-below-logspace` — `wrp_strict_below_logspace`
   (multihead) and `wrp_strict_below_logspaceTM` (worktape), both
   unconditional; the separating witness is `F_{≥0}`.
-* `thm:wrp-not-closed` — `wrp_not_closed_preimage_comp` (regular preimage
+* `thm:wrp-not-closed` — `WRPComp.wrp_not_closed_preimage_comp` (regular preimage
   fails; `WRPCompWitness.lean`, axiom-clean) and
-  `wrp_not_closed_composition` (with the genuine 2DFT `S`;
+  `WRPComp.wrp_not_closed_composition` (with the genuine 2DFT `S`;
   `WRPNotClosedComp.lean`, `SMapWRP.lean`, Büchi only).
 * `thm:bounded-rank-collapse` — `WRPBoundedRank.bounded_rank_collapse`,
   axiom-clean; `cor:rank-necessary` — `WRPBoundedRank.rank_necessary`.
@@ -71,8 +71,8 @@ The worked examples are checked by `decide`/`native_decide` in
 (`NarayanaBijection.lean`), the WRP presentation (`NarayanaWRP.lean`), and
 `heightSweep_isSRR1` (`SRR1.lean`); `lem:H-two-pyramid` —
 `heightSweep_twoPyramid` (`HeightSweepTwoPyramid.lean`); `lem:H-probe` —
-`inRegularProbe_heightSweep_twoPyramid` and `thm:H-not-polyregular` —
-`heightSweep_not_polyregular` / `heightSweep_not_regular`
+`HeightSweepNotPolyreg.inRegularProbe_heightSweep_twoPyramid` and `thm:H-not-polyregular` —
+`HeightSweepNotPolyreg.heightSweep_not_polyregular` / `HeightSweepNotPolyreg.heightSweep_not_regular`
 (`HeightSweepNotPolyreg.lean`, `polyreg_regular_preimage` only).
 
 **§7 (regular-slice semilinearity).**  The one-loop lemmas are formalised
@@ -114,7 +114,7 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
 `lem:inverse-zeta-not-semilinear` —
 `inverse_zeta_graph_band_not_semilinear`;
 `thm:two-parameter-semilinearity` —
-`two_param_profile_semilinear_unconditional`
+`TwoParamSemilinearity.two_param_profile_semilinear_unconditional`
 (`TwoParamSemilinearity.lean`); `cor:inverse-zeta-not-wrp` —
 `CopiedD4.inverse_zeta_not_wrp_arity1` (arity 1, Büchi-only) and
 `CopiedTieSemilinear2.inverse_zeta_not_wrp` (general arity), built on the
@@ -159,7 +159,7 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
    block-counting encoder.
 
 5. **`prop:two-pyramid-criterion` without the growth hypothesis.**  The Lean
-   criterion (`two_pyramid_criterion`) omits the paper's hypothesis
+   criterion (`ZetaNotPolyreg.two_pyramid_criterion`) omits the paper's hypothesis
    `|f(P_{m,n})| = O(|P_{m,n}|)`: the formal proof applies
    `polyreg_regular_preimage` directly to the polyregular realiser, without
    passing through the linear-growth collapse, so the growth bound is never

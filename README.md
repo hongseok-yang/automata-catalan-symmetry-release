@@ -47,8 +47,8 @@ so `lake build RequestProject.Main` elaborates the whole development.
 
 The paper proves its results from scratch apart from a handful of standard
 results it takes from the literature.  This table lists those results and what
-becomes of each in Lean.  Only three are assumed; two others are not needed at
-all, because the formal proof takes a different route.
+becomes of each in Lean.  Three are assumed, three are not needed at all, and
+the rest are proved — either here or in Mathlib.
 
 | Result the paper uses | Where the paper uses it | In the formalisation |
 |---|---|---|
@@ -70,22 +70,23 @@ So the trust base is **three axioms**, each a standard external result:
 | `msoDefinableRel2_semilinear_general` | MSO-definable position tuples over a block-linear word family form a semilinear family |
 | `polyreg_regular_preimage` | the preimage of a regular language under a polyregular map is regular |
 
-Two of the paper's external inputs disappear because the formalisation proves
-things differently.  The counting lemma `lem:presburger-counting`, which the
-paper derives from Woods' theorem, is proved outright by an elementary argument
-(see C1 below), so no quasi-polynomial input is needed.  And the lower bounds
-on ζ and on the height sweep, which the paper obtains by composing with an
-encoder and collapsing the composite to a two-way machine, are obtained in Lean
-by applying the polyregular preimage closure twice — so neither the collapse
-nor composition closure is needed (C2).
+Three of the paper's external inputs disappear, at two places where the
+formalisation proves things differently.  The counting lemma
+`lem:presburger-counting`, which the paper derives from Woods' theorem, is
+proved outright by an elementary argument, so neither Woods' theorem nor the
+Ehrhart theory behind it is needed.  And the lower bounds on ζ and on the
+height sweep, which the paper obtains by composing with an encoder and
+collapsing the composite to a two-way machine, are obtained in Lean by applying
+the polyregular preimage closure twice — so neither the collapse nor
+composition closure is needed.
 
 Engelfriet–Hoogeboom is a third case, and a different one: it is not an
 assumption the formalisation discharges, but the bridge that lets the reader
 interpret two of the results.  The Lean statements about ζ and `H` are about
 arity-1 MSO transductions; reading them as statements about two-way machines
-is exactly what that theorem licenses, and it is quoted rather than proved
-(A6).  The two-way machine model itself *is* formalised and is used, as the
-witness for the composition failure in `thm:wrp-not-closed` (A7).
+is exactly what that theorem licenses, and it is quoted rather than proved.
+The two-way machine model itself *is* formalised and is used, as the witness
+for the composition failure in `thm:wrp-not-closed`.
 
 To check what any theorem depends on:
 
@@ -108,27 +109,28 @@ headline theorem depends on one.
 | `cor:inverse-zeta-not-wrp` (arity 1) | `CopiedD4.inverse_zeta_not_wrp_arity1` | `CopiedD4.lean` | `buchi` |
 | `cor:inverse-zeta-not-wrp` (general arity) | `CopiedTieSemilinear2.inverse_zeta_not_wrp` | `CopiedTieSemilinear2.lean` | `buchi`, `msoDefinableRel2_semilinear_general` |
 | `thm:zeta-wrp` (ζ ∈ sRR₁ ⊆ WRP) | `zetaMap_realisedByWRP`, `zetaSweep_isSRR1` | `ZetaWRP.lean`, `SRR1.lean` | none |
-| `prop:two-pyramid-criterion` (shared lower-bound criterion) | `two_pyramid_criterion` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
-| `thm:zeta-not-polyregular`, `cor:zeta-not-regular` | `zetaMap_not_polyregular`, `zetaMap_not_regular` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
+| `prop:two-pyramid-criterion` (shared lower-bound criterion) | `ZetaNotPolyreg.two_pyramid_criterion` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
+| `thm:zeta-not-polyregular`, `cor:zeta-not-regular` | `ZetaNotPolyreg.zetaMap_not_polyregular`, `ZetaNotPolyreg.zetaMap_not_regular` | `ZetaNotPolyreg.lean` | `polyreg_regular_preimage` |
 | `lem:H-two-pyramid` (height sweep on two-pyramids) | `heightSweep_twoPyramid` | `HeightSweepTwoPyramid.lean` | none |
-| `lem:H-probe`, `thm:H-not-polyregular` (H beyond PolyReg) | `inRegularProbe_heightSweep_twoPyramid`, `heightSweep_not_polyregular`, `heightSweep_not_regular` | `HeightSweepNotPolyreg.lean` | `polyreg_regular_preimage` |
+| `lem:H-probe`, `thm:H-not-polyregular` (H beyond PolyReg) | `HeightSweepNotPolyreg.inRegularProbe_heightSweep_twoPyramid`, `HeightSweepNotPolyreg.heightSweep_not_polyregular`, `HeightSweepNotPolyreg.heightSweep_not_regular` | `HeightSweepNotPolyreg.lean` | `polyreg_regular_preimage` |
 | `thm:wrp-closures` (all five clauses) | `WRPClosures.isWRP_*` | `WRPClosures.lean` | none |
 | `thm:wrp-strict-over-poly` | `WRPStructure.polyreg_strict_subset_wrp` | `WRPStructure.lean` | `polyreg_regular_preimage` |
 | `thm:wrp-logspace` (multihead model) | `wrp_isLogspaceMH`, `wrp_logspace_polytime` | `WRPLogspace.lean` | `buchi` |
 | `thm:wrp-logspace` (worktape model) | `wrp_isLogspaceTM`, `wrp_logspaceTM_polytime` | `WRPWorktape.lean` | `buchi` |
 | `cor:srr-quadratic` | `srr_quadratic` | `SRRQuadratic.lean` | `buchi` |
 | `thm:wrp-strict-below-logspace` | `wrp_strict_below_logspace`, `wrp_strict_below_logspaceTM` | `WRPLogspace.lean`, `WRPWorktape.lean` | `buchi` |
-| `thm:wrp-not-closed` (regular preimage) | `wrp_not_closed_preimage_comp` | `WRPCompWitness.lean` | none |
-| `thm:wrp-not-closed` (composition) | `wrp_not_closed_composition` | `WRPNotClosedComp.lean` | `buchi` |
+| `thm:wrp-not-closed` (regular preimage) | `WRPComp.wrp_not_closed_preimage_comp` | `WRPCompWitness.lean` | none |
+| `thm:wrp-not-closed` (composition) | `WRPComp.wrp_not_closed_composition` | `WRPNotClosedComp.lean` | `buchi` |
 | `thm:bounded-rank-collapse`, `cor:rank-necessary` | `WRPBoundedRank.bounded_rank_collapse`, `.rank_necessary` | `WRPBoundedRank.lean` | none / `polyreg_regular_preimage` |
 | `thm:wrp-slice-semilinearity` | `wrp_slice_profile_semilinear` | `NoSwapWRP.lean` | `buchi` |
-| `thm:two-parameter-semilinearity` | `two_param_profile_semilinear_unconditional` | `TwoParamSemilinearity.lean` | `msoDefinableRel2_semilinear_general` |
+| `thm:two-parameter-semilinearity` | `TwoParamSemilinearity.two_param_profile_semilinear_unconditional` | `TwoParamSemilinearity.lean` | `msoDefinableRel2_semilinear_general` |
 | `lem:one-loop-finite-state`, `lem:one-loop-presburger` | `OneLoopSlice.one_loop_*` | `OneLoopSlice.lean` | `msoDefinableRel2_semilinear_general` |
-| `thm:narayana-sweep` | `valleys_heightSweep_eq_doubleRises`, `heightSweep_bijOn`, `heightSweep_isSRR1` | `NarayanaSweep.lean`, `NarayanaBijection.lean`, `SRR1.lean` | none |
+| `thm:narayana-sweep` | `valleys_heightSweep`, `doubleRises_heightSweep`, `heightSweep_bijOn`, `heightSweep_isSRR1` | `NarayanaBijection.lean`, `SRR1.lean` | none |
 
-The Narayana row cites the hypothesis-free forms `valleys_heightSweep` and
-`doubleRises_heightSweep` (`NarayanaBijection.lean`); `NarayanaSweep.lean` also
-carries versions of the same identities with an explicit `semilength P ≥ 1`.
+Lean names are given fully qualified, so they can be pasted into
+`#print axioms` directly.  `NarayanaSweep.lean` also carries versions of the two statistic
+identities with an explicit `semilength P ≥ 1`, which the paper's statement
+does not have; the row cites the hypothesis-free forms.
 The logspace rows prove the paper's "polynomial time" clause with an explicit
 bound of the shape `cardQ · (n+2)^h · (C·(n+1)+1)^c`, where the head count `h`
 depends on the presentation's arity; the output-length clause `|T(w)| = O(n^k)`
@@ -143,81 +145,81 @@ are the ones worth knowing before reading either document.
 
 ### Definitions
 
-* **A1.** Transductions are modelled as total functions into "output word or
+* Transductions are modelled as total functions into "output word or
   undefined", and *realising* a map on a set of inputs constrains the
   transduction only there.
-* **A2.** `def:wrp` is formalised twice: a verbatim class asking exactly what
+* `def:wrp` is formalised twice: a verbatim class asking exactly what
   the paper asks, and a working class asking only that the combined output
   order be total on selected atoms.  The working class is a *superset*, which
   makes negative theorems over it stronger.  No map is exhibited that
   separates the two, so the inclusion is not known to be strict.
-* **A3.** Lean permits copies of arity 0 where the paper requires arity ≥ 1.
+* Lean permits copies of arity 0 where the paper requires arity ≥ 1.
   The two conventions are proved to differ only on the empty input, and the
   extra freedom is genuinely used by one witness.
-* **A6.** "Deterministic two-way transducer" is rendered as the arity-1 MSO
+* "Deterministic two-way transducer" is rendered as the arity-1 MSO
   transduction class, with the machine equivalence quoted rather than proved.
-* **A9.** The paper's prefix-additive rank functions and Lean's regular rank
+* The paper's prefix-additive rank functions and Lean's regular rank
   terms are proved to define the same class, in both directions.
-* **A12.** The inverse zeta map is never defined; its corollary is rendered as
+* The inverse zeta map is never defined; its corollary is rendered as
   left inversion, which is a weaker hypothesis to refute and avoids depending
   on ζ's classical bijectivity.
-* **A13.** That ζ is a bijection is not formalised, and `bounce` does not occur
+* That ζ is a bijection is not formalised, and `bounce` does not occur
   in the development.  Nothing depends on either.
 
 ### Statements
 
-* **B13.** The two-pyramid criterion drops the paper's growth hypothesis
+* The two-pyramid criterion drops the paper's growth hypothesis
   entirely, because the formal proof never enters the two-way class.
-* **B15.** The no-swap theorem assumes no bijectivity, matching the paper.
-* **B16.** The inverse-zeta corollary comes in a general-arity form and an
+* The no-swap theorem assumes no bijectivity, matching the paper.
+* The inverse-zeta corollary comes in a general-arity form and an
   arity-1 form; the latter is stated about arity-1 presentations rather than
   about a class, and rests on a smaller trust base.
-* **B14.** The slice-semilinearity theorem is proved in a stronger form —
+* The slice-semilinearity theorem is proved in a stronger form —
   "defined on at least one member of the family" rather than on all — with the
   paper's literal form exported separately.  The weaker hypothesis cannot be
   dropped, and the repository gives the refuting example.
-* **B21.** Every negative theorem is stated over the larger working class, with
+* Every negative theorem is stated over the larger working class, with
   verbatim-class restatements at identical trust bases.
-* **B6.** `thm:wrp-closures` is the least complete: the arity bound that the
+* `thm:wrp-closures` is the least complete: the arity bound that the
   paper's statement carries is not tracked, definition by cases and
   letter-deleting relabellings are missing, and because closure statements are
   positive, proving them for the larger class does not yield the paper's
   statement — paper-class versions exist only for relabelling and
   concatenation.
-* **B4, B5.** The output-length clause of `thm:wrp-logspace` is not formalised,
+* The output-length clause of `thm:wrp-logspace` is not formalised,
   and the complexity layer fixes the input alphabet to `{U, D}` where the paper
   allows any finite alphabet.
-* **B1, B2.** Engelfriet–Hoogeboom and the linear-growth collapse have no Lean
+* Engelfriet–Hoogeboom and the linear-growth collapse have no Lean
   counterpart; neither is needed.
-* **B3.** Of `prop:conservative`, only the direction actually used is proved.
+* Of `prop:conservative`, only the direction actually used is proved.
 
 ### Proofs
 
-* **C1.** The counting lemma is proved from scratch rather than quoted from
+* The counting lemma is proved from scratch rather than quoted from
   Woods: decompose a semilinear set into pieces with linearly independent
   periods, use the linear bound once to force the kernel to be at most
   one-dimensional, then count arithmetic progressions by inclusion–exclusion.
-* **C2.** The two-pyramid criterion trades three of the paper's external
+* The two-pyramid criterion trades three of the paper's external
   theorems for one, applying the polyregular preimage closure twice instead of
   composing and collapsing.
-* **C4.** The slice-semilinearity theorem does not follow the paper's proof at
+* The slice-semilinearity theorem does not follow the paper's proof at
   all.  Instead of Presburger definability plus counting, it uses the
   linear-growth bound structurally and reduces to finitely many cells — which
   is why it needs only the Büchi axiom.
-* **C5.** The paper's own §7 one-loop lemmas *are* stated verbatim, but they are
+* The paper's own §7 one-loop lemmas *are* stated verbatim, but they are
   short consequences of the semilinearity axiom rather than independent proofs,
   and nothing else depends on them.
-* **C6.** The inverse-zeta capstone bypasses the machinery the paper builds for
+* The inverse-zeta capstone bypasses the machinery the paper builds for
   it, finishing with an arithmetic contradiction; both of the paper's
   ingredients are formalised but unused.
-* **C7.** The Narayana sweep is proved without the paper's contour-forest normal
+* The Narayana sweep is proved without the paper's contour-forest normal
   form.
-* **C9.** The quadratic scan-order evaluator is a different algorithm from the
+* The quadratic scan-order evaluator is a different algorithm from the
   paper's, with no counters and an explicit constant.
-* **C12.** The integer-valued companion of the semilinearity axiom is a theorem,
+* The integer-valued companion of the semilinearity axiom is a theorem,
   but its proof applies that axiom twice — it removes an assumption, it does not
   make the layer assumption-free.
-* **C13.** Counting is used by the rank-term value graph, and so by
+* Counting is used by the rank-term value graph, and so by
   `thm:two-parameter-semilinearity` and the one-loop lemmas as well as the
   general-arity §9 tie count.  It does not enter the one-parameter slice
   analysis behind the no-swap theorem, nor the arity-1 inverse-zeta capstone.
