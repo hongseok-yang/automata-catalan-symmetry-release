@@ -263,7 +263,6 @@ map}, such that, for every $n$, the restriction of $H$ to $\D_n$ is a
 bijection from $\D_n$ onto $\D_n$ satisfying
 $\dr(H(P))=\val(P)$ and $\val(H(P))=\dr(P)$ for every
 $P\in\D_n$.
-No polyregular map agrees with $H$ on every Dyck path.
 Consequently, $H$ realises the bivariate Narayana
 symmetry
 \[
@@ -271,6 +270,7 @@ symmetry
    =
    \sum_{P\in\D_n} q^{\dr(P)}t^{\val(P)}.
 \]
+Furthermore, no polyregular map agrees with $H$ on every Dyck path.
 \end{theorem}
 
 Thus, both $\zeta$ and $H$ require the rank-sort mechanism beyond
@@ -400,9 +400,9 @@ transductions~\cite{EngelfrietHoogeboom2001,Bojanczyk2018}.  Related
 complexity-theoretic programmes ask when counting functions have combinatorial
 interpretations~\cite{Pak2024WhatIs,IkenmeyerPak2022}; here we ask instead for
 the resources needed to compute an explicit bijection between already known
-objects.  Section~\ref{sec:related-work} gives a detailed comparison after the
-models and results needed to make these relationships precise have been
-developed.
+objects.  Section~\ref{sec:related-work} returns to these comparisons and
+formulates the resulting open problems after the models and results needed to
+make the relationships precise have been developed.
 
 \paragraph{Outline.}
 
@@ -422,11 +422,11 @@ is given in Appendix~\ref{app:narayana-sweep-proof}.
 Sections~\ref{sec:slice-semilinearity} and~\ref{sec:wrapped-flat} develop the
 semilinearity method and use it to prove the no-swap theorem.
 Section~\ref{sec:inverse-zeta} studies $\zeta^{-1}$ using a related argument.
+Section~\ref{sec:lean} describes the scope and status of the
+machine-checked Lean formalisation of the paper's mathematical results. Finally,
 Section~\ref{sec:discussion} places the results in the related
-algebraic-combinatorial and automata-theoretic literatures.  Finally,
-Section~\ref{sec:lean} describes the scope and status of the paper's
-machine-checked Lean formalisation, including its small axiomatic base and
-the new height-sweep lower-bound chain that remains to be formalised.
+algebraic-combinatorial and automata-theoretic literatures and presents the
+open problems that they leave.
 
 
 \section{Dyck paths, statistics, and named bijections}\label{sec:dyck}
@@ -4285,172 +4285,6 @@ Together with Theorem~\ref{thm:zeta-wrp}, the corollary also shows that
 $\WRP$-realisability under the realisation convention is not preserved by
 inversion, even for bijections of Dyck paths that preserve semilength.
 
-\section{Related work}% Both labels are used in cross-references.
-\label{sec:discussion}\label{sec:related-work}
-
-Garsia and Haiman introduced the algebraic $q,t$-Catalan
-sequence~\cite{GarsiaHaiman1996}.  Haglund gave the Catalan-word formula that
-became the area--bounce model~\cite{Haglund2003}, and Haiman and Haglund
-developed the zeta map relating the area--bounce and area--dinv
-formulations~\cite[Section~2]{ThomasWilliams2018}.  Our statistics and
-unlabelled formulation of zeta follow Haglund's monograph~\cite{Haglund2008}.
-An inverse form had appeared earlier, without the later zeta terminology, in
-work of Andrews, Krattenthaler, Orsina, and Papi~\cite{AndrewsEtAl2002};
-Armstrong, Loehr, and Warrington identify it in the sweep-map
-framework~\cite{ArmstrongLoehrWarrington2015}.  Haglund and Loehr extended the
-framework to labelled parking functions~\cite{HaglundLoehr2005}.
-
-Armstrong, Loehr, and Warrington subsequently placed zeta in a broader
-framework of maps that assign integer levels to steps and reorder them by level
-\cite{ArmstrongLoehrWarrington2015,ArmstrongLoehrWarrington2016}.  The
-starting-point levels are called ranks in part of the rational Dyck-path
-literature~\cite{Xin2015}.  Ceballos, Denton, and Hanusa developed inversion
-methods for rational zeta maps and explicit inverses for several
-families~\cite{CeballosDentonHanusa2016}.  Thomas and Williams proved the
-general sweep maps bijective via an inverse for the modular sweep
-map~\cite{ThomasWilliams2018}; Pons later gave an iterative inverse for
-classical zeta directly on area sequences~\cite{Pons2022}.
-
-The map $H$ of Section~\ref{sec:narayana-sweep} is the starting-height,
-increasing-level, right-to-left member of the Armstrong--Loehr--Warrington
-sweep family, so its bijectivity follows from known sweep-map theory.  After
-translating path conventions, its breadth-first tree description agrees with
-the plane-tree case of the Ceballos--Fang--M\"uhle encoding
-$\Xi_{\mathrm{bounce}}$~\cite{CeballosFangMuhle2020}; Fang gives an explicit
-breadth-first description~\cite{Fang2024}.  The exchange of valleys and double
-rises is a classical Narayana symmetry.  Deutsch proved it using a recursive
-involution~\cite{Deutsch1999}, and the corresponding rise--valley transport
-under the classical zeta map is reviewed by Sulzgruber and
-Thiel~\cite[Section~2.8]{SulzgruberThiel2018}.  Thus,
-Theorem~\ref{thm:narayana-sweep} recalls a known combinatorial result; its role
-here is to show that the small class $\SWR$, and hence $\WRP$, already realises
-this symmetry.  Theorem~\ref{thm:H-not-polyregular} is the new computational
-lower bound: it shows that the additive level sort used by this classical
-bijection cannot be replaced by a polyregular mechanism.
-
-The lower bounds also use the inequality $\dinv\le\coarea$ and uniqueness of
-its equality case at fixed semilength and common value.  Both appear in
-Ammar's thesis~\cite{Ammar2015}, and the same cases are encoded by the
-deficit-zero framework of Lee, Li, and Loehr~\cite{LeeLiLoehr2018}.  We give
-the explicit area-sequence form needed in Section~\ref{sec:main}.
-
-No explicit combinatorial, semilength-preserving bijection on $\D$ that
-exchanges $\area$ and $\dinv$ is known~\cite{Pons2022}.  For the closely related
-exchange of $\area$ and $\bounce$, Ayyer and Sundaravaradan construct an
-explicit bijection on an exponentially large subset of the Dyck paths, while
-the full problem remains open~\cite{AyyerSundaravaradan2025}.  Our question is
-more constrained: can a statistic exchange be realised by a prescribed
-word-transduction mechanism?  The class $\WRP$ isolates the single global
-additive rank sort used by zeta and $H$.  It contains both of these known
-bijections, both of which lie outside $\polyreg$, but the lower bounds show
-that it cannot realise a full area--dinv exchange and, under the realisation
-convention, that realisability is not preserved by inversion.
-
-These Catalan statistics and sweep maps also extend beyond ordinary Dyck
-paths.  The rational $q,t$-symmetry follows from Mellit's proof of the rational
-shuffle theorem~\cite{Mellit2021}, while rational sweep maps use
-slope-dependent integer levels~\cite{ArmstrongLoehrWarrington2015,
-ArmstrongLoehrWarrington2016,ThomasWilliams2018}.  Xin and Zhang extend
-$\dinv$, $\area$, and $\bounce$ to vector-$\vec k$ Dyck
-paths~\cite{XinZhang2023}; constant vectors recover the Fuss--Catalan setting.
-After the standard endpoint and step-convention identifications, these
-frameworks include versions of the ordinary and Fuss--Catalan families, but
-they generalise the classical setting in different directions.
-
-The automata-theoretic history supplies the computational hierarchy used in
-the paper.  Engelfriet and Hoogeboom proved that $\MSO$-definable string
-transductions coincide with deterministic two-way finite-state
-transducers~\cite{EngelfrietHoogeboom2001}.  Alur and \v{C}ern\'y later gave
-the equivalent model of deterministic copyless streaming string
-transducers~\cite{AlurCerny2010}.  Polyregular maps extend this regular class
-and admit equivalent descriptions by pebble transducers, \emph{for}-programs,
-and tuple interpretations~\cite{Bojanczyk2018,BojanczykKieferLhote2019}; their
-possible output-growth rates are studied in~\cite{Bojanczyk2023Growth}.
-Equivalence for the regular class is decidable, with a complete delay-based
-characterisation~\cite{FiliotJeckerLodingWinter2023}.  Against this background,
-$\WRP$ adds one operation to polyregular presentations: globally sorting
-selected atoms by unbounded integer ranks.
-
-The closest comparison is ranked $\MSO$ enumeration.  An $\MSO$ query selects
-satisfying assignments, a weighted $\MSO$ formula assigns each a cost in an
-ordered abelian group, and the assignments are enumerated without repetition
-in nondecreasing cost order.  Bourhis, Grez, Jachiet, and Riveros give an
-algorithm with linear preprocessing and logarithmic delay between
-answers~\cite{BourhisEtAl2021}.
-
-The comparison with $\WRP$ is precise but not an equivalence.  Every
-prefix-additive rank function is a special case of a cost function defined by
-a weighted $\MSO$ formula.  A selected atom $(c,\bar i)$ then plays the role of
-a satisfying assignment: its selection formula is the query, and its atom rank
-is the cost.  The rank sort orders atoms by cost, while $\chi$ orders atoms of
-equal cost; their labels are then concatenated into one output word.  Ranked
-$\MSO$ enumeration instead returns assignments and studies the delay between
-answers, without prescribing their order within a cost class.  Thus, $\WRP$
-uses a deterministic prefix-additive fragment of the cost formalism for a
-different purpose.  This restriction supports the logspace evaluation and
-semilinear lower bounds in Sections~\ref{sec:wrp}
-and~\ref{sec:slice-semilinearity}.
-
-Filiot, Lhote, and Reynier introduced lexicographic
-transductions~\cite{FiliotLhoteReynier2025}.  This class contains polyregular
-transductions, admits exponential output growth, and preserves regular
-languages under inverse image.  Its
-lexicographic enumeration of finite-alphabet annotations differs from sorting
-selected atoms by unbounded additive integer atom ranks.  The two classes are
-incomparable.  Exponential-growth lexicographic transductions cannot be
-$\WRP$, since every fixed-arity $\WRP$ presentation has polynomial output
-growth.  Conversely, the $\WRP$ map $D$ from
-Theorem~\ref{thm:wrp-not-closed} has a nonregular inverse image of a regular
-language, whereas lexicographic transductions preserve regular languages
-under inverse image.
-
-Thus, $\WRP$ is a deliberately narrow extension of the standard transducer
-hierarchy, isolating one global sort by unbounded additive integer atom ranks.
-
-A broader computational perspective on algebraic combinatorics comes from
-work seeking to make the notion of a \emph{combinatorial interpretation}
-precise.  Pak proposes membership in $\#\mathrm{P}$ as a workable criterion for
-a nonnegative integer-valued counting function to have such an interpretation,
-illustrating the question with quantities that include Kronecker and Schubert
-coefficients~\cite{Pak2024WhatIs}.  Ikenmeyer and Pak develop the corresponding
-study of membership and nonmembership in $\#\mathrm{P}$
-\cite{IkenmeyerPak2022}.  In this programme, one asks whether the quantity can
-be represented as the number of polynomially verifiable witnesses.  Our
-question is adjacent but different: when two known families, or two statistics
-on one known family, are already equidistributed, what resources are needed to
-compute an explicit bijection?  The transducer hierarchy distinguishes
-finite-state logic, polyregular copying, and the unbounded atom ranks used by
-zeta.  Our lower bounds therefore constrain a mechanism for bijective proofs,
-not the existence of a combinatorial interpretation in Pak's sense.
-
-Other Catalan bijections point to mechanisms that are not explicit primitives
-of $\WRP$.  Deutsch's involution is mirror reflection under the first-return
-binary-tree encoding, while Hopkins and Joseph identify the
-Lalanne--Kreweras involution with rowvacuation on the type~$A$ root poset and
-hence with a composition of toggles~\cite{Deutsch1999,HopkinsJoseph2022}.  The
-word-based models developed here do not formalise first-return recursion or
-toggle operations, and we do not classify these maps.
-
-\paragraph{Open problems.}
-The results leave several natural questions about the rank sort and its
-combinatorial scope.
-\begin{enumerate}[label=(\arabic*)]
-\item The class $\WRP$ permits one rank sort.  Is the hierarchy obtained by
-allowing a fixed number of successive rank sorts strict?  In particular, does
-a two-layer presentation suffice for $\zeta^{-1}$?
-\item Is equivalence of two $\WRP$ presentations decidable?  More generally,
-after fixing a finitely presented ambient transducer model, is it decidable
-whether a presented map admits a $\WRP$ presentation?
-\item Does the deficit-zero rigidity argument have an analogue for $\area$
-and $\bounce$, leading to a computational obstruction for an area--bounce
-exchange?
-\item Which additive level sorts are polyregular?  Unbounded levels alone do
-not force a lower bound: if $\nu(U)=\nu(D)=1$, then the level of position $i$
-is $i-1$, and $\Phi_\nu$ is the identity map.  A classification by the step
-weights and tie-order would separate such degenerate cases from examples such
-as $H$ and other mixed-sign sweep maps.
-\end{enumerate}
-
 \section{Machine-checked formalisation in Lean}\label{sec:lean}
 
 The results of this paper have been formalised and machine-checked in the
@@ -4484,10 +4318,11 @@ $P_{m,n}$.
 On the computational side, it defines $\MSO$ on words together with the
 marked-word encodings of free variables (Section~\ref{sec:mso}); polyregular
 presentations (Definition~\ref{def:polyregular}) and deterministic two-way
-transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
-functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
-(Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine models
-of Section~\ref{sec:wrp-evaluation}.
+finite-state transducers (Definition~\ref{def:2dft}); rank sources,
+prefix-additive rank functions, and the class $\WRP$ with its fragments $\RR$
+and $\SWR$ (Definitions~\ref{def:rank-source}--\ref{def:wrp}); and two explicit
+machine models for logspace transductions, the deterministic multihead
+bounded-counter transducer and the deterministic worktape transducer.
 On this base, the development proves formal counterparts of the paper's
 headline results, subject to the qualifications under ``Statement fidelity''
 below.  Table~\ref{tab:lean} gives their Lean names, and the supporting lemmas
@@ -4688,9 +4523,9 @@ see the discussion of statement fidelity below.
 The dependencies in Table~\ref{tab:lean} can be audited mechanically with
 Lean's \texttt{\#print axioms} command.  Among the supporting results not
 listed separately there, the two-pyramid closed forms, the deficit-zero lemmas,
-and the two simulations between the machine models are axiom-free.  The
-evaluator theorem itself uses~(i) to turn the $\MSO$ data of a presentation
-into finite automata.
+and the two stages of the simulation from the multihead bounded-counter model
+to the worktape model are axiom-free.  The evaluator theorem itself uses~(i) to
+turn the $\MSO$ data of a presentation into finite automata.
 
 \paragraph{Statement fidelity.}
 A machine-checked proof certifies exactly its formal statement.  The following
@@ -4698,59 +4533,234 @@ differences between the statements in the paper and their Lean counterparts
 therefore matter when interpreting the headline results.
 \begin{itemize}[leftmargin=*,itemsep=0.5em]
 \item \emph{Two versions of $\WRP$.}
-The verbatim class follows Definition~\ref{def:wrp}: copy names have positive
-arity, and $\chi$ is a strict total order on selected atoms.  The working class
-permits arity zero and requires only the combined output order to be total on
-selected atoms.  It is a syntactic superset, so its negative theorems are
-stronger; each negative headline theorem is also restated for the verbatim
-class with the same trust base.  The positive memberships of $\zeta$, $H$, and
-the additive level sorts are proved directly for the verbatim class.
+The formalisation contains two versions of $\WRP$.  The $\WRP$ class of
+Definition~\ref{def:wrp} requires copy names to have positive arity and $\chi$
+to be a strict total order on selected atoms.  A relaxed $\WRP$ class permits
+arity zero and requires only the combined output order to be total on selected
+atoms.  The relaxed class is a syntactic superset, so negative theorems proved
+for it are stronger.  Each negative headline theorem is also restated for the
+$\WRP$ class of Definition~\ref{def:wrp} with the same trust base.  The positive
+memberships of $\zeta$, $H$, and the additive level sorts are proved directly
+for that class.
 
 \item \emph{Closure properties.}
-Theorem~\ref{thm:wrp-closures} is the least completely rendered headline
-result.  The formal clauses omit the arity bound, definition by cases, and
-letter-deleting relabellings; restriction is given by an $\MSO$ sentence; and
-tagging and concatenation treat two maps with a one-letter separator rather
-than $r$ maps with separator words.  Since these are positive statements,
-working-class proofs do not imply verbatim-class closure.  Verbatim-class
-versions are currently available only for relabelling and concatenation.
+Among the headline results, Theorem~\ref{thm:wrp-closures} has the most
+substantial differences between its paper and Lean statements.  There are two
+kinds of difference.  First, the Lean statements do not include the paper's
+arity-preservation claim: if the input maps have presentations of arity at most
+$k$, then so does the resulting map.  They also omit definition by cases and
+letter-deleting relabellings.  Restriction is formulated using an $\MSO$
+sentence, and tagging and concatenation are proved only for two maps; the
+concatenation theorem permits only a one-letter separator.  Second, all five
+Lean clauses are proved for the relaxed $\WRP$ class.  A closure theorem for a
+larger class does not imply that a subclass is closed under the same operation.
+Separate closure theorems for the $\WRP$ class of Definition~\ref{def:wrp} are
+currently available only for relabelling and concatenation.
 
-\item \emph{Lower-bound statements.}
-Theorem~\ref{thm:wrp-no-swap} has the paper's map form, with no bijectivity
-assumption.
-Corollary~\ref{cor:inverse-zeta-not-wrp} is stated as the nonexistence of a
-$\WRP$ left inverse: no $\WRP$ transduction outputs $P$ on input $\zeta(P)$
-for every Dyck path $P$.  This implies the paper's corollary without formalising
-the classical bijectivity of $\zeta$.
-The two-pyramid criterion (Proposition~\ref{prop:two-pyramid-criterion}) is
-stronger in Lean: it omits the growth hypothesis
+\item \emph{Two-pyramid criterion.}
+The formal version of Proposition~\ref{prop:two-pyramid-criterion} is stronger:
+it omits the growth hypothesis
 $|f(P_{m,n})|=O(|P_{m,n}|)$ because its proof applies axiom~(iii) directly.
 
 \item \emph{Machine-model statements.}
-In Corollary~\ref{cor:zeta-not-regular} and the 2DFT clause of
-Theorem~\ref{thm:H-not-polyregular}, a ``deterministic two-way transducer'' is
-rendered in Lean as a deterministic $\MSO$ string transduction.  Lean checks
-this $\MSO$ formulation; the corresponding 2DFT conclusions in the paper then
-use Theorem~\ref{thm:eh} externally, since that equivalence is not formalised.
-Theorem~\ref{thm:wrp-logspace} is proved for both machine models of
-Section~\ref{sec:wrp-evaluation}, but only over input alphabet $\{U,D\}$ and
-without the output-length clause $|T(w)|=O(n^k)$.  Its polynomial step bound is
-verified.  Corollary~\ref{cor:srr-quadratic}, including its quadratic step
-bound, is verified in the multihead model whose unit-cost comparisons match
-the paper's cost accounting.
+For Corollary~\ref{cor:zeta-not-regular} and the 2DFT clause of
+Theorem~\ref{thm:H-not-polyregular}, Lean proves the corresponding
+non-realisability statements for deterministic $\MSO$ string transductions.
+The conclusions for deterministic 2DFTs in the paper then use
+Theorem~\ref{thm:eh} externally; the equivalence itself is not formalised in
+Lean.
+For Theorem~\ref{thm:wrp-logspace}, Lean first constructs an evaluator in the
+multihead bounded-counter model.  Such a machine has a fixed number of two-way
+input heads and linearly bounded counters; their positions and values require
+$O(\log n)$ bits.  Lean proves that this evaluator computes the given $\WRP$
+map and has a polynomial upper bound on its number of steps.  A formally proved
+simulation then yields a deterministic worktape transducer with read-only
+input, write-only output, and an $O(\log n)$-space read-write work tape.  This
+second model directly matches the resource convention in
+Theorem~\ref{thm:wrp-logspace}, and Lean also proves a polynomial step bound for
+the simulated evaluator.  These results use the fixed input alphabet
+$\{U,D\}$; the output-length conclusion $|T(w)|=O(n^k)$ is not formalised.
+For Corollary~\ref{cor:srr-quadratic}, Lean constructs an evaluator in the
+multihead bounded-counter model and proves that every halting run on an input
+of length $n$ has at most $D(n+1)^2$ steps, for a fixed constant $D$.  The
+machine implements the position and atom-rank comparisons rather than treating
+them as an external operation, and their cost is included in the quadratic
+step bound.  This accounts for the operations treated as constant-time word
+comparisons in the paper's $O(n^2)$ analysis.
 \end{itemize}
 
-The repository documentation records the remaining statement-level
-conventions, including the graph form used for
-Lemma~\ref{lem:one-loop-rank-affine}.
+\section{Related work and open problems}% Both labels are used in cross-references.
+\label{sec:discussion}\label{sec:related-work}
+
+Garsia and Haiman introduced the algebraic $q,t$-Catalan
+sequence~\cite{GarsiaHaiman1996}.  Haglund gave the Catalan-word formula that
+became the area--bounce model~\cite{Haglund2003}, and Haiman and Haglund
+developed the zeta map relating the area--bounce and area--dinv
+formulations~\cite[Section~2]{ThomasWilliams2018}.  Our statistics and
+unlabelled formulation of zeta follow Haglund's monograph~\cite{Haglund2008}.
+An inverse form had appeared earlier, without the later zeta terminology, in
+work of Andrews, Krattenthaler, Orsina, and Papi~\cite{AndrewsEtAl2002};
+Armstrong, Loehr, and Warrington identify it in the sweep-map
+framework~\cite{ArmstrongLoehrWarrington2015}.  Haglund and Loehr extended the
+framework to labelled parking functions~\cite{HaglundLoehr2005}.
+
+Armstrong, Loehr, and Warrington subsequently placed zeta in a broader
+framework of maps that assign integer levels to steps and reorder them by level
+\cite{ArmstrongLoehrWarrington2015,ArmstrongLoehrWarrington2016}.  The
+starting-point levels are called ranks in part of the rational Dyck-path
+literature~\cite{Xin2015}.  Ceballos, Denton, and Hanusa developed inversion
+methods for rational zeta maps and explicit inverses for several
+families~\cite{CeballosDentonHanusa2016}.  Thomas and Williams proved the
+general sweep maps bijective via an inverse for the modular sweep
+map~\cite{ThomasWilliams2018}; Pons later gave an iterative inverse for
+classical zeta directly on area sequences~\cite{Pons2022}.
+
+The map $H$ of Section~\ref{sec:narayana-sweep} is the starting-height,
+increasing-level, right-to-left member of the Armstrong--Loehr--Warrington
+sweep family, so its bijectivity follows from known sweep-map theory.  After
+translating path conventions, its breadth-first tree description agrees with
+the plane-tree case of the Ceballos--Fang--M\"uhle encoding
+$\Xi_{\mathrm{bounce}}$~\cite{CeballosFangMuhle2020}; Fang gives an explicit
+breadth-first description~\cite{Fang2024}.  The exchange of valleys and double
+rises is a classical Narayana symmetry.  Deutsch proved it using a recursive
+involution~\cite{Deutsch1999}, and the corresponding rise--valley transport
+under the classical zeta map is reviewed by Sulzgruber and
+Thiel~\cite[Section~2.8]{SulzgruberThiel2018}.  Thus,
+Theorem~\ref{thm:narayana-sweep} recalls a known combinatorial result; its role
+here is to show that the small class $\SWR$, and hence $\WRP$, already realises
+this symmetry.  Theorem~\ref{thm:H-not-polyregular} is the new computational
+lower bound: it shows that the additive level sort used by this classical
+bijection cannot be replaced by a polyregular mechanism.
+
+The lower bounds also use the inequality $\dinv\le\coarea$ and uniqueness of
+its equality case at fixed semilength and common value.  Both appear in
+Ammar's thesis~\cite{Ammar2015}, and the same cases are encoded by the
+deficit-zero framework of Lee, Li, and Loehr~\cite{LeeLiLoehr2018}.  We give
+the explicit area-sequence form needed in Section~\ref{sec:main}.
+
+No explicit combinatorial, semilength-preserving bijection on $\D$ that
+exchanges $\area$ and $\dinv$ is known~\cite{Pons2022}.  For the closely related
+exchange of $\area$ and $\bounce$, Ayyer and Sundaravaradan construct an
+explicit bijection on an exponentially large subset of the Dyck paths, while
+the full problem remains open~\cite{AyyerSundaravaradan2025}.  Our question is
+more constrained: can a statistic exchange be realised by a prescribed
+word-transduction mechanism?  The class $\WRP$ isolates the single global
+additive rank sort used by zeta and $H$.  It contains both of these known
+bijections, both of which lie outside $\polyreg$, but the lower bounds show
+that it cannot realise a full area--dinv exchange and, under the realisation
+convention, that realisability is not preserved by inversion.
+
+These Catalan statistics and sweep maps also extend beyond ordinary Dyck
+paths.  The rational $q,t$-symmetry follows from Mellit's proof of the rational
+shuffle theorem~\cite{Mellit2021}, while rational sweep maps use
+slope-dependent integer levels~\cite{ArmstrongLoehrWarrington2015,
+ArmstrongLoehrWarrington2016,ThomasWilliams2018}.  Xin and Zhang extend
+$\dinv$, $\area$, and $\bounce$ to vector-$\vec k$ Dyck
+paths~\cite{XinZhang2023}; constant vectors recover the Fuss--Catalan setting.
+After the standard endpoint and step-convention identifications, these
+frameworks include versions of the ordinary and Fuss--Catalan families, but
+they generalise the classical setting in different directions.
+
+The automata-theoretic history supplies the computational hierarchy used in
+the paper.  Engelfriet and Hoogeboom proved that $\MSO$-definable string
+transductions coincide with deterministic two-way finite-state
+transducers~\cite{EngelfrietHoogeboom2001}.  Alur and \v{C}ern\'y later gave
+the equivalent model of deterministic copyless streaming string
+transducers~\cite{AlurCerny2010}.  Polyregular maps extend this regular class
+and admit equivalent descriptions by pebble transducers, \emph{for}-programs,
+and tuple interpretations~\cite{Bojanczyk2018,BojanczykKieferLhote2019}; their
+possible output-growth rates are studied in~\cite{Bojanczyk2023Growth}.
+Equivalence for the regular class is decidable, with a complete delay-based
+characterisation~\cite{FiliotJeckerLodingWinter2023}.  Against this background,
+$\WRP$ adds one operation to polyregular presentations: globally sorting
+selected atoms by unbounded integer ranks.
+
+The closest comparison is ranked $\MSO$ enumeration.  An $\MSO$ query selects
+satisfying assignments, a weighted $\MSO$ formula assigns each a cost in an
+ordered abelian group, and the assignments are enumerated without repetition
+in nondecreasing cost order.  Bourhis, Grez, Jachiet, and Riveros give an
+algorithm with linear preprocessing and logarithmic delay between
+answers~\cite{BourhisEtAl2021}.
+
+The comparison with $\WRP$ is precise but not an equivalence.  Every
+prefix-additive rank function is a special case of a cost function defined by
+a weighted $\MSO$ formula.  A selected atom $(c,\bar i)$ then plays the role of
+a satisfying assignment: its selection formula is the query, and its atom rank
+is the cost.  The rank sort orders atoms by cost, while $\chi$ orders atoms of
+equal cost; their labels are then concatenated into one output word.  Ranked
+$\MSO$ enumeration instead returns assignments and studies the delay between
+answers, without prescribing their order within a cost class.  Thus, $\WRP$
+uses a deterministic prefix-additive fragment of the cost formalism for a
+different purpose.  This restriction supports the logspace evaluation and
+semilinear lower bounds in Sections~\ref{sec:wrp}
+and~\ref{sec:slice-semilinearity}.
+
+Filiot, Lhote, and Reynier introduced lexicographic
+transductions~\cite{FiliotLhoteReynier2025}.  This class contains polyregular
+transductions, admits exponential output growth, and preserves regular
+languages under inverse image.  Its
+lexicographic enumeration of finite-alphabet annotations differs from sorting
+selected atoms by unbounded additive integer atom ranks.  The two classes are
+incomparable.  Exponential-growth lexicographic transductions cannot be
+$\WRP$, since every fixed-arity $\WRP$ presentation has polynomial output
+growth.  Conversely, the $\WRP$ map $D$ from
+Theorem~\ref{thm:wrp-not-closed} has a nonregular inverse image of a regular
+language, whereas lexicographic transductions preserve regular languages
+under inverse image.
+
+Thus, $\WRP$ is a deliberately narrow extension of the standard transducer
+hierarchy, isolating one global sort by unbounded additive integer atom ranks.
+
+A broader computational perspective on algebraic combinatorics comes from
+work seeking to make the notion of a \emph{combinatorial interpretation}
+precise.  Pak proposes membership in $\#\mathrm{P}$ as a workable criterion for
+a nonnegative integer-valued counting function to have such an interpretation,
+illustrating the question with quantities that include Kronecker and Schubert
+coefficients~\cite{Pak2024WhatIs}.  Ikenmeyer and Pak develop the corresponding
+study of membership and nonmembership in $\#\mathrm{P}$
+\cite{IkenmeyerPak2022}.  In this programme, one asks whether the quantity can
+be represented as the number of polynomially verifiable witnesses.  Our
+question is adjacent but different: when two known families, or two statistics
+on one known family, are already equidistributed, what resources are needed to
+compute an explicit bijection?  The transducer hierarchy distinguishes
+finite-state logic, polyregular copying, and the unbounded atom ranks used by
+zeta.  Our lower bounds therefore constrain a mechanism for bijective proofs,
+not the existence of a combinatorial interpretation in Pak's sense.
+
+Other Catalan bijections point to mechanisms that are not explicit primitives
+of $\WRP$.  Deutsch's involution is mirror reflection under the first-return
+binary-tree encoding, while Hopkins and Joseph identify the
+Lalanne--Kreweras involution with rowvacuation on the type~$A$ root poset and
+hence with a composition of toggles~\cite{Deutsch1999,HopkinsJoseph2022}.  The
+word-based models developed here do not formalise first-return recursion or
+toggle operations, and we do not classify these maps.
+
+\paragraph{Open problems.}
+The results leave several natural questions about the rank sort and its
+combinatorial scope.
+\begin{enumerate}[label=(\arabic*)]
+\item The class $\WRP$ permits one rank sort.  Is the hierarchy obtained by
+allowing a fixed number of successive rank sorts strict?  In particular, does
+a two-layer presentation suffice for $\zeta^{-1}$?
+\item Is equivalence of two $\WRP$ presentations decidable?  More generally,
+after fixing a finitely presented ambient transducer model, is it decidable
+whether a presented map admits a $\WRP$ presentation?
+\item Does the deficit-zero rigidity argument have an analogue for $\area$
+and $\bounce$, leading to a computational obstruction for an area--bounce
+exchange?
+\item Which additive level sorts are polyregular?  Unbounded levels alone do
+not force a lower bound: if $\nu(U)=\nu(D)=1$, then the level of position $i$
+is $i-1$, and $\Phi_\nu$ is the identity map.  A classification by the step
+weights and tie-order would separate such degenerate cases from examples such
+as $H$ and other mixed-sign sweep maps.
+\end{enumerate}
 
 \section*{Declaration of AI use}
 The mathematical theory of this paper was developed jointly by the human
 authors and the AI models GPT~Pro (OpenAI), Codex (OpenAI), and Claude
 (Anthropic).  The Lean formalisation described in Section~\ref{sec:lean} was
 carried out fully by AI models: Claude, Codex, and Aristotle (Harmonic).  The
-writing of the paper was assisted by Claude and Codex.  The human authors are
-responsible for the content of the paper.
+writing of the paper was assisted by Claude and Codex.
 
 \section*{Acknowledgments}
 We would like to thank Xiaoyu Huang for the inverse of the zeta map.
