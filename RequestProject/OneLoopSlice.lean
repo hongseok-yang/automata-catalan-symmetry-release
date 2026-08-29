@@ -10,9 +10,9 @@ coordinates addressed by *(region, offset, repetition-index)* coordinates
 analysis at the two-parameter word `UᵐˢUDⁿDᵐˢ` — the instance §8 consumes —
 with raw input positions as coordinates.  This file closes the gap: it states
 the paper's three one-loop lemmas **1:1 over an arbitrary slice `u·vⁿ·z`**
-and derives them from the same two project-agnostic admitted facts
-(`msoDefinableRel2_semilinear_general`, `regularRankTerm_value2_graph_semilinear`)
-— so the trust base is unchanged.
+and derives them from the same two project-agnostic facts — the axiom
+`msoDefinableRel2_semilinear_general` and the theorem
+`regularRankTerm_value2_graph_semilinear` — so the trust base is unchanged.
 
 * `one_loop_finite_state` — `lem:one-loop-finite-state`: for an MSO formula
   `φ(x₁,…,x_k)` with fixed regions/offsets, the set of valid parameter tuples
@@ -41,6 +41,7 @@ semilinear set of `(n, j⃗)`-parameters by adjoining the affine
 position-encoding constraints and projecting the raw data away.
 -/
 import RequestProject.TwoParamSemilinearity
+import RequestProject.RankTermGraph
 
 namespace OneLoopSlice
 

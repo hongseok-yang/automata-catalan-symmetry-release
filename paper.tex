@@ -4428,7 +4428,7 @@ the declaration of AI use at the end of the paper; since every proof is
 checked by Lean's kernel, the guarantees described in this section do not
 depend on how the proofs were found.  The formalisation is distributed with
 the paper.\footnote{\url{https://github.com/hongseok-yang/automata-catalan-symmetry-release}}
-It comprises roughly $105{,}000$ lines of Lean in $166$ source files, pins an
+It comprises roughly $107{,}000$ lines of Lean in $170$ source files, pins an
 exact toolchain (Lean~4 v4.33.1 and the matching Mathlib release) so that the
 build is reproducible, and contains no unproved placeholder: every statement
 in the development is fully proved from Lean's kernel and the short list of
@@ -4483,7 +4483,7 @@ Thm.~\ref{thm:wrp-closures} (basic closures) &
   \texttt{isWRP\_reverse}, \texttt{isWRP\_disjointUnion},
   \texttt{isWRP\_concat} & none \\
 Thm.~\ref{thm:wrp-strict-over-poly} (above $\polyreg$) &
-  \texttt{polyreg\_strict\_subset\_wrp} & (iv) \\
+  \texttt{polyreg\_strict\_subset\_wrp} & (iii) \\
 Thm.~\ref{thm:wrp-logspace} (logspace evaluation) &
   \texttt{wrp\_isLogspaceMH}, \texttt{wrp\_isLogspaceTM},
   \texttt{wrp\_logspace\_polytime}, \texttt{wrp\_logspaceTM\_polytime} &
@@ -4500,24 +4500,24 @@ Thm.~\ref{thm:wrp-not-closed} (closure failure, composition) &
 Thm.~\ref{thm:bounded-rank-collapse} (bounded-rank collapse) &
   \texttt{bounded\_rank\_collapse} & none \\
 Cor.~\ref{cor:rank-necessary} (unbounded rank needed) &
-  \texttt{rank\_necessary} & (iv) \\
+  \texttt{rank\_necessary} & (iii) \\
 Thm.~\ref{thm:zeta-wrp} (zeta in $\SWR$) &
   \texttt{zetaMap\_realisedByWRP}, \texttt{zetaSweep\_isSRR1} & none \\
 Prop.~\ref{prop:alw-sweep-swr} (additive level sorts in $\SWR$) &
   \texttt{additiveSweep\_isSRR1} & none \\
 Prop.~\ref{prop:two-pyramid-criterion} (two-pyramid criterion) &
-  \texttt{two\_pyramid\_criterion} & (iv) \\
+  \texttt{two\_pyramid\_criterion} & (iii) \\
 Thm.~\ref{thm:zeta-not-polyregular} (zeta beyond $\polyreg$) &
-  \texttt{zetaMap\_not\_polyregular} & (iv) \\
+  \texttt{zetaMap\_not\_polyregular} & (iii) \\
 Cor.~\ref{cor:zeta-not-regular} (zeta beyond $\MSO$) &
-  \texttt{zetaMap\_not\_regular} & (iv) \\
+  \texttt{zetaMap\_not\_regular} & (iii) \\
 Thm.~\ref{thm:narayana-sweep} (Narayana sweep) &
   \texttt{heightSweep\_bijOn},
   \texttt{valleys\_heightSweep\_eq\_doubleRises},
   \texttt{doubleRises\_heightSweep\_eq\_valleys} & none \\
 Thm.~\ref{thm:H-not-polyregular} (height sweep beyond $\polyreg$) &
   \texttt{heightSweep\_not\_polyregular},
-  \texttt{heightSweep\_not\_regular} & (iv) \\
+  \texttt{heightSweep\_not\_regular} & (iii) \\
 Thm.~\ref{thm:wrp-slice-semilinearity} (first-ascent semilinearity) &
   \texttt{wrp\_slice\_profile\_semilinear} & (i) \\
 Cor.~\ref{cor:model-free-obstruction} (model-free obstruction) &
@@ -4526,15 +4526,15 @@ Thm.~\ref{thm:wrp-no-swap} (no area--dinv swap) &
   \texttt{wrp\_no\_area\_dinv\_swap} & (i) \\
 Thm.~\ref{thm:two-parameter-semilinearity} (two-parameter semilinearity) &
   \texttt{two\_param\_profile\_semilinear\_unconditional} &
-  (ii), (iii) \\
+  (ii) \\
 Cor.~\ref{cor:inverse-zeta-not-wrp} (arity one) &
   \texttt{inverse\_zeta\_not\_wrp\_arity1} & (i) \\
 Cor.~\ref{cor:inverse-zeta-not-wrp} (general arity) &
-  \texttt{inverse\_zeta\_not\_wrp} & (i)--(iii) \\
+  \texttt{inverse\_zeta\_not\_wrp} & (i), (ii) \\
 \bottomrule
 \end{tabularx}
 \caption{The headline results and their Lean counterparts.  The last column
-lists the admitted axioms (i)--(iv), described in the text, on which each
+lists the admitted axioms (i)--(iii), described in the text, on which each
 Lean proof depends beyond the kernel; ``none'' marks results proved with no
 admitted axiom.  Lean names are cited without namespace prefixes; the
 repository documentation maps the numbered statements of the paper, including
@@ -4544,11 +4544,10 @@ the intermediate lemmas, to their formal counterparts.}
 
 \paragraph{Trust base.}
 The completed development is built from Lean's kernel primitives plus exactly
-four explicitly admitted axioms.  These axioms package standard external
-results or their consequences concerning $\MSO$, finite automata, semilinear
-sets, and polyregular maps.  Some are stated
-using the development's own abstractions so that they can be applied directly
-to the formalised arguments below.
+three explicitly admitted axioms, each a standard external result about
+$\MSO$, finite automata, semilinear sets, and polyregular maps.  The second is
+stated using the development's own abstractions so that it can be applied
+directly to the formalised arguments below.
 \begin{enumerate}[label=(\roman*)]
 \item \texttt{buchi}: every $\MSO$-definable language over a finite alphabet
 is recognised by a DFA, the logic-to-automata direction of the
@@ -4561,12 +4560,20 @@ parameters, in the manner of the family $W_{m,n}$ of
 Definition~\ref{def:two-parameter-family}, the position tuples satisfying an
 $\MSO$ formula form a semilinear family.  This combines (i) with the
 Ginsburg--Spanier theorem~\cite{GinsburgSpanier1966}.
-\item \texttt{regularRankTerm\_value2\_graph\_semilinear}: the $\Z^d$-valued
-sibling of (ii), semilinearity of the value graphs of prefix-additive rank
-functions read along such a family.
 \item \texttt{polyreg\_regular\_preimage}: the preimage of a regular language
 under a polyregular map is regular~\cite{Bojanczyk2018}.
 \end{enumerate}
+The $\Z^d$-valued companion of (ii) --- semilinearity of the value graph of a
+prefix-additive rank function read along such a family --- is not assumed but
+proved.  A rank function unfolds into a fixed signed combination of prefix
+ranks and bounded local corrections; a prefix rank is the weighted sum, over
+the finitely many pairs of source state and letter, of the number of positions
+below the queried one carrying that pair; those position sets are
+$\MSO$-definable by the converse direction of (i), which the development
+proves; and their counts are semilinear by the counting theorem below, the
+fibres being positions of a slice word whose length is affine in the two
+parameters.
+
 The counting layer admits nothing.  Section~\ref{sec:slice-semilinearity}
 derives Lemma~\ref{lem:presburger-counting} from Woods' Presburger counting
 theorem~\cite[Theorem~1.10]{Woods2015}, but the formalisation does not follow
@@ -4598,7 +4605,7 @@ no-swap theorem and the arity-one case of
 Corollary~\ref{cor:inverse-zeta-not-wrp} use only the
 B\"uchi--Elgot--Trakhtenbrot axiom (i), and the polyregular lower bounds for
 $\zeta$ and $H$ (Theorems~\ref{thm:zeta-not-polyregular}
-and~\ref{thm:H-not-polyregular}) use only the preimage axiom (iv).
+and~\ref{thm:H-not-polyregular}) use only the preimage axiom (iii).
 
 \paragraph{Statement fidelity.}
 A machine-checked proof certifies exactly its formal statement, so we record
@@ -4628,7 +4635,7 @@ deterministic $\MSO$ transductions, the class that Theorem~\ref{thm:eh}
 identifies with the two-way machines; the identification itself is quoted,
 not re-proved.  The two-pyramid criterion
 (Proposition~\ref{prop:two-pyramid-criterion}) is formalised without its
-growth hypothesis: the formal proof applies the preimage axiom (iv) to the
+growth hypothesis: the formal proof applies the preimage axiom (iii) to the
 polyregular realiser directly, without passing through the linear-growth
 collapse, so the bound $|f(P_{m,n})|=O(|P_{m,n}|)$ is never needed.
 Theorem~\ref{thm:wrp-logspace} is proved for both machine

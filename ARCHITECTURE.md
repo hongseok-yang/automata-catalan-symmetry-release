@@ -115,12 +115,20 @@ The slice analysis that powers both §8 and §9.
 * `Semilinearity.lean`, `SliceSemilinear.lean`, `SliceSemilinearN.lean`,
   `SliceSemilinear2.lean` — linear and semilinear sets in `ℕ^d`, the bridge
   to Mathlib's `IsSemilinearSet` (Ginsburg–Spanier closures), the
-  two-parameter slice-family notion, and the general admitted facts.
+  two-parameter slice-family notion, and the admitted
+  `msoDefinableRel2_semilinear_general`.
 * `PresburgerCounting.lean`, `SemilinearGraphAffine.lean`,
-  `SliceCountGlobal.lean` — `lem:presburger-counting` (the single counting
-  input, a theorem), the passage from a semilinear function graph in `ℕ³` to
-  rows that are eventually affine on the residues of one row-uniform period,
-  and the two counting consequences the towers consume.
+  `SliceCountGlobal.lean` — `lem:presburger-counting` (a theorem), the passage
+  from a semilinear function graph in `ℕ³` to rows that are eventually affine
+  on the residues of one row-uniform period, and the two counting consequences
+  the towers consume.
+* `SliceMSOCount.lean`, `SliceGraphArithZ.lean`, `SlicePrefixRankGraph.lean`,
+  `RankTermGraph.lean` — the value graph of a regular rank term along a
+  block-linear family (`regularRankTerm_value2_graph_semilinear`, a theorem):
+  the affine length of a slice word and the semilinearity of counts of
+  MSO-definable positions, ℤ-valued graph arithmetic for slice families, the
+  prefix rank as an `ω`-weighted sum of `(state, letter)` position counts, and
+  the assembly over a rank term's summands and bounded corrections.
 * `ProperLinearRep.lean`, `SemilinearMinMax.lean`, `KernelDichotomy.lean`,
   `SemilinearGraphArith.lean`, `ProperPieceCount.lean`, `CountBaseCase.lean`,
   `CountGeneral.lean` — the proof of `lem:presburger-counting`: unique
@@ -142,8 +150,8 @@ The slice analysis that powers both §8 and §9.
   eventually-affine minimum).
 * `OneLoopSlice.lean` — the paper's one-loop lemmas verbatim over an
   arbitrary slice `u·vⁿ·z` (`lem:one-loop-finite-state`,
-  `lem:one-loop-presburger` (a)–(d), and the rank value graph), from the two
-  general semilinearity axioms via a position-encoding engine.
+  `lem:one-loop-presburger` (a)–(d), and the rank value graph), from
+  `msoDefinableRel2_semilinear_general` via a position-encoding engine.
 
 ## §8 — The no-swap theorem
 

@@ -8,7 +8,7 @@ by Baek, Hwang, La, and Yang (`paper.tex`).
 
 Importing this module elaborates every file of the development.  `lake build`
 succeeds with 0 `sorry` and 0 warnings.  The entire development admits exactly
-four axioms beyond Lean's kernel primitives; each packages a standard external
+three axioms beyond Lean's kernel primitives; each packages a standard external
 result, or a direct consequence of one, some stated through the development's
 own abstractions so that they apply directly where they are needed:
 
@@ -16,10 +16,16 @@ own abstractions so that they apply directly where they are needed:
   (the converse direction is the theorem `detAuto_state_mso`);
 * `SliceSemilinearN.msoDefinableRel2_semilinear_general` — an MSO-definable
   relation over a block-linear word family is semilinear (Ginsburg–Spanier);
-* `SliceSemilinearN.regularRankTerm_value2_graph_semilinear` — its ℤ-valued
-  sibling for regular rank terms;
 * `polyreg_regular_preimage` — polyregular preimages of regular languages are
   regular (Bojańczyk).
+
+The ℤ-valued sibling of the second of these, the value graph of a regular rank
+term `SliceSemilinearN.regularRankTerm_value2_graph_semilinear`, is a theorem
+(`RankTermGraph.lean`): a rank term is a fixed signed combination of prefix
+ranks and bounded local corrections, a prefix rank is the `ω`-weighted sum of
+the counts of the MSO-definable `(state, letter)` positions below the queried
+one (`SlicePrefixRankGraph.lean`, `SliceMSOCount.lean`), and those counts are
+semilinear by `PresburgerCounting.count_graph_semilinear`.
 
 The counting layer admits nothing.  `PresburgerCounting.count_graph_semilinear`
 — bounded parametric Presburger counting, `lem:presburger-counting` transcribed
@@ -144,6 +150,7 @@ import RequestProject.PrefixAdditiveRank
 import RequestProject.PresburgerCounting
 import RequestProject.ProperLinearRep
 import RequestProject.ProperPieceCount
+import RequestProject.RankTermGraph
 import RequestProject.SMapWRP
 import RequestProject.SRR1
 import RequestProject.SRRQuadratic
@@ -181,14 +188,17 @@ import RequestProject.SliceFasSelector
 import RequestProject.SliceFasSelectorGA
 import RequestProject.SliceFasTie
 import RequestProject.SliceGatedConv
+import RequestProject.SliceGraphArithZ
 import RequestProject.SliceGrowthCollapse
 import RequestProject.SliceLexCount
 import RequestProject.SliceLexOrder
 import RequestProject.SliceMSO
+import RequestProject.SliceMSOCount
 import RequestProject.SliceMarkN
 import RequestProject.SliceOrder
 import RequestProject.SliceOutput
 import RequestProject.SlicePeriodStar
+import RequestProject.SlicePrefixRankGraph
 import RequestProject.SliceProfile
 import RequestProject.SliceProfileDischarge
 import RequestProject.SliceProfileDischargeGA

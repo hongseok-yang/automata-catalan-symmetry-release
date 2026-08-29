@@ -2,7 +2,7 @@
 
 This file records, section by section, how `paper.tex` is rendered in the
 Lean development, and the modelling conventions the rendering uses.  The
-build is complete: **0 `sorry`, 0 warnings, four project axioms** (listed in
+build is complete: **0 `sorry`, 0 warnings, three project axioms** (listed in
 [`README.md`](README.md), which also tables the headline results with their
 trust bases).
 
@@ -77,11 +77,10 @@ that discharges `wrp_slice_profile_affine_general`
 over an arbitrary slice `u·vⁿ·z` in `OneLoopSlice.lean`
 (`one_loop_finite_state`, `one_loop_rank_graph`,
 `one_loop_presburger_sel`/`_label`/`_rankLt`/`_rankEq`/`_tie`/`_wrpOrd`,
-from the two general semilinearity axioms).
-`lem:presburger-counting` is the single counting input, transcribed
-in Mathlib vocabulary as `PresburgerCounting.count_graph_semilinear` and proved
-in `CountGeneral.lean` (see Conventions).  Both forms the towers consume are
-derived from it: the joint
+from `msoDefinableRel2_semilinear_general`).
+`lem:presburger-counting` is `PresburgerCounting.count_graph_semilinear`,
+transcribed in Mathlib vocabulary and proved in `CountGeneral.lean` (see
+Conventions).  The two forms the towers consume follow from it: the joint
 count-graph form (`TwoParamSemilinearity.twoParamCountGraph_proved`) by
 instantiating it at two parameters, and the row-uniform form
 (`SliceSemilinearN.isSliceFamilySemilinear2_count_global`) from that together
@@ -180,12 +179,14 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
 9. **Where the axioms are used.**  `SliceMSO.buchi` enters wherever a
    presentation's MSO data is turned into automata (the slice tower, the
    machine evaluators, the separating witnesses); the automaton-to-MSO
-   direction is the proved theorem `detAuto_state_mso`.  The two general
-   semilinearity axioms enter the general-arity §9 assembly,
-   `thm:two-parameter-semilinearity`, and `OneLoopSlice.lean`.  The counting
-   input `count_graph_semilinear` enters the same two places, through the
-   derived row-uniform and joint-graph forms, but it is a theorem and so adds
-   nothing to the trust base.  The arity-1 inverse-zeta capstone
+   direction is the proved theorem `detAuto_state_mso`.  The general
+   semilinearity axiom `msoDefinableRel2_semilinear_general` enters the
+   general-arity §9 assembly, `thm:two-parameter-semilinearity`, and
+   `OneLoopSlice.lean`, both directly and through the rank-term value graph
+   `regularRankTerm_value2_graph_semilinear`, which is a theorem
+   (`RankTermGraph.lean`).  The counting input `count_graph_semilinear` enters
+   the same two places, through the derived row-uniform and joint-graph forms,
+   but it too is a theorem and so adds nothing to the trust base.  The arity-1 inverse-zeta capstone
    `CopiedD4.inverse_zeta_not_wrp_arity1` needs no counting input at all
    (`buchi` only), and neither does the one-parameter slice analysis behind
    `thm:wrp-slice-semilinearity`: counting is used only for the
@@ -201,25 +202,26 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
     `PresburgerCounting.count_graph_semilinear` is stated with Mathlib's
     `IsSemilinearSet` and `Nat.card` only, so it can be compared with the
     literature (Woods; Ginsburg–Spanier) without reference to this
-    development.  It is **proved**, not admitted: `CountGeneral.lean` derives
-    it from `ProperLinearRep.lean`, `SemilinearMinMax.lean`,
-    `KernelDichotomy.lean`, `SemilinearGraphArith.lean`,
-    `ProperPieceCount.lean` and `CountBaseCase.lean` by proper linear
-    decomposition (linearly independent periods, hence unique coefficient
-    tuples), a kernel dichotomy in which the linear fibre bound rules out two
-    independent integer kernel directions — so every fibre is an arithmetic
-    progression with a parameter-independent step — and inclusion–exclusion
-    over those progressions, residue class by residue class.  No Ehrhart or
-    quasi-polynomial input is needed.  Two differences from the paper's text,
-    both deliberate: the paper's `p, q ≥ 1` is dropped, so the statement also
-    covers `p = 0` and `q = 0` — harmless, since both degenerate cases are
-    elementary (for `p = 0` the graph is a singleton; for `q = 0` the count is
-    the indicator of a semilinear condition, and semilinear sets are closed
-    under complement) — and the paper's joint `r`-tuple form is not
-    transcribed, the development needing only the single-count case.  The
-    linear bound is load-bearing rather than cosmetic: without it the
-    statement is false, as the family `A_x = {y | y 0 < x 0 ∧ y 1 < x 0}`
-    with `|A_x| = (x 0)²` shows.
+    development, and it is a theorem: `CountGeneral.lean` derives it from
+    `ProperLinearRep.lean`, `SemilinearMinMax.lean`, `KernelDichotomy.lean`,
+    `SemilinearGraphArith.lean`, `ProperPieceCount.lean` and
+    `CountBaseCase.lean` by proper linear decomposition (linearly independent
+    periods, hence unique coefficient tuples), a kernel dichotomy in which the
+    linear fibre bound rules out two independent integer kernel directions —
+    so every fibre is an arithmetic progression with a parameter-independent
+    step — and inclusion–exclusion over those progressions, residue class by
+    residue class.  Neither Ehrhart theory nor quasi-polynomiality enters, so
+    the formal proof does not follow the route by which
+    §7 of the paper derives the lemma from Woods' theorem.
+    The Lean statement differs from the paper's in two respects.  It omits the
+    paper's `p, q ≥ 1`, covering `p = 0` and `q = 0` as well; both degenerate
+    cases are elementary, since for `p = 0` the graph is a singleton and for
+    `q = 0` the count is the indicator of a semilinear condition, and
+    semilinear sets are closed under complement.  It covers only the
+    single-count case, the paper's joint `r`-tuple form being unused here.
+    The linear bound is load-bearing rather than cosmetic: without it the
+    statement is false, as the family `A_x = {y | y 0 < x 0 ∧ y 1 < x 0}` with
+    `|A_x| = (x 0)²` shows.
 
 11. **Decidable examples.**  The paper's worked examples are verified by
     `decide`/`native_decide` rather than by hand (`Examples.lean`,

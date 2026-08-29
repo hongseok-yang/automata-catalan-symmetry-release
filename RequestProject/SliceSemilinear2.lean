@@ -409,16 +409,15 @@ axiom msoDefinableRel2_semilinear_general {Alpha : Type*} [Fintype Alpha] {k : �
     {R : List Alpha → (Fin k → ℕ) → Prop} (hR : MSO.MSODefinableRel k R) :
     IsSliceFamilySemilinear2 (fun mS n ī => R (F.eval mS n) ī)
 
-/-! ## General regular-rank-term equality on a block-linear slice
+/-! ## The ℤ-valued value-block encoding for regular rank terms
 
-The §9 tie counting also needs the rank-equality fact: the predicate "the rank of an
-atom equals the fibred `d*`-rank" is semilinear on the copied slice.  This is the
-ℤ-valued sibling of `msoDefinableRel2_semilinear_general`, hung on the general
-`IsRegularRankTerm` class rather than on any specific presentation.  The only
-non-`MSO` ingredient is comparing a regular rank vector against a `(mS, n)`-indexed
-target `g`; we keep that comparison project-agnostic by requiring `g`'s own value graph
-to be semilinear, independent of the rank term (so the axiom is genuinely general and
-not circular). -/
+The §9 tie counting needs the rank-equality fact: the predicate "the rank of an atom
+equals the fibred `d*`-rank" is semilinear on the copied slice.  The signed values are
+carried by the `(positive, negative)` pair encoding `decodeZ`, and the comparison stays
+project-agnostic by requiring the `(mS, n)`-indexed target `g` to have a semilinear value
+graph of its own (`IsSliceConstSemilinear2`), independently of the rank term.  The rank
+term's own value graph, and the equality that combines the two, are supplied by
+`RequestProject.RankTermGraph`. -/
 
 /-- Decode a `Fin (d + d) → ℕ` vector as a `Fin d → ℤ` vector: coordinate `c` is the
 first-block entry minus the second-block entry, the standard `(positive, negative)`
@@ -474,58 +473,11 @@ theorem lexLt_decodeZ_sel {d K : ℕ} (selA selB : Fin (d + d) → Fin K) :
 dependence) is *slice-const-semilinear* when its value graph is semilinear: the set of
 `(mS, n, v)` with `v ∈ Fin (d + d) → ℕ` encoding `g mS n` (via `decodeZ`) is
 `IsSliceFamilySemilinear2`.  This is a statement about `g` alone — it does not mention
-any rank term — which kept the rank-equality development non-circular: it is the target
+any rank term, which keeps the rank-equality development non-circular: it is the target
 hypothesis of the corollary `regularRankTerm_eq_value2_semilinear` and the conclusion
-shape of the now-theorem `dstarRankGA_m_const_semilinear`.  It holds whenever `g` is a
-Presburger function of `(mS, n)`. -/
+shape of `dstarRankGA_m_const_semilinear`.  It holds whenever `g` is a Presburger function
+of `(mS, n)`. -/
 def IsSliceConstSemilinear2 {d : ℕ} (g : ℕ → ℕ → (Fin d → ℤ)) : Prop :=
   IsSliceFamilySemilinear2 (fun mS n (v : Fin (d + d) → ℕ) => g mS n = decodeZ v)
-
-/-- **A regular rank term has a semilinear VALUE GRAPH on a block-linear slice.**
-Admitted as a standard fact (the rank-counting analogue of
-`msoDefinableRel2_semilinear_general`): a `IsRegularRankTerm` `f` read along a
-block-linear two-parameter word family `F` has a semilinear value graph — the set of
-`(mS, n, ī, v)` with the rank value `f (F.eval mS n) ī` decoded by `v : Fin (d+d) → ℕ`
-(the `ī` coordinates first, the `v` value coordinates last).  A faithful two-loop / ℤ^d
-lift of the already-native one-loop `SliceFamilyRank` rank-affine chain (Ginsburg–Spanier
-on the regular two-loop slice language).  Project-agnostic: it mentions only
-`IsRegularRankTerm`, `BlockLinearWord2`, `decodeZ`, and `IsSliceFamilySemilinear2`,
-no specific presentation or slice.  Both hypotheses are load-bearing: `[Fintype Alpha]`
-(automaton step) and the block-linear shape of `F` (regularity of the slice).  This is
-strictly stronger than the bundled `= g` form (`regularRankTerm_eq_value2_semilinear`
-below), which it derives: exposing the value as free coordinates lets a *second* atom's
-rank be a free variable, after which `lexLt`/`=` of two ranks are first-order. -/
-axiom regularRankTerm_value2_graph_semilinear {Alpha : Type*} [Fintype Alpha] {d k : ℕ}
-    (F : BlockLinearWord2 Alpha)
-    {f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)} (hf : IsRegularRankTerm f) :
-    IsSliceFamilySemilinear2
-      (fun mS n (iv : Fin (k + (d + d)) → ℕ) =>
-        f (F.eval mS n) (fun t => iv (Fin.castAdd (d + d) t))
-          = decodeZ (fun c => iv (Fin.natAdd k c)))
-
-/-- **A regular rank term equals a slice-semilinear target: semilinear.**  A theorem —
-the bundled `= g` corollary of the value-graph axiom: intersect `f`'s value graph with
-`g`'s value graph (sharing the value block) and existentially project the value, using
-`decodeZ_surjective` to pick the common split. -/
-theorem regularRankTerm_eq_value2_semilinear {Alpha : Type*} [Fintype Alpha] {d k : ℕ}
-    (F : BlockLinearWord2 Alpha)
-    {f : List Alpha → (Fin k → ℕ) → (Fin d → ℤ)} (hf : IsRegularRankTerm f)
-    {g : ℕ → ℕ → (Fin d → ℤ)} (hg : IsSliceConstSemilinear2 g) :
-    IsSliceFamilySemilinear2 (fun mS n ī => f (F.eval mS n) ī = g mS n) := by
-  have hf2 := regularRankTerm_value2_graph_semilinear F hf
-  have hgw : IsSliceFamilySemilinear2
-      (fun mS n (iv : Fin (k + (d + d)) → ℕ) =>
-        g mS n = decodeZ (fun c => iv (Fin.natAdd k c))) :=
-    IsSliceFamilySemilinear2.weaken_natAdd (j := k) hg
-  have hex := IsSliceFamilySemilinear2.exists_extra_tuple (k := k) (m := d + d) (hf2.and hgw)
-  refine isSemilinearNd_congr ?_ hex
-  ext w
-  simp only [familyGraph2, Set.mem_ofPred_eq, Fin.append_left, Fin.append_right]
-  constructor
-  · rintro ⟨bb, hA, hB⟩
-    rw [hA, hB]
-  · intro hAB
-    obtain ⟨bb, hbb⟩ := decodeZ_surjective (g (w 0) (w 1))
-    exact ⟨bb, by rw [hAB, hbb], hbb.symm⟩
 
 end SliceSemilinearN

@@ -8,19 +8,20 @@ residues in `n` with a period uniform across `mS` — exactly
 `CopiedD4.TieCountAffineBudgeted`.  The linear fibre bound it needs comes from the
 global selected-atom budget `CopiedD4.GlobalSelectedBudget`.
 
-The two-loop slice-arithmetic facts are factored into project-agnostic general axioms
-(`SliceSemilinearN.msoDefinableRel2_semilinear_general` for the MSO part,
-`regularRankTerm_value2_graph_semilinear` for the rank value graph; both over a generic
-`BlockLinearWord2` family).  The project-specific fact about the `d*`-rank value
-graph, `dstarRankGA_m_const_semilinear`, is a **theorem**: it is
-assembled from the first-order characterisation `dstarRankGA'_eq_decodeZ_iff` and the
-project-agnostic building blocks.  The copied-slice instances `msoDefinableRel2_semilinear`
-and `rankOf_eq_dstar2_semilinear` are derived theorems here, obtained by instantiating the
-general axioms at `copiedSliceBLW`.  No project-specific axiom occurs in the inverse-zeta
-tower.
+The two-loop slice-arithmetic facts are factored into project-agnostic general statements
+over a generic `BlockLinearWord2` family: the MSO part
+`SliceSemilinearN.msoDefinableRel2_semilinear_general` (an axiom) and the rank value graph
+`regularRankTerm_value2_graph_semilinear` (a theorem, `RankTermGraph.lean`).  The
+project-specific fact about the `d*`-rank value graph, `dstarRankGA_m_const_semilinear`, is
+a **theorem**: it is assembled from the first-order characterisation
+`dstarRankGA'_eq_decodeZ_iff` and the project-agnostic building blocks.  The copied-slice
+instances `msoDefinableRel2_semilinear` and `rankOf_eq_dstar2_semilinear` are derived
+theorems here, obtained by instantiating the general statements at `copiedSliceBLW`.  No
+project-specific axiom occurs in the inverse-zeta tower.
 -/
 import RequestProject.CopiedTieCounting
 import RequestProject.SliceCountGlobal
+import RequestProject.RankTermGraph
 
 namespace CopiedTieSemilinear2
 
@@ -29,7 +30,7 @@ open WRP Step SliceSemilinearN MSO
 /-! ## Two-loop slice-arithmetic facts
 
 The MSO and rank bridges below are **theorems**, derived from the project-agnostic
-axioms `SliceSemilinearN.msoDefinableRel2_semilinear_general` and
+facts `SliceSemilinearN.msoDefinableRel2_semilinear_general` and
 `regularRankTerm_value2_graph_semilinear` by instantiating the generic block-linear word
 family at the copied slice (`copiedSliceBLW`).  The project-specific fact
 `dstarRankGA_m_const_semilinear` (the `d*`-rank value graph) is also a theorem, so no

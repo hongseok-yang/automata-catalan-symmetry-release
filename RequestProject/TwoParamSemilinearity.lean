@@ -24,7 +24,7 @@ The paper's proof has two halves.
   total-`U` predicate are proved `IsSliceFamilySemilinear2`
   (`fasPhi_semilinear`, `selUPhi_semilinear`), via the new two-atom order comparison
   `wrpOrd2_semilinear` (parts (c) and (d) of the paper's lemma, assembled from the rank
-  value-graph and MSO axioms already admitted by the repo — no new axiom).
+  value-graph theorem and the MSO axiom already in the repo — no new axiom).
 
 * **Counting** (`lem:presburger-counting` in its tuple form, as applied in the
   paper's §9 proof): a semilinear `(m, n, ī)`-family with linearly bounded finite fibres has a
@@ -290,7 +290,7 @@ theorem isSemilinearNd_profile_of_graphs (F G : ℕ → ℕ → ℕ)
 
 `wrpOrd` between an atom of copy `c` and an atom of copy `c'` — rank lex-comparison
 first, MSO tie-order on rank ties — as a semilinear family in `(mS, n, ī ++ j̄)`.
-Assembled from the admitted project-agnostic axioms: the rank value graph
+Assembled from the project-agnostic slice-arithmetic facts: the rank value graph
 (`regularRankTerm_value2_graph_semilinear`, via `rankOf_value2_c_semilinear`) for the
 two rank vectors, `lexLt_decodeZ_sel` for their comparison, and the MSO bridge
 (`msoDefinableRel2_semilinear`) for the tie-order `χ`. -/
@@ -1190,10 +1190,11 @@ theorem twoParamCountGraph_proved : TwoParamCountGraph := by
 /-- **Theorem `thm:two-parameter-semilinearity`
 (paper.tex), unconditional** — `two_param_profile_semilinear` discharged with the
 counting principle `twoParamCountGraph_proved`.  Trust base (verified by
-`#print axioms`): the kernel axioms and the two general slice-definability axioms
-`msoDefinableRel2_semilinear_general` / `regularRankTerm_value2_graph_semilinear`.
-The counting input `PresburgerCounting.count_graph_semilinear` is a theorem and
-contributes nothing to the trust base. -/
+`#print axioms`): the kernel axioms and the general slice-definability axiom
+`msoDefinableRel2_semilinear_general`.  The rank value graph
+`regularRankTerm_value2_graph_semilinear` and the counting input
+`PresburgerCounting.count_graph_semilinear` are theorems and contribute nothing to the
+trust base. -/
 theorem two_param_profile_semilinear_unconditional
     (T : List Step → Option (List Step)) (hT : WRP.IsWRP T)
     (hgrow : ∃ C, ∀ m n out, 1 ≤ m → T (copiedSlice m n) = some out →
