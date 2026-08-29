@@ -102,9 +102,10 @@ $\area,\dinv,\bounce\colon\D\to\N$ be the standard Dyck-path statistics.  Then
 Haglund's zeta map $\zeta\colon\D\to\D$ gives a bijective proof of this
 identity: it preserves semilength and satisfies
 $\area(\zeta(P))=\dinv(P)$ and $\bounce(\zeta(P))=\area(P)$ for every
-$P\in\D$.  By contrast, the full symmetry $C_n(q,t)=C_n(t,q)$ still lacks such
-a direct explanation: no explicit, uniform, semilength-preserving bijection is
-known that swaps $\area$ and $\dinv$ on every Dyck path.
+$P\in\D$.  By contrast, to our knowledge, the full symmetry
+$C_n(q,t)=C_n(t,q)$ still lacks such a direct explanation: no explicit,
+uniform, semilength-preserving bijection is known that swaps $\area$ and
+$\dinv$ on every Dyck path.
 
 Polyregular maps from automata theory provide a natural computational starting
 point, but we prove that neither $\zeta$ nor the classical height-sweep
@@ -164,12 +165,12 @@ $\area,\dinv,\bounce\colon\D\to\N$, it has two expressions:
 Haglund's zeta map $\zeta\colon\D\to\D$ gives an object-by-object explanation
 of the equality between these two sums: it preserves semilength and satisfies
 $\area(\zeta(P))=\dinv(P)$ and $\bounce(\zeta(P))=\area(P)$ for every
-$P\in\D$.  By contrast, the full symmetry $C_n(q,t)=C_n(t,q)$ has no known
-direct bijective explanation.  Such an explanation would be a single,
-explicit, semilength-preserving bijection $F\colon\D\to\D$, uniform across all
-semilengths, satisfying $\area(F(P))=\dinv(P)$ and
-$\dinv(F(P))=\area(P)$ for every $P\in\D$.  No such bijection is known; it is a
-long-standing open problem~\cite{Pons2022}.
+$P\in\D$.  By contrast, to our knowledge, the full symmetry
+$C_n(q,t)=C_n(t,q)$ still has no direct bijective explanation.  Such an
+explanation would be a single, explicit, semilength-preserving bijection
+$F\colon\D\to\D$, uniform across all semilengths, satisfying
+$\area(F(P))=\dinv(P)$ and $\dinv(F(P))=\area(P)$ for every $P\in\D$.
+Finding such a bijection is a long-standing open problem~\cite{Pons2022}.
 
 Since $\zeta$ sends $\dinv$ to $\area$, it already realises one half of the
 desired exchange.  This raises a natural question: can the computational
@@ -422,8 +423,8 @@ is given in Appendix~\ref{app:narayana-sweep-proof}.
 Sections~\ref{sec:slice-semilinearity} and~\ref{sec:wrapped-flat} develop the
 semilinearity method and use it to prove the no-swap theorem.
 Section~\ref{sec:inverse-zeta} studies $\zeta^{-1}$ using a related argument.
-Section~\ref{sec:lean} describes the scope and status of the
-machine-checked Lean formalisation of the paper's mathematical results. Finally,
+Section~\ref{sec:lean} describes the scope and status of the accompanying
+machine-checked Lean formalisation.  Finally,
 Section~\ref{sec:discussion} places the results in the related
 algebraic-combinatorial and automata-theoretic literatures and presents the
 open problems that they leave.
@@ -485,7 +486,7 @@ For $P\in\D_n$ with area sequence $a=(a_1,\ldots,a_n)$, define
 \]
 The maximum possible area in $\D_n$ is $\binom n2$; write
 $\coarea(P)=\binom n2-\area(P)$.  Following Lee, Li, and
-Loehr~\cite{LeeLiLoehr2018}, the \emph{deficit} of $P$ is
+Loehr~\cite[Definition~1.4]{LeeLiLoehr2018}, the \emph{deficit} of $P$ is
 $\defc(P)=\coarea(P)-\dinv(P)$.
 A path with $\defc(P)=0$ is called \emph{deficit-zero}.
 \end{definition}
@@ -1039,7 +1040,7 @@ the two-way transducers of Section~\ref{sec:2dft-mso}.
 The structural fact about $\polyreg$ that we need is the
 \emph{linear-growth collapse}.
 
-\begin{theorem}[Linear-growth collapse~\cite{Bojanczyk2018,Bojanczyk2023Growth}]
+\begin{theorem}[Linear-growth collapse~\cite{Bojanczyk2023Growth}]
 \label{thm:polyregular-linear-collapse}
 If $f\in\polyreg$ has linear output growth on its domain (that is, if
 there is a constant $K$ with $|f(w)|\le K(|w|+1)$ for every
@@ -2164,8 +2165,11 @@ classification example for $\WRP$, we consider a classical sweep map of
 Armstrong, Loehr, and Warrington~\cite{ArmstrongLoehrWarrington2015,
 ArmstrongLoehrWarrington2016}: the map that lists the steps of a Dyck path by
 increasing starting height, breaking ties from right to left.  We denote it by
-$H$.  That $H$ is a bijection of each $\D_n$, and that it exchanges the two
-statistics defined below, are known.  What is new is its computational status.
+$H$.  General sweep-map bijectivity implies that $H$ is a bijection of each
+$\D_n$~\cite{ThomasWilliams2018}; its exchange of the two statistics defined
+below follows from the corresponding tree and zeta descriptions
+in~\cite{CeballosFangMuhle2020,Fang2024,SulzgruberThiel2018}.  What is new is
+its computational status.
 For the upper bound, $H$ is an additive level sort, hence an $\SWR$ map by
 Proposition~\ref{prop:alw-sweep-swr}.  For the lower bound, we run the
 two-pyramid probe of Section~\ref{sec:zeta-not-polyregular} a second time,
@@ -3229,9 +3233,10 @@ among the $n$ entries equal to $1$, of which there are $\binom n2$.
 \end{proof}
 
 The inequality in the next lemma and the uniqueness of its equality cases
-appear in Ammar's thesis~\cite{Ammar2015}; the same equality cases are
-described through the deficit statistic in work of Lee, Li, and
-Loehr~\cite{LeeLiLoehr2018}.  We state the equality cases in the explicit
+appear in Ammar's thesis~\cite[Lemma~4.13, Theorem~4.18, and
+Remark~4.20]{Ammar2015}; the same equality cases are described through the
+deficit statistic in work of Lee, Li, and Loehr~\cite[Lemma~2.10]{LeeLiLoehr2018}.
+We state the equality cases in the explicit
 area-sequence form needed for the lower bound; proofs of the next two lemmas
 are given in Appendix~\ref{app:deficit-zero-proofs}.
 
@@ -4093,12 +4098,13 @@ $\WRP$ map: its set of first-ascent pairs on the family $(W_{m,n})$ has to be
 semilinear.  To separate $\zeta^{-1}$ from the class, we now compute this set
 for $\zeta^{-1}$ and show that it violates the constraint.
 
-General procedures for inverting classical and rational zeta maps are
-developed by Ceballos, Denton, and Hanusa~\cite{CeballosDentonHanusa2016}, and
-Pons gives an iterative description on classical area
-sequences~\cite{Pons2022}.  For the structured targets $W_{m,n}$ used here,
-the inverse takes the particularly simple balanced-pyramid form described
-below.
+Ceballos, Denton, and Hanusa give a new method for inverting classical zeta,
+explicit inverses for certain rational families, and inductive methods for
+additional families~\cite{CeballosDentonHanusa2016}.  Pons gives an iterative
+description of classical inverse zeta directly on area
+sequences~\cite[Theorem~6 and Section~2.3]{Pons2022}.  For the structured
+targets $W_{m,n}$ used here, the inverse takes the particularly simple
+balanced-pyramid form described below.
 
 Inverting $\zeta$ head-on looks forbidding, but the \emph{preimage} of $W_{m,n}$
 is transparent when read backwards: we guess a path $Q$ and check
@@ -4593,7 +4599,7 @@ comparisons in the paper's $O(n^2)$ analysis.
 \label{sec:discussion}\label{sec:related-work}
 
 Garsia and Haiman introduced the algebraic $q,t$-Catalan
-sequence~\cite{GarsiaHaiman1996}.  Haglund gave the Catalan-word formula that
+sequence~\cite{GarsiaHaiman1996}.  Haglund proposed the Catalan-word formula that
 became the area--bounce model~\cite{Haglund2003}, and Haiman and Haglund
 developed the zeta map relating the area--bounce and area--dinv
 formulations~\cite[Section~2]{ThomasWilliams2018}.  Our statistics and
@@ -4617,11 +4623,13 @@ classical zeta directly on area sequences~\cite{Pons2022}.
 
 The map $H$ of Section~\ref{sec:narayana-sweep} is the starting-height,
 increasing-level, right-to-left member of the Armstrong--Loehr--Warrington
-sweep family, so its bijectivity follows from known sweep-map theory.  After
+sweep family, so its bijectivity follows from known sweep-map
+theory~\cite{ThomasWilliams2018}.  After
 translating path conventions, its breadth-first tree description agrees with
 the plane-tree case of the Ceballos--Fang--M\"uhle encoding
-$\Xi_{\mathrm{bounce}}$~\cite{CeballosFangMuhle2020}; Fang gives an explicit
-breadth-first description~\cite{Fang2024}.  The exchange of valleys and double
+$\Xi_{\mathrm{bounce}}$~\cite[Section~3.3]{CeballosFangMuhle2020}; Fang gives an
+explicit breadth-first description~\cite[Construction~3.6 and
+Proposition~3.7]{Fang2024}.  The exchange of valleys and double
 rises is a classical Narayana symmetry.  Deutsch proved it using a recursive
 involution~\cite{Deutsch1999}, and the corresponding rise--valley transport
 under the classical zeta map is reviewed by Sulzgruber and
@@ -4638,9 +4646,9 @@ Ammar's thesis~\cite{Ammar2015}, and the same cases are encoded by the
 deficit-zero framework of Lee, Li, and Loehr~\cite{LeeLiLoehr2018}.  We give
 the explicit area-sequence form needed in Section~\ref{sec:main}.
 
-No explicit combinatorial, semilength-preserving bijection on $\D$ that
-exchanges $\area$ and $\dinv$ is known~\cite{Pons2022}.  For the closely related
-exchange of $\area$ and $\bounce$, Ayyer and Sundaravaradan construct an
+To our knowledge, no explicit combinatorial, semilength-preserving bijection on
+$\D$ that exchanges $\area$ and $\dinv$ is known~\cite{Pons2022}.  For the
+closely related exchange of $\area$ and $\bounce$, Ayyer and Sundaravaradan construct an
 explicit bijection on an exponentially large subset of the Dyck paths, while
 the full problem remains open~\cite{AyyerSundaravaradan2025}.  Our question is
 more constrained: can a statistic exchange be realised by a prescribed
@@ -5367,7 +5375,8 @@ source: its prefix rank is the path height, which on $\D_n$ can reach $n$.
 \label{app:narayana-sweep-proof}
 
 Theorem~\ref{thm:narayana-sweep} states a known consequence of classical
-sweep-map and zeta-map theory.  We include the following direct forest proof to
+sweep-map and zeta-map theory~\cite{ThomasWilliams2018,CeballosFangMuhle2020,
+Fang2024,SulzgruberThiel2018}.  We include the following direct forest proof to
 make the combinatorial statement self-contained in the path conventions of
 this paper.  The proof is not needed to establish that $H\in\SWR$, which
 already follows from Proposition~\ref{prop:alw-sweep-swr}.
@@ -5398,8 +5407,9 @@ After adjoining a super-root whose children are the roots of the forest and
 translating between the path conventions, the breadth-first child-count
 encoding used below is the plane-tree special case of the map
 $\Xi_{\mathrm{bounce}}$ of Ceballos, Fang, and
-M\"uhle~\cite{CeballosFangMuhle2020}; see also Fang's explicit breadth-first
-formulation~\cite{Fang2024}.  We derive the normal form in the present contour
+M\"uhle~\cite[Section~3.3]{CeballosFangMuhle2020}; see also Fang's explicit
+breadth-first formulation~\cite[Construction~3.6 and
+Proposition~3.7]{Fang2024}.  We derive the normal form in the present contour
 and step-word conventions because it also makes the statistic calculation
 transparent.
 
