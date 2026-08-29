@@ -16,12 +16,10 @@ Two pieces, per the CS-5 freeze:
 -/
 import RequestProject.SliceDstarGA
 import RequestProject.CopiedRank
-import RequestProject.CopiedCluster
 
 namespace CopiedDstar
 
-open WRP Step SliceFamilyCell SliceGrowthCollapse MSOMarkN SliceMarkN
-  SliceDstarGA CopiedCells CopiedMark SliceReRoot
+open WRP Step SliceFamilyCell MSOMarkN SliceMarkN SliceDstarGA CopiedCells CopiedMark SliceReRoot
 open scoped Classical
 
 /-! ## The word-generic `d*` semantic layer (CS-5.1) -/
@@ -105,14 +103,6 @@ theorem dstarRankGA'_spec (P : WRP.Presentation Step Step) (hV : P.Valid)
 noncomputable def dstarRankGA_m (P : WRP.Presentation Step Step) (hV : P.Valid)
     (mS n : ℕ) : Fin P.d → ℤ :=
   dstarRankGA' P hV (copiedSlice mS n)
-
-/-- **m = 1 regression** (CS-6): the fibred `d*`-rank at `mS = 1` is the
-wrapped-flat `d*`-rank (proof irrelevance through `copiedSlice_one`). -/
-theorem dstarRankGA_m_one (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (n : ℕ) : dstarRankGA_m P hV 1 n = SliceDstarGA.dstarRankGA P hV n := by
-  unfold dstarRankGA_m
-  rw [copiedSlice_one]
-  rfl
 
 /-! ## The fibred cell tuple (CS-5, transport layer) -/
 

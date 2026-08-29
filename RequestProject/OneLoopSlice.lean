@@ -207,12 +207,6 @@ def lenN : ℕ := (F.blocks.map fun b => b.2.2.1 * b.1.length).sum
 /-- The constant part of the length of `F.eval mS n`. -/
 def lenC : ℕ := (F.blocks.map fun b => b.2.2.2 * b.1.length).sum
 
-private theorem length_flatten_replicate {α : Type*} (m : ℕ) (b : List α) :
-    (List.replicate m b).flatten.length = m * b.length := by
-  induction m with
-  | zero => simp
-  | succ k ih => rw [List.replicate_succ, List.flatten_cons, List.length_append, ih]; ring
-
 omit [Fintype Alpha] in
 /-- The length of `F.eval mS n` is the affine form
 `lenMS·mS + lenN·n + lenC`. -/
@@ -224,7 +218,7 @@ theorem eval_length (mS n : ℕ) :
   | cons b bs ih =>
       obtain ⟨w, aMS, aN, cst⟩ := b
       simp only [List.map_cons, List.flatten_cons, List.length_append, List.sum_cons, ih,
-        length_flatten_replicate]
+        SliceSemilinearN.length_flatten_replicate]
       ring
 
 variable (P : WRP.Presentation Alpha Gamma)
@@ -670,13 +664,6 @@ def ValidIdx (n : ℕ) : Region → ℕ → Prop
   | Region.free, _ => True
   | _, j => j = 0
 
-/-- Validity of an offset for its region. -/
-def ValidOff {Alpha : Type} (u v z : List Alpha) : Region → ℕ → Prop
-  | Region.u, s => s < u.length
-  | Region.v, s => s < v.length
-  | Region.z, s => s < z.length
-  | Region.free, _ => True
-
 /-! ## The encoding engine
 
 From a semilinear (`mS`-independent) raw-position family `Ψ n ī`, the set of
@@ -692,10 +679,6 @@ private def selFam (k : ℕ) : Fin (k + 2) → Fin ((1 + k) + (1 + k)) := fun q 
   if h0 : (q : ℕ) = 0 then ⟨1 + k, by omega⟩
   else if h1 : (q : ℕ) = 1 then ⟨0, by omega⟩
   else ⟨1 + k + (1 + ((q : ℕ) - 2)), by omega⟩
-
-private theorem selFam_zero (k : ℕ) :
-    selFam k ⟨0, by omega⟩ = ⟨1 + k, by omega⟩ := by
-  simp [selFam]
 
 private theorem selFam_one (k : ℕ) :
     selFam k ⟨1, by omega⟩ = ⟨0, by omega⟩ := by

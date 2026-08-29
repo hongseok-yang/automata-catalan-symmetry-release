@@ -11,7 +11,7 @@ All axiom-clean.
 -/
 import RequestProject.SliceRankAtom
 
-open WRP Step
+open Step
 
 namespace SliceRankAtom
 

@@ -6,11 +6,8 @@ Formalization of §7 (semilinear sets) and §8 (the no-swap chain) of
  An Automata-Theoretic View of the q,t-Catalan Symmetry"
 by Baek, Hwang, La, and Yang.
 -/
-import Mathlib
 import RequestProject.DyckPath
 import RequestProject.Transducers
-
-open Step
 
 /-! ## Semilinear sets (`sec:slice-semilinearity`, paper.tex) -/
 
@@ -35,8 +32,6 @@ def IsSemilinearNd (d : ℕ) (S : Set (Fin d → ℕ)) : Prop :=
 def IsSemilinear2 (S : Set (ℕ × ℕ)) : Prop :=
   IsSemilinearNd 2 {v | (v 0, v 1) ∈ S}
 
-/-! ## `thm:wrp-slice-semilinearity`: semilinearity for
-linear-growth WRP — see `wrp_slice_profile_semilinear` in `NoSwapWRP.lean` -/
 /-! ## `lem:semilinear-envelope`: semilinear finite-section envelopes
 (paper.tex) -/
 
@@ -169,11 +164,6 @@ theorem semilinear_envelope (S : Set (ℕ × ℕ)) (hS : IsSemilinear2 S)
 theorem S_tri_lower_bound {a b : ℕ} (h : (a, b) ∈ S_tri) :
     b * (b - 1) / 2 + 1 ≤ a := by
   simpa [S_tri] using h.2.1
-
-/-- The upper bound defining membership in `S_tri`. -/
-theorem S_tri_upper_bound {a b : ℕ} (h : (a, b) ∈ S_tri) :
-    a ≤ b * (b + 1) / 2 + 1 := by
-  simpa [S_tri] using h.2.2
 
 /-- Every vertical section of `S_tri` is finite. -/
 theorem S_tri_vertical_section_finite (b : ℕ) :

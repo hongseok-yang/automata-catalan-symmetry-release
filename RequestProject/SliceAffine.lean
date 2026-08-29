@@ -8,14 +8,15 @@ is affine on residue classes of `n`.  This file fixes a single predicate
 operations the assembly uses:
 
 * eventually-periodic ⇒ `AffineOnResidues` (slope `0`);
-* closed under pointwise addition (align thresholds and periods);
+* closed under pointwise addition (align thresholds and periods) and finite sums;
 * closed under shifting the argument by a constant;
-* the purely-periodic convolution `SliceConv.convolution_affineOnResidues` is
-  `AffineOnResidues`.
+* closed under eventual agreement (`AffineOnResidues.congr_eventually`).
+
+The convolution kernels that produce the assembly's core terms live in `SliceGatedConv`.
 
 `#print axioms` of everything here stays at `[propext, Classical.choice, Quot.sound]`.
 -/
-import RequestProject.SliceConv
+import Mathlib
 
 namespace SliceAffine
 
@@ -67,16 +68,6 @@ theorem AffineOnResidues.shift {f : ℕ → ℕ} (hf : AffineOnResidues f) (d : 
     show m + d + r - d = m + r from by omega]
   exact hf r k
 
-/-- The purely-periodic convolution count is affine on residues. -/
-theorem affineOnResidues_convolution {α β : Type*} (u : ℕ → α) (v : ℕ → β)
-    (pu pv : ℕ) (hpu : 1 ≤ pu) (hpv : 1 ≤ pv)
-    (hu : ∀ i, u (i + pu) = u i) (hv : ∀ j, v (j + pv) = v j) (c : α → β → ℕ) :
-    AffineOnResidues (fun N => ∑ i ∈ Finset.range N, c (u i) (v (N - 1 - i))) := by
-  obtain ⟨P, hP, hconv⟩ := SliceConv.convolution_affineOnResidues u v pu pv hpu hpv hu hv c
-  refine ⟨0, P, fun r => ∑ s ∈ Finset.range (pu * pv), c (u (r + s)) (v (pu * pv - 1 - s)), hP,
-    fun r k => ?_⟩
-  simpa using hconv r k
-
 /-- Affine-on-residues transfers along eventual pointwise equality. -/
 theorem AffineOnResidues.congr_eventually {f g : ℕ → ℕ} {N : ℕ} (h : ∀ n, N ≤ n → f n = g n)
     (hg : AffineOnResidues g) : AffineOnResidues f := by
@@ -102,71 +93,5 @@ theorem AffineOnResidues.finsetSum {ι : Type*} (s : Finset ι) (f : ι → ℕ 
       intro h
       exact AffineOnResidues.congr_eventually (N := 0) (fun n _ => Finset.sum_insert ha)
         ((h a (Finset.mem_insert_self a s)).add (ih (fun i hi => h i (Finset.mem_insert_of_mem hi))))
-
-/-- **The eventually-periodic convolution is affine on residues.**  This peels the
-forward/backward eventual-periodicity thresholds (`mu`, `mv`) off, reducing to the
-purely-periodic core `affineOnResidues_convolution` plus two eventually-periodic
-boundary sums. -/
-theorem affineOnResidues_convolution_eventuallyPeriodic {α β : Type*}
-    (u : ℕ → α) (v : ℕ → β) (c : α → β → ℕ)
-    (mu pu : ℕ) (hpu : 1 ≤ pu) (hu : ∀ i, mu ≤ i → u (i + pu) = u i)
-    (mv pv : ℕ) (hpv : 1 ≤ pv) (hv : ∀ j, mv ≤ j → v (j + pv) = v j) :
-    AffineOnResidues (fun n => ∑ i ∈ Finset.range n, c (u i) (v (n - 1 - i))) := by
-  have hutper : ∀ s, u (mu + (s + pu)) = u (mu + s) := fun s => by
-    rw [show mu + (s + pu) = (mu + s) + pu from by ring]; exact hu _ (by omega)
-  have hvtper : ∀ s, v (mv + (s + pv)) = v (mv + s) := fun s => by
-    rw [show mv + (s + pv) = (mv + s) + pv from by ring]; exact hv _ (by omega)
-  -- convolution core (purely periodic), shifted down by `mu+mv`
-  have hTsh : AffineOnResidues
-      (fun n => ∑ i ∈ Finset.range (n - (mu + mv)),
-        c (u (mu + i)) (v (mv + (n - (mu + mv) - 1 - i)))) :=
-    (affineOnResidues_convolution (fun s => u (mu + s)) (fun s => v (mv + s)) pu pv hpu hpv
-      hutper hvtper c).shift (mu + mv)
-  -- forward boundary `A` (eventually periodic, period `pv`)
-  have hA : AffineOnResidues (fun n => ∑ i ∈ Finset.range mu, c (u i) (v (n - 1 - i))) := by
-    apply affineOnResidues_of_eventuallyPeriodic (m := mu + mv + 1) (p := pv) hpv
-    intro n _
-    apply Finset.sum_congr rfl
-    intro i hi
-    rw [Finset.mem_range] at hi
-    rw [show n + pv - 1 - i = (n - 1 - i) + pv from by omega, hv _ (by omega)]
-  -- backward boundary `B` (eventually periodic, period `pu`)
-  have hB : AffineOnResidues
-      (fun n => ∑ l ∈ Finset.range mv, c (u (mu + (n - mu - mv + l))) (v (mv - 1 - l))) := by
-    apply affineOnResidues_of_eventuallyPeriodic (m := mu + mv) (p := pu) hpu
-    intro n hn
-    apply Finset.sum_congr rfl
-    intro l hl
-    rw [Finset.mem_range] at hl
-    rw [show n + pu - mu - mv + l = (n - mu - mv + l) + pu from by omega, hutper]
-  -- the three add up to `S` beyond `mu+mv`
-  refine AffineOnResidues.congr_eventually (N := mu + mv) (fun n hn => ?_) ((hA.add hTsh).add hB)
-  -- split the count's range at `mu`, then at `n-mu-mv`
-  rw [← Finset.sum_range_add_sum_Ico (fun i => c (u i) (v (n - 1 - i))) (show mu ≤ n from by omega),
-    Finset.sum_Ico_eq_sum_range,
-    ← Finset.sum_range_add_sum_Ico (fun i => c (u (mu + i)) (v (n - 1 - (mu + i))))
-      (show n - mu - mv ≤ n - mu from by omega)]
-  -- identify the three pieces
-  have eFirst : (∑ i ∈ Finset.range (n - mu - mv), c (u (mu + i)) (v (n - 1 - (mu + i)))) =
-      (fun n => ∑ i ∈ Finset.range (n - (mu + mv)),
-        c (u (mu + i)) (v (mv + (n - (mu + mv) - 1 - i)))) n := by
-    show _ = ∑ i ∈ Finset.range (n - (mu + mv)), c (u (mu + i)) (v (mv + (n - (mu + mv) - 1 - i)))
-    rw [Nat.sub_sub]
-    apply Finset.sum_congr rfl
-    intro i hi
-    rw [Finset.mem_range, ← Nat.sub_sub] at hi
-    congr 2
-    omega
-  have eSecond : (∑ i ∈ Finset.Ico (n - mu - mv) (n - mu), c (u (mu + i)) (v (n - 1 - (mu + i)))) =
-      (fun n => ∑ l ∈ Finset.range mv, c (u (mu + (n - mu - mv + l))) (v (mv - 1 - l))) n := by
-    show _ = ∑ l ∈ Finset.range mv, c (u (mu + (n - mu - mv + l))) (v (mv - 1 - l))
-    rw [Finset.sum_Ico_eq_sum_range, show n - mu - (n - mu - mv) = mv from by omega]
-    apply Finset.sum_congr rfl
-    intro l hl
-    rw [Finset.mem_range] at hl
-    congr 2
-    omega
-  rw [eFirst, eSecond]
-  ring
 
 end SliceAffine

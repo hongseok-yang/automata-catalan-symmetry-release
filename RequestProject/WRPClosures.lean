@@ -57,14 +57,6 @@ theorem mso_congr {Alpha : Type*} {k : ℕ} {R S : List Alpha → (Fin k → ℕ
   obtain ⟨φ, hφ⟩ := hR
   exact ⟨φ, fun w ī => (h w ī).symm.trans (hφ w ī)⟩
 
-/-- Conjunction of two `MSODefinableRel`s at the same arity. -/
-theorem mso_and {Alpha : Type*} {k : ℕ} {R S : List Alpha → (Fin k → ℕ) → Prop}
-    (hR : MSODefinableRel k R) (hS : MSODefinableRel k S) :
-    MSODefinableRel k (fun w ī => R w ī ∧ S w ī) := by
-  obtain ⟨φ, hφ⟩ := hR
-  obtain ⟨ψ, hψ⟩ := hS
-  exact ⟨Formula.and φ ψ, fun w ρ => by rw [Formula.sat_and, ← hφ, ← hψ]⟩
-
 /-- Fold a list of formulas into a single disjunction. -/
 def listOr {Alpha : Type*} {nf : ℕ} (g : List (Formula Alpha nf 0)) : Formula Alpha nf 0 :=
   g.foldr Formula.or (Formula.neg Formula.tru)
@@ -837,10 +829,6 @@ variable (Pf : Polyreg.Presentation Alpha Γf) (Pg : Polyreg.Presentation Alpha 
 
 @[simp] theorem castTuple_castTuple {a a' : ℕ} (h : a = a') (ī : Fin a' → ℕ) :
     castTuple h.symm (castTuple h ī) = ī := by
-  subst h; rfl
-
-@[simp] theorem castTuple_castTuple' {a a' : ℕ} (h : a = a') (ī : Fin a → ℕ) :
-    castTuple h (castTuple h.symm ī) = ī := by
   subst h; rfl
 
 /-- The merged copy set's selection predicate. -/

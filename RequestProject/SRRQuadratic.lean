@@ -328,48 +328,13 @@ theorem tieLt_trans {x y z : Fin S.K × ℕ}
   · left; rw [e1]; exact h2
   · exact Or.inr ⟨e1.trans e2, S.cordTrans _ _ _ c1 c2⟩
 
-theorem tieLt_total (x y : Fin S.K × ℕ) : TieLt S x y ∨ x = y ∨ TieLt S y x := by
-  rcases Nat.lt_trichotomy x.2 y.2 with h | h | h
-  · cases hd : S.dir
-    · exact Or.inr (Or.inr (Or.inl (by rw [hd]; simpa using h)))
-    · exact Or.inl (Or.inl (by rw [hd]; simpa using h))
-  · rcases S.cordTotal x.1 y.1 with hc | hc | hc
-    · exact Or.inl (Or.inr ⟨h, hc⟩)
-    · exact Or.inr (Or.inl (Prod.ext hc h))
-    · exact Or.inr (Or.inr (Or.inr ⟨h.symm, hc⟩))
-  · cases hd : S.dir
-    · exact Or.inl (Or.inl (by rw [hd]; simpa using h))
-    · exact Or.inr (Or.inr (Or.inl (by rw [hd]; simpa using h)))
-
 theorem tieLt_asymm {x y : Fin S.K × ℕ} (h : TieLt S x y) : ¬ TieLt S y x :=
   fun h' => tieLt_irrefl S x (tieLt_trans S h h')
-
-theorem keyLt_trans {w : List Step} {x y z : Fin S.K × ℕ}
-    (h1 : keyLt S w x y) (h2 : keyLt S w y z) : keyLt S w x z := by
-  rcases h1 with h1 | ⟨e1, t1⟩ <;> rcases h2 with h2 | ⟨e2, t2⟩
-  · exact Or.inl (h1.trans h2)
-  · exact Or.inl (e2 ▸ h1)
-  · exact Or.inl (e1 ▸ h2)
-  · exact Or.inr ⟨e1.trans e2, tieLt_trans S t1 t2⟩
 
 theorem keyLt_irrefl {w : List Step} (x : Fin S.K × ℕ) : ¬ keyLt S w x x := by
   rintro (h | ⟨-, h⟩)
   · omega
   · exact tieLt_irrefl S x h
-
-theorem keyLt_asymm {w : List Step} {x y : Fin S.K × ℕ}
-    (h : keyLt S w x y) : ¬ keyLt S w y x :=
-  fun h' => keyLt_irrefl S x (keyLt_trans S h h')
-
-theorem keyLt_total (w : List Step) (x y : Fin S.K × ℕ) :
-    keyLt S w x y ∨ x = y ∨ keyLt S w y x := by
-  rcases Int.lt_trichotomy (rank1 S x.1 w x.2) (rank1 S y.1 w y.2) with h | h | h
-  · exact Or.inl (Or.inl h)
-  · rcases tieLt_total S x y with ht | ht | ht
-    · exact Or.inl (Or.inr ⟨h, ht⟩)
-    · exact Or.inr (Or.inl ht)
-    · exact Or.inr (Or.inr (Or.inr ⟨h.symm, ht⟩))
-  · exact Or.inr (Or.inr (Or.inl h))
 
 /-- Every dimension index is `dim`, at `d = 1`. -/
 theorem eq_dim (i : Fin S.P.d) : i = dim S := by
@@ -419,14 +384,12 @@ theorem cordList_spec :
 /-- The `cord`-sorted enumeration of the copies. -/
 noncomputable def cordList : List (Fin S.K) := Classical.choose (cordList_spec S)
 
-theorem cordList_nodup : (cordList S).Nodup := (Classical.choose_spec (cordList_spec S)).1
 theorem cordList_mem (c : Fin S.K) : c ∈ cordList S :=
   (Classical.choose_spec (cordList_spec S)).2.1 c
 theorem cordList_sorted : (cordList S).Pairwise S.cord :=
   (Classical.choose_spec (cordList_spec S)).2.2
 
 end SRRQuadratic
-
 
 namespace SRRQuadratic
 
@@ -1316,7 +1279,6 @@ theorem tapeSym_lmark_iff (w : List Step) (i : ℕ) :
 
 end SRRQuadratic
 
-
 namespace SRRQuadratic
 
 open Multihead
@@ -1386,21 +1348,8 @@ theorem headIndexCases (a : Fin (numH S)) :
     show a.val = 4 + (a.val - 4)
     omega
 
-/-- Pointwise application of a `mkF` move to a `mkF` position. -/
-theorem apply_mkF (ms ml mb mv : HeadMove) (mf : Fin S.K → HeadMove)
-    (ps pl pb pv : ℕ) (pf : Fin S.K → ℕ) :
-    (fun i => (mkF S ms ml mb mv mf i).apply (mkF S ps pl pb pv pf i))
-      = mkF S (ms.apply ps) (ml.apply pl) (mb.apply pb) (mv.apply pv)
-          (fun c => (mf c).apply (pf c)) := by
-  funext i
-  unfold mkF
-  split_ifs <;> rfl
-
 /-- The all-stay move. -/
 def stayAll : Fin (numH S) → HeadMove := fun _ => .stay
-
-theorem apply_stayAll (pos : Fin (numH S) → ℕ) :
-    (fun i => (stayAll S i).apply (pos i)) = pos := rfl
 
 /-- The control tags (phases) of the machine. -/
 inductive Tag
@@ -1733,14 +1682,6 @@ theorem cnt_eq (cnt cnt' : Fin 0 → ℕ) : cnt = cnt' := funext (fun j => j.eli
     etaCore S (Tag.reject, r) syms coin = none := rfl
 @[simp] theorem etaCore_vInit (r : Reg S) (syms) (coin) :
     etaCore S (Tag.vInit, r) syms coin = etaVInit S r (syms (VI S)) := rfl
-@[simp] theorem etaCore_rewindAll (r : Reg S) (syms) (coin) :
-    etaCore S (Tag.rewindAll, r) syms coin
-      = etaRewind S true r (syms (scanI S)) (syms (LI S)) (syms (BI S))
-          (fun c => syms (valI S c)) := rfl
-@[simp] theorem etaCore_rewindK (r : Reg S) (syms) (coin) :
-    etaCore S (Tag.rewindK, r) syms coin
-      = etaRewind S false r (syms (scanI S)) (syms (LI S)) (syms (BI S))
-          (fun c => syms (valI S c)) := rfl
 @[simp] theorem etaCore_scanStart (r : Reg S) (syms) (coin) :
     etaCore S (Tag.scanStart, r) syms coin = etaScanStart S r := rfl
 @[simp] theorem etaCore_sA (r : Reg S) (syms) (coin) :
@@ -1835,11 +1776,6 @@ theorem pp_stateBefore_succ (w : List Step) (j : ℕ) (h : j < w.length) :
 theorem src_stateBefore_succ (c : Fin S.K) (w : List Step) (j : ℕ) (h : j < w.length) :
     (src S c).stateBefore w (j+1) = (src S c).δ ((src S c).stateBefore w j) w[j] :=
   foldl_take_succ _ _ w j h
-
-theorem da_stateBefore_zero (w : List Step) : S.DA.stateBefore w 0 = S.DA.q0 := rfl
-theorem pp_stateBefore_zero (w : List Step) : S.pp.A.stateBefore w 0 = S.pp.A.q0 := rfl
-theorem src_stateBefore_zero (c : Fin S.K) (w : List Step) :
-    (src S c).stateBefore w 0 = (src S c).q0 := rfl
 
 theorem da_accepts_iff_stateBefore (w : List Step) :
     S.DA.accepts w ↔ S.DA.accept (S.DA.stateBefore w w.length) := by
@@ -2018,7 +1954,6 @@ theorem ScanInv.valhead_lt {w : List Step} {v : ℤ} {Lopt : Option (Fin S.K × 
     (by rw [H.hcv c]; exact h2)
 
 end SRRQuadratic
-
 
 namespace SRRQuadratic
 
@@ -2705,7 +2640,6 @@ theorem cell_step (w : List Step) (v : ℤ) (Lopt : Option (Fin S.K × ℕ))
           omega
 
 end SRRQuadratic
-
 
 namespace SRRQuadratic
 
@@ -3425,7 +3359,6 @@ theorem round_done (w : List Step) (v : ℤ) (Lopt : Option (Fin S.K × ℕ))
     halted_done S w r pos, rfl⟩
 
 end SRRQuadratic
-
 
 namespace SRRQuadratic
 

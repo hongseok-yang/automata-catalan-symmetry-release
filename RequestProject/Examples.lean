@@ -59,9 +59,11 @@ theorem heightSweep_UUUDDD :
 /-- **`sec:narayana-sweep` (paper.tex).**
 `UUUDDD` has 0 valleys and 2 double rises. -/
 theorem valleys_UUUDDD : valleys [U, U, U, D, D, D] = 0 := by native_decide
-theorem doubleRises_UUUDDD : doubleRises [U, U, U, D, D, D] = 2 := by native_decide
 
 /-- **`sec:narayana-sweep` (paper.tex).**
 `UDUDUD` has 2 valleys and 0 double rises, confirming the swap. -/
+theorem doubleRises_UUUDDD : doubleRises [U, U, U, D, D, D] = 2 := by native_decide
+
 theorem valleys_UDUDUD : valleys [U, D, U, D, U, D] = 2 := by native_decide
+
 theorem doubleRises_UDUDUD : doubleRises [U, D, U, D, U, D] = 0 := by native_decide

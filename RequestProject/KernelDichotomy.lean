@@ -18,7 +18,6 @@ independent pair is cyclic) and `fibre_eq_progression` (a cyclic kernel makes ea
 contiguous progression).  `properLinear_fibre_progression` and `relation_fibre_progression`
 transfer the conclusion from coefficient tuples to the points of the proper linear set.
 -/
-import Mathlib
 import RequestProject.ProperLinearRep
 
 namespace KernelDichotomy

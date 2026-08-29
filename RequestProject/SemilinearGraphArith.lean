@@ -37,7 +37,6 @@ Graphs are packed as in `PresburgerCounting.count_graph_semilinear`: the argumen
 
 No `sorry`, no new axiom.
 -/
-import Mathlib
 import RequestProject.SemilinearMinMax
 
 namespace SemilinearGraphArith
@@ -207,6 +206,8 @@ theorem isSemilinearSet_graph_const (c : ℕ) :
   ext z
   simp [ite_mul]
 
+variable {f₁ f₂ g : (Fin p → ℕ) → ℕ}
+
 /-- **Coordinate projections.**  The graph of `x ↦ x j₀` is semilinear. -/
 theorem isSemilinearSet_graph_coord (j₀ : Fin p) :
     IsSemilinearSet {z : Fin (p + 1) → ℕ | z j₀.castSucc = z (Fin.last p)} := by
@@ -216,8 +217,6 @@ theorem isSemilinearSet_graph_coord (j₀ : Fin p) :
   convert h using 1
   ext z
   simp [ite_mul]
-
-variable {f₁ f₂ g : (Fin p → ℕ) → ℕ}
 
 private theorem pair_graphs
     (h₁ : IsSemilinearSet
@@ -262,10 +261,6 @@ theorem isSemilinearSet_graph_sub
 
 end Small
 
-/-! ## Signed combinations with constant offsets -/
-
-section Affine
-
 variable {p : ℕ} {ι : Type*} [Fintype ι]
 
 /-- **Signed combinations with constant offsets.**  The identity defining `g` may carry a
@@ -283,7 +278,5 @@ theorem isSemilinearSet_graph_signedAffine (f : ι → (Fin p → ℕ) → ℕ)
     (isSemilinearSet_graph_add (f₁ := fun _ => c) (f₂ := fun x => ∑ i ∈ t, f i x)
       (isSemilinearSet_graph_const c) (isSemilinearSet_graph_sum f hf t))
     hg
-
-end Affine
 
 end SemilinearGraphArith

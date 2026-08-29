@@ -27,9 +27,6 @@ of `L` has at most one point and the count is `0` or `1` according to a semiline
 
 All statements are unconditional; nothing is admitted.
 -/
-import Mathlib
-import RequestProject.ProperLinearRep
-import RequestProject.SemilinearMinMax
 import RequestProject.KernelDichotomy
 import RequestProject.SemilinearGraphArith
 import RequestProject.ProperPieceCount

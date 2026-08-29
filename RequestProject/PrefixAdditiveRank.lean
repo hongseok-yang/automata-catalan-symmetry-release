@@ -307,11 +307,6 @@ def Presentation.ofPrefixAdditive (toPoly : Polyreg.Presentation Alpha Gamma) (d
     (h : ∀ c, IsPrefixAdditiveRank (rank c)) : Presentation Alpha Gamma :=
   ⟨toPoly, d, rank, fun c => isRegularRankTerm_of_isPrefixAdditiveRank (h c)⟩
 
-@[simp] theorem Presentation.ofPrefixAdditive_rank (toPoly : Polyreg.Presentation Alpha Gamma)
-    (d : ℕ) (rank : (c : Fin toPoly.K) → List Alpha → (Fin (toPoly.arity c) → ℕ) → (Fin d → ℤ))
-    (h : ∀ c, IsPrefixAdditiveRank (rank c)) :
-    (Presentation.ofPrefixAdditive toPoly d rank h).rank = rank := rfl
-
 /-- **The paper's `def:wrp` defines the same class.**  `T` is WRP (in the
 `RankTerm` formulation stored by `Presentation`) iff it admits a presentation
 all of whose rank functions are prefix-additive, i.e. iff it is a

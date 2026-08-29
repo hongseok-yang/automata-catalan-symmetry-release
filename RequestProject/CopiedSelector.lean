@@ -25,8 +25,7 @@ import RequestProject.CopiedAffineAt
 
 namespace CopiedSelector
 
-open WRP Step SliceFamilyCell SliceDstarGA MSOMarkN SliceMarkN SliceMSO
-  CopiedCells CopiedDstar CopiedRegionF CopiedAffineAt
+open WRP Step MSOMarkN SliceMarkN SliceMSO CopiedCells CopiedDstar CopiedRegionF CopiedAffineAt
 open scoped Classical
 
 /-- **One arm of the fibred GA cell premise** (D12: REDUCED coordinates).  The

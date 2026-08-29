@@ -1,92 +1,29 @@
 /-
-# MSO gates for the arity-1 `fas` discharge
+# MSO building blocks for the slice gates
 
-The rank-interval kernel (`SliceFasCount.countPeriodicInterval`) consumes a marked DFA
-`M` whose acceptance, on the slice, encodes the *MSO part* of the per-atom predicate —
-the selectedness, the label, and the `χ`-tie ordering — while the rank arithmetic stays
-in the interval endpoints.  This file builds those marked DFAs:
+The marked-DFA gates of the `fas` discharge are assembled from unary MSO formulas over the slice.
+This file is the formula toolbox they are built from:
 
-* `blockSelectedD_indicator_periodic` — a DFA deciding "the block atom at position
-  `1+2j` (resp. `1+2j+1`) is selected and labelled `D`".
+* generic combinators — `relabelFO` (first-order variable renaming), `bigAnd` / `bigOr` /
+  `sat_faFO` / `sat_imp` / `closeAllSO`;
+* the modular-residue predicate `mso_position_mod`, built from an explicit `M`-way partition of the
+  positions with a first-element and a successor axiom (`axPartition`, `axFirst`, `axSucc`, `axMem`);
+* the exact-position predicates `mso_offset_eq`, `mso_position_eq` and `mso_position_fromEnd`;
+* `cfgPos`, the L4 positional cell condition (bulk residue class, exact front position, or exact
+  end-offset) that the gates and the count assembly share.
 
-Each is an arity-1 unary MSO formula (`SliceSelCount.mso_arity_one` on the presentation's
-`selDef`/`labelDef`/`ordDef`) fed to `MSOMark.markedDFA_exists`.  These therefore rest on
-the textbook Büchi axiom (`#print axioms` = `[propext, Classical.choice, Quot.sound,
-SliceMSO.buchi]`); the rank-interval side (`SliceFasCount`) stays axiom-clean.
+The formulas here are purely syntactic; the axiom cost of turning one into a DFA is paid where the
+marked-alphabet recogniser of `MSOMark` is invoked (the textbook Büchi axiom `SliceMSO.buchi`), and
+the rank-interval side (`SliceFasCount`) stays axiom-clean.
 -/
-import RequestProject.SliceSelCount
-import RequestProject.SliceBridge
-import RequestProject.WRP
+import RequestProject.SliceCountSlice
+import RequestProject.SliceOutput
+import RequestProject.SliceSelect
 
 namespace SliceFasGates
 
-open MSO MSOMark SliceCount SliceMSO Step
+open MSO
 open scoped Classical
-
-/-- **Block selectedness-and-`D` gate.**  For an arity-1 WRP presentation `P` and a copy
-`c`, the predicate "the atom of copy `c` at the block position `1+2j` (`region = true`) or
-`1+2j+1` (`region = false`) of `W_n` is selected and labelled `D`" is decided, for `j < n`,
-by a single deterministic marked DFA over `Step × Bool`.  The position's validity is
-automatic (`1+2j`, `1+2j+1 < |W_n| = 2(n+1)` for `j < n`), so the marked-DFA acceptance is
-exactly the selection-∧-label MSO conjunction. -/
-theorem blockSelectedD_indicator_periodic (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) (region : Bool) :
-    ∃ M : DetAuto (Step × Bool), ∀ n j, j < n →
-      ((P.toPoly.selectedAtom (wrappedFlat n)
-          ⟨c, fun _ => if region then 1 + 2 * j else 1 + 2 * j + 1⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n)
-          ⟨c, fun _ => if region then 1 + 2 * j else 1 + 2 * j + 1⟩ = D)
-       ↔ M.accepts (markAt (wrappedFlat n) (if region then 1 + 2 * j else 1 + 2 * j + 1))) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlab, hlab⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c D)
-  obtain ⟨Mc, hMc⟩ := markedDFA_exists (Formula.and φsel φlab)
-  refine ⟨Mc, fun n j hj => ?_⟩
-  set q := if region then 1 + 2 * j else 1 + 2 * j + 1 with hqdef
-  have hqlt : q < (wrappedFlat n).length := by
-    rw [length_wrappedFlat, hqdef]; split <;> omega
-  rw [hMc (wrappedFlat n) q hqlt, Formula.sat_and,
-    ← hsel (wrappedFlat n) q, ← hlab (wrappedFlat n) q]
-  constructor
-  · rintro ⟨⟨_, hs⟩, hl⟩; exact ⟨hs, hl⟩
-  · rintro ⟨hs, hl⟩; exact ⟨⟨fun _ => hqlt, hs⟩, hl⟩
-
-/-- **General-position selectedness-and-`D` gate.**  For an arity-1 WRP presentation `P` and a
-copy `c`, a single marked DFA decides, at *every* in-range position `q`, whether the atom of `c`
-at `q` is selected and labelled `D`.  (The position-uniform version of
-`blockSelectedD_indicator_periodic`, also covering the trailing-`D`/suf position.) -/
-theorem selectedD_gate (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) :
-    ∃ M : DetAuto (Step × Bool), ∀ n q, q < (wrappedFlat n).length →
-      ((P.toPoly.selectedAtom (wrappedFlat n) ⟨c, fun _ => q⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n) ⟨c, fun _ => q⟩ = D)
-       ↔ M.accepts (markAt (wrappedFlat n) q)) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlab, hlab⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c D)
-  obtain ⟨Mc, hMc⟩ := markedDFA_exists (Formula.and φsel φlab)
-  refine ⟨Mc, fun n q hq => ?_⟩
-  rw [hMc (wrappedFlat n) q hq, Formula.sat_and,
-    ← hsel (wrappedFlat n) q, ← hlab (wrappedFlat n) q]
-  constructor
-  · rintro ⟨⟨_, hs⟩, hl⟩; exact ⟨hs, hl⟩
-  · rintro ⟨hs, hl⟩; exact ⟨⟨fun _ => hq, hs⟩, hl⟩
-
-/-- **General-position selectedness-and-`U` gate** (the `label = U` twin of
-`selectedD_gate`, for the STRICT-count kernels of the L6/L7 assembly). -/
-theorem selectedU_gate (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) :
-    ∃ M : DetAuto (Step × Bool), ∀ n q, q < (wrappedFlat n).length →
-      ((P.toPoly.selectedAtom (wrappedFlat n) ⟨c, fun _ => q⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n) ⟨c, fun _ => q⟩ = U)
-       ↔ M.accepts (markAt (wrappedFlat n) q)) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlab, hlab⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c U)
-  obtain ⟨Mc, hMc⟩ := markedDFA_exists (Formula.and φsel φlab)
-  refine ⟨Mc, fun n q hq => ?_⟩
-  rw [hMc (wrappedFlat n) q hq, Formula.sat_and,
-    ← hsel (wrappedFlat n) q, ← hlab (wrappedFlat n) q]
-  constructor
-  · rintro ⟨⟨_, hs⟩, hl⟩; exact ⟨hs, hl⟩
-  · rintro ⟨hs, hl⟩; exact ⟨⟨fun _ => hq, hs⟩, hl⟩
 
 /-- **First-order variable renaming.**  Renames the free FO variables of a formula along
 `f : Fin nf → Fin nf'` (the SO variables are untouched).  Under a binder the map is lifted
@@ -143,91 +80,6 @@ theorem sat_bigAnd {Alpha : Type*} (w : List Alpha) {nf ns : ℕ} (ρ : Fin nf �
   induction φs with
   | nil => simp [bigAnd]
   | cons φ φs ih => simp [bigAnd, ih]
-
-/-- **`fasU_atomOrd_gate_DFA`** (build-order step 8).  The unary MSO gate "the block atom at
-`1+2j` is selected, labelled `U`, and `atomOrd`-precedes every selected `D`-atom", as a single
-marked DFA.  The `∀`-over-`D`-atoms clause is `faFO` over the binary `ordDef`; the `ordDef`
-formula (copy `c`'s argument at index `0`) is renamed by `relabelFO` so that, inside the
-`faFO` (which binds the quantified atom at index `0`), the marked atom `u` sits at index `1`
-and the bound `D`-atom at index `0` — the risk-#3 de-Bruijn handling, done by one
-arity-aware `relabelFO`. -/
-theorem fasU_atomOrd_gate_DFA (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) :
-    ∃ M : DetAuto (Step × Bool), ∀ n j, j < n →
-      ((P.toPoly.selectedAtom (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩ = U
-        ∧ ∀ b : P.toPoly.Atom, P.toPoly.selectedAtom (wrappedFlat n) b →
-            P.toPoly.labelOf (wrappedFlat n) b = D →
-            P.toPoly.atomOrd (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩ b)
-       ↔ M.accepts (markAt (wrappedFlat n) (1 + 2 * j))) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlabU, hlabU⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c U)
-  choose φselD hselD using fun c' => mso_arity_one (harity c') (P.toPoly.selDef c')
-  choose φlabD hlabD using fun c' => mso_arity_one (harity c') (P.toPoly.labelDef c' D)
-  choose φord hord using fun c' => P.toPoly.ordDef c c'
-  set gord : ∀ c' : Fin P.toPoly.K, Fin (P.toPoly.arity c + P.toPoly.arity c') → Fin 2 :=
-    fun _ idx => if idx.1 < P.toPoly.arity c then 1 else 0 with hgord
-  set clause : Fin P.toPoly.K → Formula Step 2 0 := fun c' =>
-    Formula.imp
-      (Formula.and (relabelFO (fun _ => 0) (φselD c')) (relabelFO (fun _ => 0) (φlabD c')))
-      (relabelFO (gord c') (φord c')) with hclause
-  obtain ⟨M, hM⟩ := markedDFA_exists
-    (Formula.and φsel (Formula.and φlabU
-      (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))))
-  refine ⟨M, fun n j hj => ?_⟩
-  set W := wrappedFlat n with hW
-  set q := 1 + 2 * j with hqdef
-  have hq : q < W.length := by rw [hW, length_wrappedFlat, hqdef]; omega
-  -- per-clause satisfaction
-  have hclauseSat : ∀ (p : ℕ) (c' : Fin P.toPoly.K),
-      Formula.Sat W (Fin.cons p (fun _ => q)) Fin.elim0 (clause c')
-      ↔ ((P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D) →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p)) := by
-    intro p c'
-    simp only [hclause, Formula.imp, Formula.sat_or, Formula.sat_neg, Formula.sat_and,
-      sat_relabelFO]
-    have hwkv : (Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ (fun _ : Fin 1 => (0 : Fin 2))
-        = fun _ => p := by funext x; simp
-    have hordval : Formula.Sat W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c') Fin.elim0
-          (φord c')
-        ↔ P.toPoly.ord c c' W (fun _ => q) (fun _ => p) := by
-      rw [← hord c' W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c')]
-      refine iff_of_eq (congrArg₂ (P.toPoly.ord c c' W) ?_ ?_)
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.castAdd _ t)) = q
-        simp only [hgord, Fin.val_castAdd]; rw [if_pos t.2]; rfl
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.natAdd _ t)) = p
-        simp only [hgord, Fin.val_natAdd]; rw [if_neg (by omega)]; rfl
-    rw [hwkv, ← hselD c' W p, ← hlabD c' W p, hordval]
-    tauto
-  rw [hM W q hq, Formula.sat_and, Formula.sat_and]
-  rw [show Formula.Sat W (fun _ => q) Fin.elim0
-          (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))
-      ↔ ∀ p, p < W.length → ∀ c' : Fin P.toPoly.K,
-          (P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D) →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p) from ?_]
-  · rw [← hsel W q, ← hlabU W q]
-    refine and_congr ?_ (and_congr Iff.rfl ?_)
-    · exact ⟨fun h => h.2, fun h => ⟨fun _ => hq, h⟩⟩
-    · constructor
-      · intro hall p hp c' hsel'
-        exact hall ⟨c', fun _ => p⟩ ⟨fun _ => hp, hsel'.1⟩ hsel'.2
-      · intro hall b hbsel hbD
-        set p := b.2 (SliceBridge.z P.toPoly harity b.1) with hp
-        have hbeq : b = ⟨b.1, fun _ => p⟩ := SliceBridge.atom_eq P.toPoly harity b
-        rw [hbeq] at hbsel hbD ⊢
-        exact hall p (hbsel.1 (SliceBridge.z P.toPoly harity b.1)) b.1 ⟨hbsel.2, hbD⟩
-  · rw [Formula.faFO, Formula.sat_neg, Formula.sat_exFO]
-    push Not
-    refine forall_congr' (fun p => imp_congr_right (fun _ => ?_))
-    rw [Formula.sat_neg, not_not, sat_bigAnd]
-    constructor
-    · intro hall c' hc'
-      exact (hclauseSat p c').mp (hall (clause c') (List.mem_map_of_mem (List.mem_finRange c'))) hc'
-    · intro hall φ' hφ'
-      obtain ⟨c', _, rfl⟩ := List.mem_map.mp hφ'
-      exact (hclauseSat p c').mpr (fun h => hall c' h)
 
 /-! ## Modular-residue MSO predicate (route step L3a)
 
@@ -761,336 +613,21 @@ theorem mso_position_fromEnd (k : ℕ) :
 
 end ModularResidue
 
-/-- **`fasU_atomOrd_eqRankD_gate`** (route step L3b).  The equal-rank atomOrd gate as a marked
-DFA: the block atom at `1+2j` is selected, labelled `U`, and `atomOrd`-precedes every selected
-`D`-atom whose position lies in an active residue class (`pos_b % M ∈ S b.1`).  Extends
-`fasU_atomOrd_gate_DFA` by the `mso_position_mod` (L3a) residue conjunct on the bound `D`-atom (a
-`bigOr` over `S c'`).  A faithful MSO-gate→DFA; the correctness that taking `S` = the
-collinear-with-`d*`-rank classes captures the equal-rank `D`-atoms is the L6 assembly's job, not
-asserted here.  Base `+ SliceMSO.buchi`. -/
-theorem fasU_atomOrd_eqRankD_gate (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) (M : ℕ) (S : Fin P.toPoly.K → Finset ℕ)
-    (hS : ∀ c', ∀ r ∈ S c', r < M) :
-    ∃ Mdfa : DetAuto (Step × Bool), ∀ n j, j < n →
-      ((P.toPoly.selectedAtom (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩ = U
-        ∧ ∀ b : P.toPoly.Atom, P.toPoly.selectedAtom (wrappedFlat n) b →
-            P.toPoly.labelOf (wrappedFlat n) b = D →
-            b.2 (SliceBridge.z P.toPoly harity b.1) % M ∈ S b.1 →
-            P.toPoly.atomOrd (wrappedFlat n) ⟨c, fun _ => 1 + 2 * j⟩ b)
-       ↔ Mdfa.accepts (markAt (wrappedFlat n) (1 + 2 * j))) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlabU, hlabU⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c U)
-  choose φselD hselD using fun c' => mso_arity_one (harity c') (P.toPoly.selDef c')
-  choose φlabD hlabD using fun c' => mso_arity_one (harity c') (P.toPoly.labelDef c' D)
-  choose φord hord using fun c' => P.toPoly.ordDef c c'
-  choose φmod hφmod using fun (r : Fin M) => mso_position_mod (Alpha := Step) M r.1 r.2
-  set gord : ∀ c' : Fin P.toPoly.K, Fin (P.toPoly.arity c + P.toPoly.arity c') → Fin 2 :=
-    fun _ idx => if idx.1 < P.toPoly.arity c then 1 else 0 with hgord
-  set resClause : Fin P.toPoly.K → Formula Step 2 0 := fun c' =>
-    bigOr ((S c').toList.attach.map (fun rr =>
-      relabelFO (fun _ => (0 : Fin 2)) (φmod ⟨rr.1, hS c' rr.1 (Finset.mem_toList.mp rr.2)⟩)))
-    with hresClause
-  set clause : Fin P.toPoly.K → Formula Step 2 0 := fun c' =>
-    Formula.imp
-      (Formula.and
-        (Formula.and (relabelFO (fun _ => 0) (φselD c')) (relabelFO (fun _ => 0) (φlabD c')))
-        (resClause c'))
-      (relabelFO (gord c') (φord c')) with hclause
-  obtain ⟨Mdfa, hM⟩ := markedDFA_exists
-    (Formula.and φsel (Formula.and φlabU
-      (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))))
-  refine ⟨Mdfa, fun n j hj => ?_⟩
-  set W := wrappedFlat n with hW
-  set q := 1 + 2 * j with hqdef
-  have hq : q < W.length := by rw [hW, length_wrappedFlat, hqdef]; omega
-  -- residue conjunct unfolding
-  have hresSat : ∀ (p : ℕ) (c' : Fin P.toPoly.K), p < W.length →
-      (Formula.Sat W (Fin.cons p (fun _ => q)) Fin.elim0 (resClause c') ↔ p % M ∈ S c') := by
-    intro p c' hp
-    rw [hresClause]
-    rw [sat_bigOr]
-    constructor
-    · rintro ⟨φ', hφ', hsat⟩
-      rw [List.mem_map] at hφ'
-      obtain ⟨rr, _, rfl⟩ := hφ'
-      rw [sat_relabelFO] at hsat
-      have hval : (Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ (fun _ : Fin 1 => (0 : Fin 2))
-          = fun _ => p := by funext x; simp
-      rw [hval] at hsat
-      have := (hφmod ⟨rr.1, hS c' rr.1 (Finset.mem_toList.mp rr.2)⟩ W p hp).mp hsat
-      simp only at this
-      rw [this]
-      exact Finset.mem_toList.mp rr.2
-    · intro hmem
-      refine ⟨relabelFO (fun _ => (0 : Fin 2))
-        (φmod ⟨p % M, hS c' (p % M) hmem⟩), ?_, ?_⟩
-      · rw [List.mem_map]
-        refine ⟨⟨p % M, Finset.mem_toList.mpr hmem⟩, List.mem_attach _ _, ?_⟩
-        rfl
-      · rw [sat_relabelFO]
-        have hval : (Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ (fun _ : Fin 1 => (0 : Fin 2))
-            = fun _ => p := by funext x; simp
-        rw [hval]
-        exact (hφmod ⟨p % M, hS c' (p % M) hmem⟩ W p hp).mpr rfl
-  -- per-clause satisfaction
-  have hclauseSat : ∀ (p : ℕ) (c' : Fin P.toPoly.K), p < W.length →
-      (Formula.Sat W (Fin.cons p (fun _ => q)) Fin.elim0 (clause c')
-      ↔ ((P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D
-            ∧ p % M ∈ S c') →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p))) := by
-    intro p c' hp
-    simp only [hclause, Formula.imp, Formula.sat_or, Formula.sat_neg, Formula.sat_and,
-      sat_relabelFO]
-    have hwkv : (Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ (fun _ : Fin 1 => (0 : Fin 2))
-        = fun _ => p := by funext x; simp
-    have hordval : Formula.Sat W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c') Fin.elim0
-          (φord c')
-        ↔ P.toPoly.ord c c' W (fun _ => q) (fun _ => p) := by
-      rw [← hord c' W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c')]
-      refine iff_of_eq (congrArg₂ (P.toPoly.ord c c' W) ?_ ?_)
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.castAdd _ t)) = q
-        simp only [hgord, Fin.val_castAdd]; rw [if_pos t.2]; rfl
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.natAdd _ t)) = p
-        simp only [hgord, Fin.val_natAdd]; rw [if_neg (by omega)]; rfl
-    have hres := hresSat p c' hp
-    rw [hresClause] at hres
-    rw [hwkv, ← hselD c' W p, ← hlabD c' W p, hordval, hres]
-    tauto
-  rw [hM W q hq, Formula.sat_and, Formula.sat_and]
-  rw [show Formula.Sat W (fun _ => q) Fin.elim0
-          (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))
-      ↔ ∀ p, p < W.length → ∀ c' : Fin P.toPoly.K,
-          (P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D
-            ∧ p % M ∈ S c') →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p) from ?_]
-  · rw [← hsel W q, ← hlabU W q]
-    refine and_congr ?_ (and_congr Iff.rfl ?_)
-    · exact ⟨fun h => h.2, fun h => ⟨fun _ => hq, h⟩⟩
-    · constructor
-      · intro hall p hp c' hsel'
-        exact hall ⟨c', fun _ => p⟩ ⟨fun _ => hp, hsel'.1⟩ hsel'.2.1 hsel'.2.2
-      · intro hall b hbsel hbD hbres
-        set p := b.2 (SliceBridge.z P.toPoly harity b.1) with hp
-        have hbeq : b = ⟨b.1, fun _ => p⟩ := SliceBridge.atom_eq P.toPoly harity b
-        rw [hbeq] at hbsel hbD ⊢
-        exact hall p (hbsel.1 (SliceBridge.z P.toPoly harity b.1)) b.1 ⟨hbsel.2, hbD, hbres⟩
-  · rw [Formula.faFO, Formula.sat_neg, Formula.sat_exFO]
-    push Not
-    refine forall_congr' (fun p => imp_congr_right (fun hp => ?_))
-    rw [Formula.sat_neg, not_not, sat_bigAnd]
-    constructor
-    · intro hall c' hc'
-      exact (hclauseSat p c' hp).mp
-        (hall (clause c') (List.mem_map_of_mem (List.mem_finRange c'))) hc'
-    · intro hall φ' hφ'
-      obtain ⟨c', _, rfl⟩ := List.mem_map.mp hφ'
-      exact (hclauseSat p c' hp).mpr (fun h => hall c' h)
-
 /-- **The L4 positional cell condition.**  The position-separated description of the
-equal-rank selected-`D` set, produced by the L5 selector (`eqRankD_position_selector`)
-and consumed by the L4 gate and the L6 assembly: position `p` (in a word of length
+equal-rank selected-`D` set, produced by the L5 selector and consumed by the L4
+gate and the L6 assembly: position `p` (in a word of length
 `len`) is *bulk* (clear of both boundaries by `mthr` and in an active residue class of
 `S`), an *exact front position* (`p ∈ Front`, fixed constants — covering the pre
 position `0`, transient block positions of either parity, and Case-A first-members), or
 an *exact end-offset* (`p + 1 + k = len` for `k ∈ Back` — covering the suffix `k = 0`,
-transient back blocks of either parity, and Case-A last-members).  Unlike the
-residue-only filter of `fasU_atomOrd_eqRankD_gate`, the front/back cells are pinned to
-EXACT positions, so a transient boundary `D`-atom can never collide with a bulk residue
-class (the session-3 L3b undercount finding).  NB the cells deliberately cover ALL
+transient back blocks of either parity, and Case-A last-members).  Unlike a
+residue-only filter, the front/back cells are pinned to EXACT positions, so a transient
+boundary `D`-atom can never collide with a bulk residue class.  NB the cells deliberately cover ALL
 positions, not just the blockD parity: `labelOf` is the presentation's own MSO labelling,
 so a selected `D`-atom can sit at the pre position or at an odd block position. -/
 def cfgPos (M mthr : ℕ) (S Front Back : Finset ℕ) (len p : ℕ) : Prop :=
   (mthr ≤ p ∧ p + mthr < len ∧ p % M ∈ S)
   ∨ p ∈ Front
   ∨ (∃ k ∈ Back, p + 1 + k = len)
-
-/-- **`fasU_atomOrd_cfg_gate`** (route step L4).  The position-separated unified atomOrd
-gate as a marked DFA, POSITION-UNIFORM in the marked atom: the atom of copy `c` at *any*
-in-range position `q` is selected, labelled `U`, and `atomOrd`-precedes every selected
-`D`-atom whose position satisfies the `cfgPos` cell condition (bulk-region-guarded
-residue ∨ exact-front position ∨ exact end-offset).  (The L6 assembly marks TIE-counted
-`a`-atoms at all four position regions — pre `0`, blockU `1+2j`, blockD `1+2j+1`, suf
-`1+2n` — with the same DFA.)  Replaces the superseded `fasU_atomOrd_eqRankD_gate`: the
-threshold conjuncts are `mso_position_eq`/`mso_position_fromEnd` disjunctions, the
-residue conjunct is `mso_position_mod`.  A faithful MSO-gate→DFA; the correctness that
-the L5-selected `(S, Front, Back)` data captures exactly the equal-rank `D`-atoms is the
-L5/L6 assembly's job, not asserted here.  Base `+ SliceMSO.buchi`. -/
-theorem fasU_atomOrd_cfg_gate (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (harity : ∀ c, P.toPoly.arity c = 1) (M mthr : ℕ)
-    (S Front Back : Fin P.toPoly.K → Finset ℕ)
-    (hS : ∀ c', ∀ r ∈ S c', r < M) :
-    ∃ Mdfa : DetAuto (Step × Bool), ∀ n q, q < (wrappedFlat n).length →
-      ((P.toPoly.selectedAtom (wrappedFlat n) ⟨c, fun _ => q⟩
-        ∧ P.toPoly.labelOf (wrappedFlat n) ⟨c, fun _ => q⟩ = U
-        ∧ ∀ b : P.toPoly.Atom, P.toPoly.selectedAtom (wrappedFlat n) b →
-            P.toPoly.labelOf (wrappedFlat n) b = D →
-            cfgPos M mthr (S b.1) (Front b.1) (Back b.1)
-              (wrappedFlat n).length (b.2 (SliceBridge.z P.toPoly harity b.1)) →
-            P.toPoly.atomOrd (wrappedFlat n) ⟨c, fun _ => q⟩ b)
-       ↔ Mdfa.accepts (markAt (wrappedFlat n) q)) := by
-  obtain ⟨φsel, hsel⟩ := mso_arity_one (harity c) (P.toPoly.selDef c)
-  obtain ⟨φlabU, hlabU⟩ := mso_arity_one (harity c) (P.toPoly.labelDef c U)
-  choose φselD hselD using fun c' => mso_arity_one (harity c') (P.toPoly.selDef c')
-  choose φlabD hlabD using fun c' => mso_arity_one (harity c') (P.toPoly.labelDef c' D)
-  choose φord hord using fun c' => P.toPoly.ordDef c c'
-  choose φmod hφmod using fun (r : Fin M) => mso_position_mod (Alpha := Step) M r.1 r.2
-  choose φeq hφeq using fun k : ℕ => mso_position_eq (Alpha := Step) k
-  choose φfe hφfe using fun k : ℕ => mso_position_fromEnd (Alpha := Step) k
-  set gord : ∀ c' : Fin P.toPoly.K, Fin (P.toPoly.arity c + P.toPoly.arity c') → Fin 2 :=
-    fun _ idx => if idx.1 < P.toPoly.arity c then 1 else 0 with hgord
-  -- the three-way position-cell clause, as a single-FO-variable formula at the D-atom position
-  set posClause : Fin P.toPoly.K → Formula Step 1 0 := fun c' =>
-    Formula.or
-      (Formula.and (Formula.neg (bigOr ((List.range mthr).map φeq)))
-        (Formula.and (Formula.neg (bigOr ((List.range mthr).map φfe)))
-          (bigOr ((S c').toList.attach.map (fun rr =>
-            φmod ⟨rr.1, hS c' rr.1 (Finset.mem_toList.mp rr.2)⟩)))))
-      (Formula.or
-        (bigOr ((Front c').toList.map φeq))
-        (bigOr ((Back c').toList.map φfe))) with hposClause
-  set clause : Fin P.toPoly.K → Formula Step 2 0 := fun c' =>
-    Formula.imp
-      (Formula.and
-        (Formula.and (relabelFO (fun _ => 0) (φselD c')) (relabelFO (fun _ => 0) (φlabD c')))
-        (relabelFO (fun _ => (0 : Fin 2)) (posClause c')))
-      (relabelFO (gord c') (φord c')) with hclause
-  obtain ⟨Mdfa, hM⟩ := markedDFA_exists
-    (Formula.and φsel (Formula.and φlabU
-      (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))))
-  refine ⟨Mdfa, fun n q hq' => ?_⟩
-  set W := wrappedFlat n with hW
-  have hq : q < W.length := hq'
-  -- the position clause decodes to `cfgPos`
-  have hposSat : ∀ (p : ℕ) (c' : Fin P.toPoly.K), p < W.length →
-      (Formula.Sat W (fun _ => p) Fin.elim0 (posClause c')
-        ↔ cfgPos M mthr (S c') (Front c') (Back c') W.length p) := by
-    intro p c' hp
-    rw [hposClause]
-    have h1 : ((bigOr ((List.range mthr).map φeq)).Sat W (fun _ => p) Fin.elim0)
-        ↔ p < mthr := by
-      rw [sat_bigOr]
-      constructor
-      · rintro ⟨φ', hφ', hsat⟩
-        obtain ⟨i, hi, rfl⟩ := List.mem_map.mp hφ'
-        rw [List.mem_range] at hi
-        rw [hφeq i W p hp] at hsat
-        omega
-      · intro hlt
-        exact ⟨φeq p, List.mem_map_of_mem (List.mem_range.mpr hlt), (hφeq p W p hp).mpr rfl⟩
-    have h2 : ((bigOr ((List.range mthr).map φfe)).Sat W (fun _ => p) Fin.elim0)
-        ↔ W.length ≤ p + mthr := by
-      rw [sat_bigOr]
-      constructor
-      · rintro ⟨φ', hφ', hsat⟩
-        obtain ⟨i, hi, rfl⟩ := List.mem_map.mp hφ'
-        rw [List.mem_range] at hi
-        rw [hφfe i W p hp] at hsat
-        omega
-      · intro hle
-        refine ⟨φfe (W.length - p - 1),
-          List.mem_map_of_mem (List.mem_range.mpr (by omega)), ?_⟩
-        exact (hφfe _ W p hp).mpr (by omega)
-    have h3 : ((bigOr ((S c').toList.attach.map (fun rr =>
-          φmod ⟨rr.1, hS c' rr.1 (Finset.mem_toList.mp rr.2)⟩))).Sat W (fun _ => p) Fin.elim0)
-        ↔ p % M ∈ S c' := by
-      rw [sat_bigOr]
-      constructor
-      · rintro ⟨φ', hφ', hsat⟩
-        obtain ⟨rr, _, rfl⟩ := List.mem_map.mp hφ'
-        have := (hφmod ⟨rr.1, hS c' rr.1 (Finset.mem_toList.mp rr.2)⟩ W p hp).mp hsat
-        simp only at this
-        rw [this]
-        exact Finset.mem_toList.mp rr.2
-      · intro hmem
-        refine ⟨φmod ⟨p % M, hS c' (p % M) hmem⟩, ?_, ?_⟩
-        · exact List.mem_map.mpr ⟨⟨p % M, Finset.mem_toList.mpr hmem⟩, List.mem_attach _ _, rfl⟩
-        · exact (hφmod ⟨p % M, hS c' (p % M) hmem⟩ W p hp).mpr rfl
-    have h4 : ((bigOr ((Front c').toList.map φeq)).Sat W (fun _ => p) Fin.elim0)
-        ↔ p ∈ Front c' := by
-      rw [sat_bigOr]
-      constructor
-      · rintro ⟨φ', hφ', hsat⟩
-        obtain ⟨f, hf, rfl⟩ := List.mem_map.mp hφ'
-        rw [(hφeq f W p hp).mp hsat]
-        exact Finset.mem_toList.mp hf
-      · intro hmem
-        exact ⟨φeq p, List.mem_map_of_mem (Finset.mem_toList.mpr hmem),
-          (hφeq p W p hp).mpr rfl⟩
-    have h5 : ((bigOr ((Back c').toList.map φfe)).Sat W (fun _ => p) Fin.elim0)
-        ↔ ∃ k ∈ Back c', p + 1 + k = W.length := by
-      rw [sat_bigOr]
-      constructor
-      · rintro ⟨φ', hφ', hsat⟩
-        obtain ⟨k, hk, rfl⟩ := List.mem_map.mp hφ'
-        exact ⟨k, Finset.mem_toList.mp hk, (hφfe _ W p hp).mp hsat⟩
-      · rintro ⟨k, hk, heq⟩
-        exact ⟨φfe k, List.mem_map_of_mem (Finset.mem_toList.mpr hk),
-          (hφfe _ W p hp).mpr heq⟩
-    simp only [Formula.sat_or, Formula.sat_and, Formula.sat_neg]
-    rw [h1, h2, h3, h4, h5, cfgPos]
-    constructor
-    · rintro (⟨ha, hb, hc⟩ | h)
-      · exact Or.inl ⟨by omega, by omega, hc⟩
-      · exact Or.inr h
-    · rintro (⟨ha, hb, hc⟩ | h)
-      · exact Or.inl ⟨by omega, by omega, hc⟩
-      · exact Or.inr h
-  -- per-clause satisfaction
-  have hclauseSat : ∀ (p : ℕ) (c' : Fin P.toPoly.K), p < W.length →
-      (Formula.Sat W (Fin.cons p (fun _ => q)) Fin.elim0 (clause c')
-      ↔ ((P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D
-            ∧ cfgPos M mthr (S c') (Front c') (Back c') W.length p) →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p))) := by
-    intro p c' hp
-    simp only [hclause, Formula.imp, Formula.sat_or, Formula.sat_neg, Formula.sat_and,
-      sat_relabelFO]
-    have hwkv : (Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ (fun _ : Fin 1 => (0 : Fin 2))
-        = fun _ => p := by funext x; simp
-    have hordval : Formula.Sat W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c') Fin.elim0
-          (φord c')
-        ↔ P.toPoly.ord c c' W (fun _ => q) (fun _ => p) := by
-      rw [← hord c' W ((Fin.cons p (fun _ => q) : Fin 2 → ℕ) ∘ gord c')]
-      refine iff_of_eq (congrArg₂ (P.toPoly.ord c c' W) ?_ ?_)
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.castAdd _ t)) = q
-        simp only [hgord, Fin.val_castAdd]; rw [if_pos t.2]; rfl
-      · funext t
-        show (Fin.cons p (fun _ => q) : Fin 2 → ℕ) (gord c' (Fin.natAdd _ t)) = p
-        simp only [hgord, Fin.val_natAdd]; rw [if_neg (by omega)]; rfl
-    have hpos := hposSat p c' hp
-    rw [hwkv, ← hselD c' W p, ← hlabD c' W p, hordval, hpos]
-    tauto
-  rw [hM W q hq, Formula.sat_and, Formula.sat_and]
-  rw [show Formula.Sat W (fun _ => q) Fin.elim0
-          (Formula.faFO (bigAnd ((List.finRange P.toPoly.K).map clause)))
-      ↔ ∀ p, p < W.length → ∀ c' : Fin P.toPoly.K,
-          (P.toPoly.sel c' W (fun _ => p) ∧ P.toPoly.label c' W (fun _ => p) = D
-            ∧ cfgPos M mthr (S c') (Front c') (Back c') W.length p) →
-          P.toPoly.ord c c' W (fun _ => q) (fun _ => p) from ?_]
-  · rw [← hsel W q, ← hlabU W q]
-    refine and_congr ?_ (and_congr Iff.rfl ?_)
-    · exact ⟨fun h => h.2, fun h => ⟨fun _ => hq, h⟩⟩
-    · constructor
-      · intro hall p hp c' hsel'
-        exact hall ⟨c', fun _ => p⟩ ⟨fun _ => hp, hsel'.1⟩ hsel'.2.1 hsel'.2.2
-      · intro hall b hbsel hbD hbres
-        set p := b.2 (SliceBridge.z P.toPoly harity b.1) with hp
-        have hbeq : b = ⟨b.1, fun _ => p⟩ := SliceBridge.atom_eq P.toPoly harity b
-        rw [hbeq] at hbsel hbD ⊢
-        exact hall p (hbsel.1 (SliceBridge.z P.toPoly harity b.1)) b.1 ⟨hbsel.2, hbD, hbres⟩
-  · rw [Formula.faFO, Formula.sat_neg, Formula.sat_exFO]
-    push Not
-    refine forall_congr' (fun p => imp_congr_right (fun hp => ?_))
-    rw [Formula.sat_neg, not_not, sat_bigAnd]
-    constructor
-    · intro hall c' hc'
-      exact (hclauseSat p c' hp).mp
-        (hall (clause c') (List.mem_map_of_mem (List.mem_finRange c'))) hc'
-    · intro hall φ' hφ'
-      obtain ⟨c', _, rfl⟩ := List.mem_map.mp hφ'
-      exact (hclauseSat p c' hp).mpr (fun h => hall c' h)
 
 end SliceFasGates

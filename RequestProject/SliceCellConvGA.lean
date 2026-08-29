@@ -17,8 +17,7 @@ import RequestProject.SliceFasSelectorGA
 
 namespace SliceFasCountGA
 
-open WRP Step SliceFamilyCell SliceDstarGA SliceDstarGateGA SliceFasGatesGA
-  SliceThreshold SliceAffine SliceOrder MSOMarkN SliceMarkN SliceFasSelectorGA
+open Step SliceFamilyCell SliceDstarGA SliceDstarGateGA SliceOrder MSOMarkN SliceMarkN
 open scoped Classical
 
 /-! ## The hit-functions: which coordinate fires where, `(t, n)`-free -/
@@ -453,8 +452,6 @@ theorem acceptsN_clusterFree_EP (hcf : ∀ i, clusterFree (rs i)) (t0 : ℕ) :
   exact hEP n hn
 
 end CellConv
-
-
 
 /-! ## The per-cell cluster width and the width-exact convolution form -/
 

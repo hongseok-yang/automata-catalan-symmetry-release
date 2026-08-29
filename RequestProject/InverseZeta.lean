@@ -8,7 +8,6 @@ by Baek, Hwang, La, and Yang.  Stable LaTeX labels in
 `paper.tex` are canonical.
 -/
 import RequestProject.DyckPath
-import RequestProject.Transducers
 import RequestProject.Semilinearity
 
 open Step

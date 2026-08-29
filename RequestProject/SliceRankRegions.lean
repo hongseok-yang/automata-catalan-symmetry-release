@@ -18,7 +18,7 @@ The recipe is the same as block-`U`: reduce the summand to
 -/
 import RequestProject.SliceRankBlock
 
-open WRP Step
+open Step
 
 namespace SliceRankAtom
 
@@ -41,27 +41,6 @@ theorem prefixRank_succ {Alpha : Type*} (A : RankSource Alpha d) (w : List Alpha
   funext c
   simp only [RankSource.prefixRank, Pi.add_apply]
   rw [Finset.sum_range_succ, hi, Option.elim_some]
-
-/-! ### Generic `RankTerm` assembly (any per-index word/position) -/
-
-/-- The block-`U` assembly, generalised over an arbitrary per-index word `F j` and
-position `q j`: if every summand is `RankAffine` in `j` at `(F j, ·↦q j)`, so is the
-whole rank term. -/
-theorem rankTerm_eval_rankAffine {k : ℕ} (κ : RankTerm Step d k)
-    (F : ℕ → List Step) (q : ℕ → ℕ)
-    (h : ∀ s : Summand Step d k, RankAffine (fun j => s.eval (F j) (fun _ => q j))) :
-    RankAffine (fun j => κ.eval (F j) (fun _ => q j)) := by
-  refine RankAffine.congr (fun j => ?_)
-    ((RankAffine.const κ.c0).add (RankAffine.listSum κ.summands
-      (fun s j => s.eval (F j) (fun _ => q j)) (fun s _ => h s)))
-  unfold RankTerm.eval
-  funext c
-  have key : (κ.summands.map (fun s => s.eval (F j) (fun _ => q j))).sum c =
-      (κ.summands.map (fun s => s.eval (F j) (fun _ => q j) c)).sum := by
-    induction κ.summands with
-    | nil => rfl
-    | cons s t ih => simp only [List.map_cons, List.sum_cons, Pi.add_apply, ih]
-  rw [Pi.add_apply, key]
 
 /-! ### block-`D` position `1+2j+1` -/
 
@@ -108,15 +87,6 @@ theorem summand_blockD_rankAffine {k : ℕ} (s : Summand Step d k) :
   · exact rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D]) (s.A.δ s.A.q0 U)
       (fun q => s.β (s.A.δ q U) D)
 
-/-- **The WRP rank of a slice block-`D`-atom is `RankAffine` in its loop-index.** -/
-theorem rank_blockD_rankAffine {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) :
-    RankAffine (fun j => P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j + 1)) := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  exact RankAffine.congr (fun j => (hκ _ _).symm)
-    (rankTerm_eval_rankAffine κ (fun j => wrappedFlat (j + 1)) (fun j => 1 + 2 * j + 1)
-      (fun s => summand_blockD_rankAffine s))
-
 /-! ### pre atom `p = 0` (the leading `U`) -/
 
 /-- A summand at position `0` reads nothing (`prefixRank = 0`, `stateBefore = q0`,
@@ -130,21 +100,6 @@ theorem summand_pre_eq {k : ℕ} (s : Summand Step d k) (n : ℕ) :
   funext c
   rw [hget?, Option.elim_some]
   simp [RankSource.prefixRank, RankSource.stateBefore]
-
-/-- The pre-atom rank is constant in `n`, hence `RankAffine`. -/
-theorem summand_pre_rankAffine {k : ℕ} (s : Summand Step d k) :
-    RankAffine (fun n => s.eval (wrappedFlat n) (fun _ => 0)) :=
-  RankAffine.congr (fun n => (summand_pre_eq s n).symm) (RankAffine.const (s.β s.A.q0 U))
-
-/-- **The WRP rank of the slice pre-atom (`p=0`) is `RankAffine` in `n` (in fact
-constant).** -/
-theorem rank_pre_rankAffine {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) :
-    RankAffine (fun n => P.rank c (wrappedFlat n) (fun _ => 0)) := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  exact RankAffine.congr (fun n => (hκ _ _).symm)
-    (rankTerm_eval_rankAffine κ (fun n => wrappedFlat n) (fun _ => 0)
-      (fun s => summand_pre_rankAffine s))
 
 /-! ### suf atom `p = 2n+1 = 1+2n` (the trailing `D`) -/
 
@@ -173,14 +128,5 @@ theorem summand_suf_rankAffine {k : ℕ} (s : Summand Step d k) :
   exact (RankAffine.smul s.coeff (prefixRank_blockU_rankAffine s.A)).add
     (rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D]) (s.A.δ s.A.q0 U)
       (fun q => s.β q D))
-
-/-- **The WRP rank of the slice suf-atom (`p=2n+1`) is `RankAffine` in `n`.** -/
-theorem rank_suf_rankAffine {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) :
-    RankAffine (fun n => P.rank c (wrappedFlat n) (fun _ => 1 + 2 * n)) := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  exact RankAffine.congr (fun n => (hκ _ _).symm)
-    (rankTerm_eval_rankAffine κ (fun n => wrappedFlat n) (fun n => 1 + 2 * n)
-      (fun s => summand_suf_rankAffine s))
 
 end SliceRankAtom

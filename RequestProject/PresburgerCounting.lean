@@ -11,7 +11,6 @@ Also provided here: the coordinate-reindexing transport `isSemilinearSet_comp` a
 `p = 2` repackaging `count_graph_two_param`, which puts the theorem into the `Fin (k+2)` /
 `Fin 3` coordinate shape the two-parameter development uses.
 -/
-import Mathlib
 import RequestProject.CountGeneral
 
 namespace PresburgerCounting

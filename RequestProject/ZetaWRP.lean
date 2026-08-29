@@ -279,8 +279,6 @@ def zetaAtoms (w : List Step) : List zetaPoly.Atom :=
   (List.range (zetaLevels w)).flatMap fun (k : ℕ) =>
     zetaAtomsAt w (zetaLo w + (k : ℤ))
 
-@[simp] theorem zetaAtom_fst (c : Fin 2) (p : ℕ) : (zetaAtom c p).1 = c := rfl
-
 theorem mem_zetaAtomsAt {w : List Step} {r : ℤ} {x : zetaPoly.Atom} :
     x ∈ zetaAtomsAt w r ↔ ∃ p ∈ uPositions w,
       (height w p = r ∧ x = zetaAtom 0 p) ∨ (height w p = r - 1 ∧ x = zetaAtom 1 p) := by
@@ -305,10 +303,6 @@ theorem rankOf_of_mem_zetaAtomsAt {w : List Step} {r : ℤ} {x : zetaPoly.Atom}
     funext t
     simp only [atomPos_zetaAtom, Fin.val_zero, Fin.val_one]
     omega
-
-theorem pos_mem_of_mem_zetaAtomsAt {w : List Step} {r : ℤ} {x : zetaPoly.Atom}
-    (hx : x ∈ zetaAtomsAt w r) : atomPos x ∈ uPositions w := by
-  obtain ⟨p, hp, ⟨-, rfl⟩ | ⟨-, rfl⟩⟩ := mem_zetaAtomsAt.mp hx <;> simpa
 
 /-- **Labels per level**: mapping `labelOf` over the level-`r` atoms is exactly
 the level-`r` block of the sweep. -/

@@ -7,8 +7,6 @@ area sequence `canonAreaSeq` built from `(a, b, d)` is a valid Dyck area sequenc
 -/
 import RequestProject.AreaSeq
 
-open Step
-
 /-! ## Triangular decomposition `c = C(b+1,2) + d`, `0 ≤ d ≤ b` -/
 
 /-- `triangularDecomp c = (b, d)` with `c = b*(b+1)/2 + d` and `d ≤ b`. -/

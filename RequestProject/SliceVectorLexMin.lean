@@ -30,7 +30,7 @@ import RequestProject.SliceOrder
 
 namespace SliceVectorLexMin
 
-open SliceThreshold SliceAffine SliceOrder
+open SliceThreshold SliceOrder
 
 /-- **Single-step additive form of `AffineOnResiduesZ`.** -/
 theorem AffineOnResiduesZ.toStep {F : ℕ → ℤ} (hF : AffineOnResiduesZ F) :
@@ -196,7 +196,6 @@ theorem affineOnResiduesZ_ite_of_EP {Pr : ℕ → Prop} [DecidablePred Pr] {p : 
       simp only [if_pos hPr, if_pos hPrP]; exact hA' n hn
     · have hPrP : ¬ Pr (n + P) := fun h => hPr ((hPrconst n hn).mp h)
       simp only [if_neg hPr, if_neg hPrP]; exact hB' n hn
-
 
 /-! ## Capstone: the two-element vector lexLt-min has `AffineOnResiduesZ` coordinates
 

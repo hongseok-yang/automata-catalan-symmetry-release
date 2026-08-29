@@ -15,8 +15,7 @@ import RequestProject.SliceCellConvGA
 
 namespace SliceFasCountGA
 
-open WRP Step SliceFamilyCell SliceDstarGA SliceDstarGateGA SliceFasGatesGA
-  SliceThreshold SliceAffine SliceOrder MSOMarkN SliceMarkN SliceFasSelectorGA
+open WRP SliceFamilyCell SliceDstarGA SliceDstarGateGA
 open scoped Classical
 
 /-! ## GA-7.1: the canonical position-determined cell classification -/
@@ -279,7 +278,6 @@ theorem canonical_exists (P : WRP.Presentation Step Step) (C : ℕ)
     simp only []
     rcases hri : rs₀ i with _ | _ | ⟨f, e⟩ | ⟨l, e⟩ | ⟨δ, e⟩
     all_goals trivial
-
 
 /-! ## GA-7.1 part B: uniqueness of the classification -/
 
@@ -647,7 +645,6 @@ theorem canonical_classification (P : WRP.Presentation Step Step) (C : ℕ)
   refine ⟨rt, ⟨hmem, htup⟩, ?_⟩
   rintro rt' ⟨hmem', htup'⟩
   exact canonical_unique hZ n (by omega) rt' rt hmem' hmem (by rw [← htup', ← htup])
-
 
 /-! ## GA-7.2: the abstract-predicate recount -/
 

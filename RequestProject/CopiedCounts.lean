@@ -24,7 +24,6 @@ open WRP Step SliceFamilyCell CopiedCells CopiedDstar CopiedRegionF CopiedRecoun
   CopiedGateEP CopiedKernels MSOMarkN SliceMarkN SliceFasGatesGA SliceFasCountGA
 open scoped Classical
 
-set_option maxHeartbeats 1600000 in
 /-- **The total selected-`U` count is affine-on-residues** (fibred, F3.9 shakedown):
 the kernel pipeline on the copied slice — frozen cells are EP indicators, bulk cells
 feed the pinned gated convolution through the fibred cell-tuple convolution form.  The

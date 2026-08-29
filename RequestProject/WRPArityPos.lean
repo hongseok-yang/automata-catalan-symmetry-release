@@ -9,8 +9,7 @@ the convention.  The Lean model
 The two conventions differ **only on the empty input**: a selected atom must
 place all of its coordinates inside the word (`Polyreg.Presentation.validAtom`),
 so with every `k_c ≥ 1` no atom is selected on `ε` and the output there is `ε`
-whenever `ε` is in the domain (`Polyreg.Presentation.isOutput_nil_eq_nil`,
-`WRP.IsWRPPos.output_nil`); an arity-`0` copy, by contrast, can emit a letter
+whenever `ε` is in the domain (`Polyreg.Presentation.isOutput_nil_eq_nil`, `WRP.IsWRPPos.output_nil`); an arity-`0` copy, by contrast, can emit a letter
 on `ε`.  This is why the paper's concatenation closure
 (`thm:wrp-closures` (iii)) is stated on *nonempty* inputs.
 
@@ -34,8 +33,6 @@ This file defines the paper's classes and the transfer principles:
   same arity-positive polyregular presentation).
 -/
 import RequestProject.AdditiveSweepWRP
-
-open MSO Step
 
 /-! ## The arity-positive convention on presentations -/
 

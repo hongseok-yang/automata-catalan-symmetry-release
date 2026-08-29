@@ -28,8 +28,6 @@ graph arithmetic of `SemilinearGraphArith`.  Summing the `D` residue classes fin
 
 All statements are unconditional; no counting input is admitted.
 -/
-import Mathlib
-import RequestProject.ProperLinearRep
 import RequestProject.SemilinearMinMax
 import RequestProject.KernelDichotomy
 import RequestProject.SemilinearGraphArith
@@ -308,9 +306,6 @@ theorem isSemilinearSet_biInter_finset {γ : Type} [Finite γ] {ι : Type*}
 /-- The set of points whose fibre coordinate lies in the residue class `ρ` mod `D`. -/
 def resSet (p : ℕ) (D ρ : ℕ) : Set (Fin p ⊕ Fin 1 → ℕ) :=
   {w : Fin p ⊕ Fin 1 → ℕ | w (Sum.inr 0) % D = ρ}
-
-theorem fib_resSet {p : ℕ} (D ρ : ℕ) (x : Fin p → ℕ) :
-    fib (resSet p D ρ) x = {n : ℕ | n % D = ρ} := rfl
 
 theorem isSemilinearSet_resSet {p : ℕ} {D ρ : ℕ} (hρ : ρ < D) :
     IsSemilinearSet (resSet p D ρ) := by

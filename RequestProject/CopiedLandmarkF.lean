@@ -2,7 +2,7 @@
 # The FULL-cell landmark decoder (§9 tower, F3.9 — the FG4 fix foundation)
 
 `CopiedLandmark.regionDecodeL` decodes a CORE `RegionSpec` position (the D-atom lands in
-the MIDDLE region `mS-1 + r.posAt t n`).  The tie gate (`fasU_atomOrd_cellCfg_gate_fibred`)
+the MIDDLE region `mS-1 + r.posAt t n`).  The tie gate
 must enumerate the FULL `RegionSpecF` cells — including the SUFFIX `D^{mS-1}` (sufIdx) cells
 the core decoder misses (the FG4 undercount).  `regionDecodeLF` covers all three
 `RegionSpecF` constructors:
@@ -16,7 +16,7 @@ import RequestProject.CopiedCells
 
 namespace CopiedLandmark
 
-open WRP Step MSO SliceFasGates SliceFamilyCell CopiedCells
+open MSO SliceFasGates SliceFamilyCell CopiedCells
 
 /-- **The full-cell landmark decoder**: every `RegionSpecF` descriptor's copied-slice
 position as a landmark-relative MSO formula (`mS`-free syntax; the shift is in the

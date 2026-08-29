@@ -15,7 +15,7 @@ import RequestProject.SliceProfile
 
 namespace SliceFasAssemblyGA
 
-open WRP Step SliceFasCountGA
+open WRP SliceFasCountGA
 open scoped Classical
 
 /-- **The general-arity capstone**: the slice profile is affine-in-period. -/

@@ -1,8 +1,7 @@
 /-
 # The general-arity TIE gate, layer 1 (GA-6.2a/b/e/f)
 
-The GA-6 build mirrors the arity-1
-`fasU_atomOrd_cfg_gate` with cells replacing positions.  This file lands the
+The GA-6 build mirrors the arity-1 TIE gate with cells replacing positions.  This file lands the
 foundation:
 
 * `faFOs` / `appFO` / `sat_faFOs` — THE new generic MSO primitive: the iterated
@@ -12,9 +11,8 @@ foundation:
   block (`0` = innermost binder), index `kb + t` reads the marks.
 * `appFO_low` / `appFO_high` — the two index-evaluation lemmas every relabelling
   composition in the clause Sat-proofs rewrites through.
-* `clusterFreeTuple` / `cfgCellGA` — the semantic premise: the quantified `b`-atom in
-  cell form, with the landed arity-1 `cfgPos` REUSED VERBATIM at the base position
-  `1 + 2t`.
+* `cfgCellArm` / `cfgCellGA` — the semantic premise: the quantified `b`-atom in
+  cell form, with the arity-1 `cfgPos` REUSED VERBATIM at the base position `1 + 2t`.
 * `selectedU_gate_GA` — the `U`-twin of `exists_selDDFA` (GA-7's STRICT count needs it).
 * `gord` — the address map sending `ordDef`'s two variable blocks to the marks (HIGH)
   and the bound tuple (LOW).
@@ -129,10 +127,6 @@ theorem sat_faFOs {Alpha : Type*} (w : List Alpha) {ka ns : ℕ} (ī : Fin ka �
 
 /-! ## GA-6.2b: the semantic premise -/
 
-/-- A descriptor tuple is cluster-free when no coordinate rides the window. -/
-def clusterFreeTuple {B k : ℕ} (rs : Fin k → RegionSpec B) : Prop :=
-  ∀ i, clusterFree (rs i)
-
 /-- **One arm of the GA cell premise**: the atom `b` is in cell form over descriptors
 at bound `D`, with the landed arity-1 `cfgPos` evaluated at the base position `1+2t`. -/
 def cfgCellArm {P : WRP.Presentation Step Step} (D M mthr : ℕ)
@@ -235,11 +229,10 @@ theorem regionDecodeOff_sat {B : ℕ} (r : RegionSpec B) (n t x : ℕ)
     rcases e with _ | _ <;> simp only [Bool.toNat_false, Bool.toNat_true] <;>
       constructor <;> intro h <;> omega
 
-
 /-! ## GA-6.2d: the position-cell clause as a standalone formula -/
 
 /-- The three-way position-cell clause as a single-FO-variable formula: the standalone
-extraction of the arity-1 gate's inline `posClause` (`fasU_atomOrd_cfg_gate`). -/
+extraction of the arity-1 gate's inline position clause. -/
 noncomputable def cfgPosFormula (M mthr : ℕ) (S Front Back : Finset ℕ)
     (hS : ∀ r ∈ S, r < M) : MSO.Formula Step 1 0 :=
   MSO.Formula.or
@@ -345,7 +338,6 @@ theorem sat_cfgPosFormula (M mthr : ℕ) (S Front Back : Finset ℕ)
   · rintro (⟨ha, hb, hc⟩ | h)
     · exact Or.inl ⟨by omega, by omega, hc⟩
     · exact Or.inr h
-
 
 /-! ## GA-6.2g: the per-(copy, descriptor) clause -/
 
@@ -603,11 +595,9 @@ theorem cellClause_sat {B : ℕ} (M mthr : ℕ)
 
 end CellClauseSat
 
-
-
 /-! ## GA-6.2h: the gate -/
 
-/-- **The general-arity TIE gate** (the cell mirror of `fasU_atomOrd_cfg_gate`),
+/-- **The general-arity TIE gate** (the cell mirror of the arity-1 gate),
 POSITION-UNIFORM in the marked tuple: the atom of copy `c` at ANY valid tuple `ī` is
 selected, labelled `U`, and `atomOrd`-precedes every selected `D`-atom in cell form
 whose base passes the position-cell clause — the two-layer premise covers the bulk

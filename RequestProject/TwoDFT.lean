@@ -68,7 +68,6 @@ variable {Alpha Gamma : Type*}
 def moveDir (i : ℕ) (d : Bool) : ℕ := if d then i + 1 else i - 1
 
 @[simp] theorem moveDir_true (i : ℕ) : moveDir i true = i + 1 := rfl
-@[simp] theorem moveDir_false (i : ℕ) : moveDir i false = i - 1 := rfl
 
 /-- The tape content of the `def:2dft` run: `a₀ = ⊢`, `a_i = w_i` for
 `1 ≤ i ≤ n`, and `a_i = ⊣` for `i > n` (only `i = n + 1` is reachable). -/
@@ -166,7 +165,6 @@ theorem steps_unique {w : List Alpha} : ∀ {c : T.Q × ℕ} {out₁ out₂ : Li
           subst hq; subst hd; subst hu
           obtain ⟨ho, he⟩ := ih halt₁ rest' halt₂
           exact ⟨by rw [ho], he⟩
-
 
 /-- The computed map is a partial function. -/
 theorem computes_unique {w : List Alpha} {out₁ out₂ : List Gamma}

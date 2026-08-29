@@ -2,7 +2,7 @@
 # §9 d4c capstone — the arity-1 `cor:inverse-zeta-not-wrp` tower
 
 Consumes the budgeted row-indexed bridge
-`CopiedTieSlice.tie_point_bridge_fibred_clause_budgeted_indexed`.  Threaded with
+`CopiedTieSlice.TiePointBridgeBudgetedIndexed`.  Threaded with
 the `Mbr` mS-floor: the counts and the row producer carry `Mbr`, and the
 `cor:inverse-zeta-not-wrp` capstone applies the row at the section `m = p` with the period
 `p ≥ Mbr` (so the section-vs-period arithmetic in
@@ -173,58 +173,6 @@ theorem tie_count_affine_budgeted_of_bridge (P : WRP.Presentation Step Step) (hV
     CopiedCounts.tie_count_fibred_of_gate_budgeted_indexed P hV C ι pG hpG Gidx Mbr hMbr1 hbrIdx
   exact ⟨p0, Mbr, hp0, hMbr1, fun mS hm => hcount mS hm (fun n => hbud mS n)⟩
 
-/-- **Whole-tuple d\*-route supplier interface** (the live arity-free target).
-
-This is the d\*-route analogue of the supplier bundles: it isolates EXACTLY what is
-left to close the general inverse-zeta bridge, phrased SEMANTICALLY so the hard `∀ b`
-tie quantifier is already discharged on the consumer side.
-
-A supplier provides a finite-index gate family `GdfaF` (marking only the `U`-tuple `ī`)
-and, for each row `mS ≥ Mbr` under the selected-atom budget, a row index `idx` and a
-threshold `Nbr` such that for every large `n` there is a `wrpOrd`-MINIMAL selected `D`
-atom `dstar` of rank `dstarRankGA_m` whose `atomOrd` relation against any `U`-tuple `ī`
-is decided by `GdfaF idx (n % pG) c`.  The minimal `dstar` is residue-determined: `idx`
-is fixed before `n`, and the gate only depends on `n % pG`.
-
-Compared with `CopiedTieSlice.TiePointBridgeBudgetedIndexedFinite`, the gate here only
-decides `sel ∧ U ∧ atomOrd ī dstar` against ONE explicit residue-determined `dstar` — a
-single `boundary_pair_component`-style pairwise order check with the whole `dstar` tuple
-landmark-decoded — instead of the universally quantified `∀ b` tie condition.  The two
-genuine arity-free sub-problems this bundles (both open here)
-are: (1) residue-determinacy of the minimal `dstar` cell descriptor (so `idx`/`n % pG`
-pin it down for all large `n`); and (2) a whole-tuple landmark-decode `atomOrd` gate for
-that fixed cell.  Sub-problem (2) becomes tractable precisely because (1) fixes the cell
-base, dissolving the mixed-cell decode obstruction (cluster coordinates no
-longer move with the counting base). -/
-def WholeTupleDstarAtomOrdGate (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ) :
-    Prop :=
-  ∃ (pG Mbr : ℕ), 1 ≤ pG ∧ 1 ≤ Mbr ∧
-    ∃ (ι : Type) (_ : Fintype ι) (_ : DecidableEq ι)
-      (GdfaF : ι → ℕ →
-        (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c))),
-      ∀ (mS : ℕ), Mbr ≤ mS →
-        (∀ n, P.toPoly.domain (copiedSlice mS n) →
-          ∀ (c : Fin P.toPoly.K) (l : List (Fin (P.toPoly.arity c) → ℕ)), l.Nodup →
-            (∀ x ∈ l, P.toPoly.selectedAtom (copiedSlice mS n) ⟨c, x⟩) →
-            l.length ≤ C * (mS + n + 1)) →
-        ∃ (idx : ι) (Nbr : ℕ), ∀ n, Nbr ≤ n → P.toPoly.domain (copiedSlice mS n) →
-          (∃ a, P.toPoly.selectedAtom (copiedSlice mS n) a ∧
-            P.toPoly.labelOf (copiedSlice mS n) a = D) →
-          ∃ dstar : P.toPoly.Atom,
-            P.toPoly.selectedAtom (copiedSlice mS n) dstar ∧
-            P.toPoly.labelOf (copiedSlice mS n) dstar = D ∧
-            P.rankOf (copiedSlice mS n) dstar = CopiedDstar.dstarRankGA_m P hV mS n ∧
-            (∀ b, P.toPoly.selectedAtom (copiedSlice mS n) b →
-              P.toPoly.labelOf (copiedSlice mS n) b = D →
-              dstar = b ∨ P.wrpOrd (copiedSlice mS n) dstar b) ∧
-            ∀ (c : Fin P.toPoly.K) (ī : Fin (P.toPoly.arity c) → ℕ),
-              (∀ i, ī i < (copiedSlice mS n).length) →
-              ((GdfaF idx (n % pG) c).accepts
-                  (markAtN (P.toPoly.arity c) (copiedSlice mS n) ī)
-               ↔ (P.toPoly.sel c (copiedSlice mS n) ī
-                  ∧ P.toPoly.labelOf (copiedSlice mS n) ⟨c, ī⟩ = U
-                  ∧ P.toPoly.atomOrd (copiedSlice mS n) ⟨c, ī⟩ dstar))
-
 /-- Tie count from the canonical zero-base update supplier bundle, using the
 direct arbitrary-arity bridge path. -/
 theorem tie_count_affine_budgeted_of_update_zero_bundle
@@ -389,99 +337,6 @@ def RowAffineFrom (Mbr : ℕ) (T : List Step → Option (List Step)) : Prop :=
   ∃ p, Mbr ≤ p ∧ 1 ≤ p ∧ ∀ m, Mbr ≤ m → ∃ N, ∀ j, j < p → ∃ b s : ℕ,
     ∀ k out, T (copiedSlice m (N + j + p * k)) = some out →
       firstAscent out = b + k * s
-
-/-- The finite-row complement needed to turn a large-row `RowAffineFrom` theorem
-into the public `RowAffine` interface: below `Mbr`, the same period `p` works for
-every row. -/
-def RowAffineBelow (Mbr p : ℕ) (T : List Step → Option (List Step)) : Prop :=
-  ∀ m, 1 ≤ m → m < Mbr → ∃ N, ∀ j, j < p → ∃ b s : ℕ,
-    ∀ k out, T (copiedSlice m (N + j + p * k)) = some out →
-      firstAscent out = b + k * s
-
-/-- Row-affineness for one fixed row at one fixed period. -/
-def RowAffineAtPeriod (p m : ℕ) (T : List Step → Option (List Step)) : Prop :=
-  ∃ N, ∀ j, j < p → ∃ b s : ℕ,
-    ∀ k out, T (copiedSlice m (N + j + p * k)) = some out →
-      firstAscent out = b + k * s
-
-/-- A finite-row complement in its natural form: each row below `Mbr` may come
-with its own period.  `rowAffine_of_rowAffineFrom_of_rowsBelow` enlarges the
-large-row period by the finite product of these row periods. -/
-def RowAffineRowsBelow (Mbr : ℕ) (T : List Step → Option (List Step)) : Prop :=
-  ∀ m, 1 ≤ m → m < Mbr → ∃ p, 1 ≤ p ∧ RowAffineAtPeriod p m T
-
-/-- Lift a fixed-row affine description from a period to any positive multiple. -/
-theorem rowAffineAtPeriod_of_dvd {p p' m : ℕ} {T : List Step → Option (List Step)}
-    (hp : 1 ≤ p) (hdvd : p ∣ p') (hp' : 1 ≤ p')
-    (hrow : RowAffineAtPeriod p m T) :
-    RowAffineAtPeriod p' m T := by
-  obtain ⟨r, rfl⟩ := hdvd
-  obtain ⟨N, hN⟩ := hrow
-  refine ⟨N, fun j hj => ?_⟩
-  set j0 : ℕ := j % p with hj0_def
-  set k0 : ℕ := j / p with hk0_def
-  have hj0 : j0 < p := by
-    rw [hj0_def]
-    exact Nat.mod_lt _ (by omega)
-  obtain ⟨b, s, hbs⟩ := hN j0 hj0
-  refine ⟨b + k0 * s, r * s, fun k out hout => ?_⟩
-  have hdm : p * k0 + j0 = j := by
-    rw [hk0_def, hj0_def]
-    exact Nat.div_add_mod j p
-  have harg : N + j + p * r * k = N + j0 + p * (k0 + r * k) := by
-    rw [← hdm]
-    ring
-  have hfirst := hbs (k0 + r * k) out (by rwa [harg] at hout)
-  rw [hfirst]
-  ring
-
-/-- Combine a large-row theorem with row-wise affine descriptions for the
-finite set of rows below the large-row floor.  Unlike `RowAffineBelow`, the
-finite complement may choose a different period for each small row; the final
-period is the large-row period times their finite product. -/
-theorem rowAffine_of_rowAffineFrom_of_rowsBelow {Mbr : ℕ}
-    {T : List Step → Option (List Step)}
-    (hfrom : RowAffineFrom Mbr T)
-    (hbelow : RowAffineRowsBelow Mbr T) :
-    RowAffine T := by
-  classical
-  obtain ⟨pLarge, _hMbrp, hpLarge, hlarge⟩ := hfrom
-  let pBelow : Fin Mbr → ℕ := fun r =>
-    if hr : 1 ≤ r.1 then Classical.choose (hbelow r.1 hr r.2) else 1
-  have hpBelow : ∀ r : Fin Mbr, 1 ≤ pBelow r := by
-    intro r
-    dsimp [pBelow]
-    by_cases hr : 1 ≤ r.1
-    · rw [dif_pos hr]
-      exact (Classical.choose_spec (hbelow r.1 hr r.2)).1
-    · rw [dif_neg hr]
-  set pFin : ℕ := ∏ r : Fin Mbr, pBelow r with hpFin_def
-  have hpFin : 1 ≤ pFin := by
-    rw [hpFin_def]
-    exact Finset.prod_pos (fun r _ => Nat.lt_of_lt_of_le Nat.zero_lt_one (hpBelow r))
-  set pFinal : ℕ := pLarge * pFin with hpFinal_def
-  have hpFinal : 1 ≤ pFinal := by
-    rw [hpFinal_def]
-    exact Nat.mul_pos hpLarge hpFin
-  refine ⟨pFinal, hpFinal, fun m hm => ?_⟩
-  by_cases hM : Mbr ≤ m
-  · have hdvd : pLarge ∣ pFinal := by
-      rw [hpFinal_def]
-      exact dvd_mul_right pLarge pFin
-    exact rowAffineAtPeriod_of_dvd hpLarge hdvd hpFinal (hlarge m hM)
-  · have hlt : m < Mbr := Nat.lt_of_not_ge hM
-    let r : Fin Mbr := ⟨m, hlt⟩
-    have hrowBase : RowAffineAtPeriod (pBelow r) m T := by
-      dsimp [pBelow, r]
-      rw [dif_pos hm]
-      exact (Classical.choose_spec (hbelow m hm hlt)).2
-    have hdvdFin : pBelow r ∣ pFin := by
-      rw [hpFin_def]
-      exact Finset.dvd_prod_of_mem pBelow (Finset.mem_univ r)
-    have hdvd : pBelow r ∣ pFinal := by
-      rw [hpFinal_def]
-      exact dvd_trans hdvdFin (dvd_mul_left pFin pLarge)
-    exact rowAffineAtPeriod_of_dvd (hpBelow r) hdvd hpFinal hrowBase
 
 /-- **The `RowAffineFrom` producer**, factored through the FAS-count package.
 Period chosen as `p0 * Mbr ≥ Mbr` (a multiple of the assembly period `p0`). -/

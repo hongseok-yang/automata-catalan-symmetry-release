@@ -18,12 +18,10 @@ import RequestProject.SliceFasCountGA
 
 namespace CopiedCounts
 
-open WRP Step SliceFamilyCell CopiedCells CopiedDstar CopiedRegionF CopiedRecount
-  CopiedGateEP CopiedKernels CopiedSetup CopiedAffineAt MSOMarkN SliceMarkN
-  SliceFasGatesGA SliceFasCountGA SliceDstarGA
+open WRP Step SliceFamilyCell CopiedCells CopiedDstar CopiedRegionF CopiedRecount CopiedGateEP
+  CopiedKernels CopiedSetup CopiedAffineAt MSOMarkN SliceMarkN SliceFasGatesGA SliceFasCountGA
 open scoped Classical
 
-set_option maxHeartbeats 1600000 in
 /-- **The fibred strict count is affine-on-residues** (F3.9): selected `U`-atoms whose
 rank lex-precedes the fibred `d*`-rank, on the copied slice. -/
 theorem strict_count_fibred (P : WRP.Presentation Step Step) (hV : P.Valid) :

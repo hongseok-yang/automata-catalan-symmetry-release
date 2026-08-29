@@ -47,11 +47,6 @@ theorem mem_stepWords {L : ℕ} {P : List Step} :
     rw [stepWords, Finset.mem_image]
     exact ⟨fun i => P[i], Finset.mem_univ _, List.ofFn_getElem⟩
 
-theorem card_stepWords (L : ℕ) : (stepWords L).card = 2 ^ L := by
-  rw [stepWords, Finset.card_image_of_injective _ List.ofFn_injective,
-    Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
-    show Fintype.card Step = 2 from rfl]
-
 /-- The Dyck paths of semilength `n`, as a `Finset`. -/
 def dyckFinset (n : ℕ) : Finset (List Step) :=
   (stepWords (2 * n)).filter IsDyckPath
@@ -66,11 +61,6 @@ theorem coe_dyckFinset (n : ℕ) : (dyckFinset n : Set (List Step)) = DyckPath n
 
 example : (dyckFinset 2).card = 2 := by decide
 example : (dyckFinset 3).card = 5 := by decide
-
-theorem semilength_of_mem_dyckFinset {n : ℕ} {P : List Step}
-    (h : P ∈ dyckFinset n) : semilength P = n := by
-  rw [mem_dyckFinset] at h
-  rw [semilength, h.2, Nat.mul_div_cancel_left n (by norm_num)]
 
 /-- `H` maps `D_n` into `D_n`. -/
 theorem heightSweep_mapsTo (n : ℕ) :

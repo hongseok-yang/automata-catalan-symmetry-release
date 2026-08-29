@@ -75,10 +75,6 @@ theorem isSemilinear2_arithProg (A B C D n₀ p : ℕ) :
       rw [Prod.ext_iff]
       exact ⟨by simp only [h0]; ring, by simp only [h1]; ring⟩
 
-/-- Rewriting helper for `IsSemilinear2`. -/
-theorem isSemilinear2_congr {S T : Set (ℕ × ℕ)} (h : S = T) (hS : IsSemilinear2 S) :
-    IsSemilinear2 T := h ▸ hS
-
 theorem isSemilinear2_union {S T : Set (ℕ × ℕ)} (hS : IsSemilinear2 S) (hT : IsSemilinear2 T) :
     IsSemilinear2 (S ∪ T) :=
   isSemilinearNd_union hS hT

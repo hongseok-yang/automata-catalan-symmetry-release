@@ -8,7 +8,8 @@ For a block-linear two-parameter word family `F : BlockLinearWord2 Alpha` and a 
 
 has a semilinear value graph (`SliceSemilinearN.IsSliceValueSemilinear2`): the packed
 relation `A.prefixRank (F.eval mS n) j = decodeZ v` over `(mS, n, j, v)` is
-`IsSliceFamilySemilinear2` (`prefixRank_value_semilinear`, `prefixRank_graph_semilinear`).
+`IsSliceFamilySemilinear2` (`prefixRank_value_semilinear`, `prefixRank_graph_semilinear`, and the
+queried-coordinate forms `prefixRank_at_semilinear` / `coeff_prefixRank_at_semilinear`).
 
 The prefix rank is the composition of the two halves supplied upstream:
 
@@ -60,7 +61,7 @@ end SliceSemilinearN
 
 namespace SliceMSOCount
 
-open SliceSemilinearN MSO
+open SliceSemilinearN
 
 /-! ## The prefix-rank value graph -/
 

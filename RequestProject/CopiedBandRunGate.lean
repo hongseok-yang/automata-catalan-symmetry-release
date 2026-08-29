@@ -1,7 +1,7 @@
 /-
 # The DEPTH-BANDED run-clause variant (§9 mS-direction)
 
-The whole-run run-clause `CopiedSufRunGate.sufOrdClauseAt` fires on EVERY sel-`D` atom in the final
+An unbanded per-residue-class run clause fires on EVERY sel-`D` atom in the final
 `D`-run at `position % Q = r`, with no depth filter.  That is UNSOUND for the bridge's forward
 direction (`TIE ⇒ accepts`): `atomOrd` (the raw MSO tie-order `χ`) is unconstrained between atoms of
 DIFFERENT rank, and a valid presentation can have a sub-`Ts` (gate-cycle pre-period) sel-`D`
@@ -21,7 +21,7 @@ import RequestProject.CopiedDeepRunGate
 
 namespace CopiedBandRunGate
 
-open WRP Step MSO MSOMarkN SliceMarkN CopiedSufRunGate
+open WRP Step MSO MSOMarkN CopiedSufRunGate
 
 /-- **Suffix band-lower guard.**  One free FO variable `x_0 = p`: there is an earlier position
 `y = p - k` that lies in the final maximal `D`-run.  Used with `k = q_D + 2` to pin suffix depth
@@ -296,7 +296,7 @@ theorem firstDGuard_copiedSlice (mS n : ℕ) (hm : 1 ≤ mS) (hn : 1 ≤ n) :
 
 /-! ## The banded suffix run clause -/
 
-/-- **Banded per-residue-class suffix-run atomOrd clause.**  `CopiedSufRunGate.sufOrdClauseAt` with
+/-- **Banded per-residue-class suffix-run atomOrd clause.**  The per-residue-class clause with
 one extra per-coord antecedent conjunct `bandLoSuf k` (the competitor must be at least `k` deep into the
 final `D`-run).  At `k = q_D + 2` on the copied slice this restricts to suffix depth `≥ q_D`, the affine
 régime where a two-rep-tying class is uniformly `d*`. -/
@@ -330,117 +330,6 @@ noncomputable def sufOrdClauseAtBand (P : WRP.Presentation Step Step) (c c' : Fi
             (⟨t.1, by have := t.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
           (P.toPoly.labelDef c' D).choose)))
     (SliceFasGates.relabelFO (gordNB P c c') (P.toPoly.ordDef c c').choose))
-
-/-- **`sufOrdClauseAtBand` satisfaction.** -/
-theorem sufOrdClauseAtBand_sat (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hr : r < Q) (k : ℕ)
-    (w : List Step) (i_marks : Fin (P.toPoly.arity c) → ℕ) (_hi : ∀ i, i_marks i < w.length) :
-    (sufOrdClauseAtBand P c c' Q r hr k).Sat w i_marks Fin.elim0 ↔
-      ∀ xb : Fin (P.toPoly.arity c') → ℕ, (∀ i, xb i < w.length) →
-        ((∀ i, ((w[xb i]? = some D ∧ ∀ q, q < w.length → xb i < q → w[q]? = some D)
-            ∧ xb i % Q = r)
-            ∧ (∃ y, y < w.length ∧ xb i = y + k ∧
-                (w[y]? = some D ∧ ∀ q, q < w.length → y < q → w[q]? = some D)))
-          ∧ P.toPoly.sel c' w xb ∧ P.toPoly.label c' w xb = D) →
-        P.toPoly.ord c c' w i_marks xb := by
-  rw [sufOrdClauseAtBand, SliceFasGatesGA.sat_faFOs]
-  have hguarddec : ∀ (xb : Fin (P.toPoly.arity c') → ℕ) (i : Fin (P.toPoly.arity c')),
-      xb i < w.length →
-      ((MSO.Formula.and
-          (MSO.Formula.and
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              inFinalDRun)
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              (SliceFasGates.mso_position_mod Q r hr).choose))
-          (SliceFasGates.relabelFO
-            (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-            (bandLoSuf k))).Sat w
-        (SliceFasGatesGA.appFO xb i_marks) Fin.elim0 ↔
-        (((w[xb i]? = some D ∧ ∀ q, q < w.length → xb i < q → w[q]? = some D) ∧ xb i % Q = r)
-          ∧ (∃ y, y < w.length ∧ xb i = y + k ∧
-              (w[y]? = some D ∧ ∀ q, q < w.length → y < q → w[q]? = some D)))) := by
-    intro xb i hxv
-    have hv0 : ((SliceFasGatesGA.appFO xb i_marks) ∘
-        (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-          Fin (P.toPoly.arity c + P.toPoly.arity c')))) = fun _ => xb i := by
-      funext _
-      exact SliceFasGatesGA.appFO_low xb i_marks i.1 (by have := i.2; omega) (by have := i.2; omega)
-    rw [MSO.Formula.sat_and, MSO.Formula.sat_and, SliceFasGates.sat_relabelFO,
-      SliceFasGates.sat_relabelFO, SliceFasGates.sat_relabelFO,
-      sat_inFinalDRun, hv0,
-      (SliceFasGates.mso_position_mod Q r hr).choose_spec w (xb i) hxv,
-      sat_bandLoSuf k w (xb i) hxv]
-  constructor
-  · intro h xb hxbv hcond
-    obtain ⟨hguard, hsel, hlab⟩ := hcond
-    have hsat := h xb hxbv
-    rw [SliceFasGates.sat_imp] at hsat
-    have hord := hsat (by
-      rw [MSO.Formula.sat_and]
-      refine ⟨?_, ?_⟩
-      · rw [MSOMarkN.sat_andList]
-        intro ψ hψ
-        obtain ⟨i, _, rfl⟩ := List.mem_map.mp hψ
-        exact (hguarddec xb i (hxbv i)).mpr (hguard i)
-      · rw [MSO.Formula.sat_and]
-        refine ⟨?_, ?_⟩
-        · rw [SliceFasGates.sat_relabelFO, comp_embNB]
-          exact ((P.toPoly.selDef c').choose_spec w xb).mp hsel
-        · rw [SliceFasGates.sat_relabelFO, comp_embNB]
-          exact ((P.toPoly.labelDef c' D).choose_spec w xb).mp hlab)
-    rw [SliceFasGates.sat_relabelFO] at hord
-    obtain ⟨hg1, hg2⟩ := comp_gordNB P c c' xb i_marks
-    have hfinal := ((P.toPoly.ordDef c c').choose_spec w
-      ((SliceFasGatesGA.appFO xb i_marks) ∘ gordNB P c c')).mpr hord
-    simp only [hg1, hg2] at hfinal
-    exact hfinal
-  · intro h pb hpbv
-    rw [SliceFasGates.sat_imp]
-    intro hprem
-    rw [MSO.Formula.sat_and] at hprem
-    obtain ⟨hdec, hsl⟩ := hprem
-    rw [MSO.Formula.sat_and] at hsl
-    obtain ⟨hsel1, hlab1⟩ := hsl
-    have hguard : ∀ i, ((w[pb i]? = some D ∧ ∀ q, q < w.length → pb i < q → w[q]? = some D)
-        ∧ pb i % Q = r)
-        ∧ (∃ y, y < w.length ∧ pb i = y + k ∧
-            (w[y]? = some D ∧ ∀ q, q < w.length → y < q → w[q]? = some D)) := by
-      intro i
-      rw [MSOMarkN.sat_andList] at hdec
-      exact (hguarddec pb i (hpbv i)).mp (hdec _ (List.mem_map.mpr ⟨i, List.mem_finRange i, rfl⟩))
-    have hsel : P.toPoly.sel c' w pb := by
-      rw [SliceFasGates.sat_relabelFO, comp_embNB] at hsel1
-      exact ((P.toPoly.selDef c').choose_spec w pb).mpr hsel1
-    have hlab : P.toPoly.label c' w pb = D := by
-      rw [SliceFasGates.sat_relabelFO, comp_embNB] at hlab1
-      exact ((P.toPoly.labelDef c' D).choose_spec w pb).mpr hlab1
-    have hord := h pb hpbv ⟨hguard, hsel, hlab⟩
-    rw [SliceFasGates.sat_relabelFO]
-    obtain ⟨hg1, hg2⟩ := comp_gordNB P c c' pb i_marks
-    refine ((P.toPoly.ordDef c c').choose_spec w
-      ((SliceFasGatesGA.appFO pb i_marks) ∘ gordNB P c c')).mp ?_
-    simp only [hg1, hg2]
-    exact hord
-
-/-- Total (clamped `r ↦ r % Q`) banded suffix run clause, for `map`ping over a plain `Finset ℕ`. -/
-noncomputable def sufOrdClauseAtBandTot (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hQ : 0 < Q) (k : ℕ) : MSO.Formula Step (P.toPoly.arity c) 0 :=
-  sufOrdClauseAtBand P c c' Q (r % Q) (Nat.mod_lt r hQ) k
-
-theorem sufOrdClauseAtBandTot_sat (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hQ : 0 < Q) (k : ℕ)
-    (w : List Step) (i_marks : Fin (P.toPoly.arity c) → ℕ) (hi : ∀ i, i_marks i < w.length) :
-    (sufOrdClauseAtBandTot P c c' Q r hQ k).Sat w i_marks Fin.elim0 ↔
-      ∀ xb : Fin (P.toPoly.arity c') → ℕ, (∀ i, xb i < w.length) →
-        ((∀ i, ((w[xb i]? = some D ∧ ∀ q, q < w.length → xb i < q → w[q]? = some D)
-            ∧ xb i % Q = r % Q)
-            ∧ (∃ y, y < w.length ∧ xb i = y + k ∧
-                (w[y]? = some D ∧ ∀ q, q < w.length → y < q → w[q]? = some D)))
-          ∧ P.toPoly.sel c' w xb ∧ P.toPoly.label c' w xb = D) →
-        P.toPoly.ord c c' w i_marks xb :=
-  sufOrdClauseAtBand_sat P c c' Q (r % Q) (Nat.mod_lt r hQ) k w i_marks hi
 
 /-! ## Update-shaped banded suffix run clause -/
 
@@ -956,160 +845,6 @@ theorem updateSufOrdClauseAtBandTot_sat
         P.toPoly.ord c c' w i_marks (Function.update ī0 j0 p) :=
   updateSufOrdClauseAtBand_sat P c c' Q (r % Q) (Nat.mod_lt r hQ) k j0 ī0
     w i_marks hi hbase
-
-/-! ## The banded prefix run clause -/
-
-/-- **Banded per-residue-class prefix-run atomOrd clause.**  `CopiedSufRunGate.prefOrdClauseAt` with
-per-coordinate antecedents `bandLoPre k` (the competitor is at least `k` into the initial `U`-run)
-and `strictInitialStretch` (the two boundary `U` positions are excluded). -/
-noncomputable def prefOrdClauseAtBand (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hr : r < Q) (k : ℕ) :
-    MSO.Formula Step (P.toPoly.arity c) 0 :=
-  SliceFasGatesGA.faFOs (P.toPoly.arity c') (MSO.Formula.imp
-    (MSO.Formula.and
-      (MSOMarkN.andList ((List.finRange (P.toPoly.arity c')).map (fun i =>
-        MSO.Formula.and
-          (MSO.Formula.and
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 =>
-                (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              inInitialURun)
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 =>
-                (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              (SliceFasGates.mso_position_mod Q r hr).choose))
-          (MSO.Formula.and
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 =>
-                (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              (bandLoPre k))
-            (SliceFasGates.relabelFO
-              (fun _ : Fin 1 =>
-                (⟨i.1, by have := i.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-              strictInitialStretch)))))
-      (MSO.Formula.and
-        (SliceFasGates.relabelFO
-          (fun t : Fin (P.toPoly.arity c') =>
-            (⟨t.1, by have := t.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-          (P.toPoly.selDef c').choose)
-        (SliceFasGates.relabelFO
-          (fun t : Fin (P.toPoly.arity c') =>
-            (⟨t.1, by have := t.2; omega⟩ : Fin (P.toPoly.arity c + P.toPoly.arity c')))
-          (P.toPoly.labelDef c' D).choose)))
-    (SliceFasGates.relabelFO (gordNB P c c') (P.toPoly.ordDef c c').choose))
-
-/-- **`prefOrdClauseAtBand` satisfaction.** -/
-theorem prefOrdClauseAtBand_sat (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hr : r < Q) (k : ℕ)
-    (w : List Step) (i_marks : Fin (P.toPoly.arity c) → ℕ) (_hi : ∀ i, i_marks i < w.length) :
-    (prefOrdClauseAtBand P c c' Q r hr k).Sat w i_marks Fin.elim0 ↔
-      ∀ xb : Fin (P.toPoly.arity c') → ℕ, (∀ i, xb i < w.length) →
-        (((∀ i, preBandStrictGuard w Q r k (xb i))
-          ∧ P.toPoly.sel c' w xb) ∧ P.toPoly.label c' w xb = D) →
-          P.toPoly.ord c c' w i_marks xb := by
-  rw [prefOrdClauseAtBand, SliceFasGatesGA.sat_faFOs]
-  let guardFormula :
-      Fin (P.toPoly.arity c') → MSO.Formula Step (P.toPoly.arity c + P.toPoly.arity c') 0 :=
-    fun i =>
-      MSO.Formula.and
-        (MSO.Formula.and
-          (SliceFasGates.relabelFO
-            (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-              Fin (P.toPoly.arity c + P.toPoly.arity c')))
-            inInitialURun)
-          (SliceFasGates.relabelFO
-            (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-              Fin (P.toPoly.arity c + P.toPoly.arity c')))
-            (SliceFasGates.mso_position_mod Q r hr).choose))
-        (MSO.Formula.and
-          (SliceFasGates.relabelFO
-            (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-              Fin (P.toPoly.arity c + P.toPoly.arity c')))
-            (bandLoPre k))
-          (SliceFasGates.relabelFO
-            (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-              Fin (P.toPoly.arity c + P.toPoly.arity c')))
-            strictInitialStretch))
-  have hguarddec : ∀ (xb : Fin (P.toPoly.arity c') → ℕ) (i : Fin (P.toPoly.arity c')),
-      xb i < w.length →
-        ((guardFormula i).Sat w (SliceFasGatesGA.appFO xb i_marks) Fin.elim0 ↔
-          preBandStrictGuard w Q r k (xb i)) := by
-    intro xb i hxv
-    have hv0 : ((SliceFasGatesGA.appFO xb i_marks) ∘
-        (fun _ : Fin 1 => (⟨i.1, by have := i.2; omega⟩ :
-          Fin (P.toPoly.arity c + P.toPoly.arity c')))) = fun _ => xb i := by
-      funext _
-      exact SliceFasGatesGA.appFO_low xb i_marks i.1 (by have := i.2; omega) (by have := i.2; omega)
-    dsimp [guardFormula, preBandStrictGuard]
-    rw [MSO.Formula.sat_and, MSO.Formula.sat_and, MSO.Formula.sat_and,
-      SliceFasGates.sat_relabelFO, SliceFasGates.sat_relabelFO, SliceFasGates.sat_relabelFO,
-      SliceFasGates.sat_relabelFO,
-      sat_inInitialURun, hv0,
-      (SliceFasGates.mso_position_mod Q r hr).choose_spec w (xb i) hxv,
-      sat_bandLoPre k w (xb i) hxv, sat_strictInitialStretch w (xb i)]
-  constructor
-  · intro h xb hxbv hcond
-    obtain ⟨⟨hguard, hsel⟩, hlab⟩ := hcond
-    have hsat := h xb hxbv
-    rw [SliceFasGates.sat_imp] at hsat
-    have hord := hsat (by
-      rw [MSO.Formula.sat_and]
-      refine ⟨?_, ?_⟩
-      · rw [MSOMarkN.sat_andList]
-        intro ψ hψ
-        obtain ⟨i, _, rfl⟩ := List.mem_map.mp hψ
-        exact (hguarddec xb i (hxbv i)).mpr (hguard i)
-      · rw [MSO.Formula.sat_and]
-        refine ⟨?_, ?_⟩
-        · rw [SliceFasGates.sat_relabelFO, comp_embNB]
-          exact ((P.toPoly.selDef c').choose_spec w xb).mp hsel
-        · rw [SliceFasGates.sat_relabelFO, comp_embNB]
-          exact ((P.toPoly.labelDef c' D).choose_spec w xb).mp hlab)
-    rw [SliceFasGates.sat_relabelFO] at hord
-    obtain ⟨hg1, hg2⟩ := comp_gordNB P c c' xb i_marks
-    have hfinal := ((P.toPoly.ordDef c c').choose_spec w
-      ((SliceFasGatesGA.appFO xb i_marks) ∘ gordNB P c c')).mpr hord
-    simp only [hg1, hg2] at hfinal
-    exact hfinal
-  · intro h pb hpbv
-    rw [SliceFasGates.sat_imp]
-    intro hprem
-    rw [MSO.Formula.sat_and] at hprem
-    obtain ⟨hdec, hsl⟩ := hprem
-    rw [MSO.Formula.sat_and] at hsl
-    obtain ⟨hsel1, hlab1⟩ := hsl
-    have hguard : ∀ i, preBandStrictGuard w Q r k (pb i) := by
-      intro i
-      rw [MSOMarkN.sat_andList] at hdec
-      exact (hguarddec pb i (hpbv i)).mp (hdec _ (List.mem_map.mpr ⟨i, List.mem_finRange i, rfl⟩))
-    have hsel : P.toPoly.sel c' w pb := by
-      rw [SliceFasGates.sat_relabelFO, comp_embNB] at hsel1
-      exact ((P.toPoly.selDef c').choose_spec w pb).mpr hsel1
-    have hlab : P.toPoly.label c' w pb = D := by
-      rw [SliceFasGates.sat_relabelFO, comp_embNB] at hlab1
-      exact ((P.toPoly.labelDef c' D).choose_spec w pb).mpr hlab1
-    have hord := h pb hpbv ⟨⟨hguard, hsel⟩, hlab⟩
-    rw [SliceFasGates.sat_relabelFO]
-    obtain ⟨hg1, hg2⟩ := comp_gordNB P c c' pb i_marks
-    refine ((P.toPoly.ordDef c c').choose_spec w
-      ((SliceFasGatesGA.appFO pb i_marks) ∘ gordNB P c c')).mp ?_
-    simp only [hg1, hg2]
-    exact hord
-
-/-- Total (clamped `r ↦ r % Q`) banded prefix run clause. -/
-noncomputable def prefOrdClauseAtBandTot (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hQ : 0 < Q) (k : ℕ) : MSO.Formula Step (P.toPoly.arity c) 0 :=
-  prefOrdClauseAtBand P c c' Q (r % Q) (Nat.mod_lt r hQ) k
-
-theorem prefOrdClauseAtBandTot_sat (P : WRP.Presentation Step Step) (c c' : Fin P.toPoly.K)
-    (Q r : ℕ) (hQ : 0 < Q) (k : ℕ)
-    (w : List Step) (i_marks : Fin (P.toPoly.arity c) → ℕ) (hi : ∀ i, i_marks i < w.length) :
-    (prefOrdClauseAtBandTot P c c' Q r hQ k).Sat w i_marks Fin.elim0 ↔
-      ∀ xb : Fin (P.toPoly.arity c') → ℕ, (∀ i, xb i < w.length) →
-        (((∀ i, preBandStrictGuard w Q (r % Q) k (xb i))
-          ∧ P.toPoly.sel c' w xb) ∧ P.toPoly.label c' w xb = D) →
-        P.toPoly.ord c c' w i_marks xb :=
-  prefOrdClauseAtBand_sat P c c' Q (r % Q) (Nat.mod_lt r hQ) k w i_marks hi
 
 /-! ## Update-shaped banded prefix run clause -/
 

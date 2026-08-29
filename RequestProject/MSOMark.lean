@@ -15,7 +15,7 @@ preserved by `List.map Prod.fst`).  Wrapping `markTr φ` with "the free variable
 the marked position" and closing it gives a **sentence** over `Step × Bool` whose
 language, restricted to single-mark words `markAt w p`, is exactly `φ(p)`.
 
-`markedDFA_exists` then feeds that sentence to `buchi`.  `#print axioms` shows only
+Feeding that sentence to `buchi` produces the recogniser.  `#print axioms` shows only
 `[propext, Classical.choice, Quot.sound, SliceMSO.buchi]` — no new axiom.
 -/
 import RequestProject.MSO
@@ -79,61 +79,11 @@ def markAt (w : List Step) (p : ℕ) : List (Step × Bool) :=
 @[simp] theorem markAt_length (w : List Step) (p : ℕ) : (markAt w p).length = w.length := by
   simp [markAt]
 
-@[simp] theorem markAt_map_fst (w : List Step) (p : ℕ) : (markAt w p).map Prod.fst = w := by
-  simp only [markAt, List.map_ofFn]
-  exact List.ofFn_getElem
-
 theorem markAt_getElem? (w : List Step) (p x : ℕ) (hx : x < w.length) :
     (markAt w p)[x]? = some (w[x], decide (x = p)) := by
   rw [markAt, List.getElem?_ofFn]
   simp [hx]
 
-/-- "The letter at `x_0` carries a `true` mark" (`Step` being two-element, an
-explicit disjunction). -/
-def markedHere : Formula (Step × Bool) 1 0 :=
-  .or (.labelEq 0 (U, true)) (.labelEq 0 (D, true))
-
 theorem step_eq_U_or_D (s : Step) : s = U ∨ s = D := by cases s <;> simp
-
-theorem markedHere_sat_markAt (w : List Step) (p x : ℕ) (hx : x < w.length) :
-    markedHere.Sat (markAt w p) (Fin.cons x Fin.elim0) Fin.elim0 ↔ x = p := by
-  simp only [markedHere, sat_or, sat_labelEq, Fin.cons_zero, markAt_getElem? w p x hx]
-  constructor
-  · rintro (h | h) <;> (rw [Option.some.injEq, Prod.ext_iff] at h; exact decide_eq_true_iff.mp h.2)
-  · intro hxp
-    subst hxp
-    rcases step_eq_U_or_D w[x] with h | h <;> simp [h]
-
-/-- The sentence over `Step × Bool` whose language, restricted to single-mark words
-`markAt w p`, is exactly `φ(p)`. -/
-def markedSentence (φ : Formula Step 1 0) : MSO.Sentence (Step × Bool) :=
-  .exFO (.and markedHere (markTr φ))
-
-theorem sat_markedSentence (φ : Formula Step 1 0) (w : List Step) (p : ℕ) (hp : p < w.length) :
-    (markedSentence φ).Sat (markAt w p) Fin.elim0 Fin.elim0 ↔
-      φ.Sat w (fun _ => p) Fin.elim0 := by
-  simp only [markedSentence, sat_exFO, sat_and, markAt_length]
-  constructor
-  · rintro ⟨x, hx, hmark, hsat⟩
-    have hxp : x = p := (markedHere_sat_markAt w p x hx).mp hmark
-    rw [markTr_sat, markAt_map_fst] at hsat
-    have hcons : (Fin.cons x Fin.elim0 : Fin 1 → ℕ) = fun _ => p := by
-      funext t; fin_cases t; simpa using hxp
-    rwa [hcons] at hsat
-  · intro hsat
-    refine ⟨p, hp, (markedHere_sat_markAt w p p hp).mpr rfl, ?_⟩
-    rw [markTr_sat, markAt_map_fst]
-    have hcons : (Fin.cons p Fin.elim0 : Fin 1 → ℕ) = fun _ => p := by
-      funext t; fin_cases t; rfl
-    rwa [hcons]
-
-/-- **The marked recogniser (no new axiom).**  For a unary MSO formula `φ` over
-`Step`, there is a deterministic finite automaton over `Step × Bool` that accepts
-the single-mark word `markAt w p` iff `φ` holds of position `p` in `w`. -/
-theorem markedDFA_exists (φ : Formula Step 1 0) :
-    ∃ M : SliceMSO.DetAuto (Step × Bool), ∀ (w : List Step) (p : ℕ), p < w.length →
-      (M.accepts (markAt w p) ↔ φ.Sat w (fun _ => p) Fin.elim0) := by
-  obtain ⟨M, hM⟩ := SliceMSO.buchi (markedSentence φ)
-  exact ⟨M, fun w p hp => (hM (markAt w p)).trans (sat_markedSentence φ w p hp)⟩
 
 end MSOMark

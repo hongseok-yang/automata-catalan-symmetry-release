@@ -63,9 +63,6 @@ def Sat (w : List Alpha) : ∀ {nf ns : ℕ}, (Fin nf → ℕ) → (Fin ns → F
 /-- Derived universal first-order quantifier `∀ x_0. φ`. -/
 def faFO {nf ns} (φ : Formula Alpha (nf + 1) ns) : Formula Alpha nf ns := .neg (.exFO (.neg φ))
 
-/-- Derived universal second-order quantifier `∀ X_0. φ`. -/
-def faSO {nf ns} (φ : Formula Alpha nf (ns + 1)) : Formula Alpha nf ns := .neg (.exSO (.neg φ))
-
 /-- Derived implication. -/
 def imp {nf ns} (φ ψ : Formula Alpha nf ns) : Formula Alpha nf ns := .or (.neg φ) ψ
 

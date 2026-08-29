@@ -135,12 +135,6 @@ theorem card_inter_eq_card_coeffs (a : M) (t : Finset M)
       = Nat.card {l : t → ℕ | a + periodSum t l ∈ s} :=
   card_sep_eq_card_coeffs a t ht (· ∈ s)
 
-/-! ## 4. Periods must move the parameter -/
-
-section Periods
-
-variable {ι κ : Type*}
-
 /-- **Periods move the parameter.**  If a proper linear set `a +ᵥ closure t` is contained in
 a set all of whose parameter-fibres (fibres of `w ↦ w ∘ Sum.inl`) are finite, then every
 period `u ∈ t` has a nonzero parameter part: otherwise raising the coefficient of `u` produces
@@ -186,7 +180,5 @@ theorem finite_fibre_of_finite {R : (ι → ℕ) → (κ → ℕ) → Prop}
   refine Set.Finite.of_finite_image (Set.Finite.subset (hfin x) ?_) hinj
   rintro y ⟨w, ⟨hw, hwx⟩, rfl⟩
   simpa [hwx] using hw
-
-end Periods
 
 end ProperLinearRep

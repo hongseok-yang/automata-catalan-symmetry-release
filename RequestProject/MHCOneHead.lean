@@ -198,8 +198,6 @@ def opsM (mv : Fin h → HeadMove) (ops : Fin c → CounterOp) :
     opsM mv ops (cO j) = ops j := by
   simp [opsM, cO]
 
-/-! ## The transition function -/
-
 end Generic
 
 section Machine

@@ -10,7 +10,7 @@ the combinator algebra for that discipline (Stage F3.0):
   `SlicePeriodStar.AffineOnResiduesAt`, with `of_dvd`, rebase, closures, and
   `of_recurrence` (the bridge from `dstar_setup_fibred`'s slope clauses);
 * ℕ-side combinators in the `SlicePeriodStar.AffineOnResiduesAt` namespace —
-  `add`, `finsetSum`, `select`, `rebase`, `toAffine` … — all INDEX-SIZE-BLIND:
+  `add`, `finsetSum`, `select`, `rebase` … — all INDEX-SIZE-BLIND:
   a shared period in, the SAME period out, thresholds by `Finset.sup`
   (per-`mS` index sets never touch the period);
 * classwise tools: `EP_of_classwise_eventually_const`, `EP_class_const`,
@@ -24,8 +24,7 @@ import RequestProject.SlicePeriodStar
 
 namespace CopiedAffineAt
 
-open WRP SliceOrder SliceThreshold SliceAffine SliceDstar SliceDstarCore
-  SlicePeriodStar
+open WRP SliceOrder SliceDstarCore SlicePeriodStar
 
 /-! ## The ℤ-valued pinned shape -/
 
@@ -317,31 +316,6 @@ theorem rebase {p : ℕ} (hp : 1 ≤ p) {f : ℕ → ℕ}
     ∃ N, N0 ≤ N ∧ ∀ j, j < p → ∃ b s : ℕ, ∀ k, f (N + j + p * k) = b + k * s := by
   obtain ⟨m, hm⟩ := h.exists_rebase hp
   exact ⟨max m N0, le_max_right _ _, hm (max m N0) (le_max_left _ _)⟩
-
-/-- The pinned shape implies the unpinned `AffineOnResidues` (period
-forgotten — consumers off the period path only). -/
-theorem toAffine {p : ℕ} (hp : 1 ≤ p) {f : ℕ → ℕ}
-    (h : AffineOnResiduesAt p f) : SliceAffine.AffineOnResidues f := by
-  classical
-  have hp0 : 0 < p := hp
-  obtain ⟨m, hm⟩ := h
-  choose b s hbs using hm
-  refine ⟨m, p, fun r => s (r % p) (Nat.mod_lt _ hp0), hp, fun r k => ?_⟩
-  simp only []
-  have hdm : p * (r / p) + r % p = r := Nat.div_add_mod r p
-  have hsplit : p * (r / p + k) = p * (r / p) + p * k := Nat.mul_add p (r / p) k
-  have harg1 : m + r + p * k = m + r % p + p * (r / p + k) := by
-    generalize hA1 : p * (r / p) = A1 at hdm hsplit
-    generalize hA2 : p * k = A2 at hsplit ⊢
-    generalize hA3 : p * (r / p + k) = A3 at hsplit ⊢
-    omega
-  have harg0 : m + r = m + r % p + p * (r / p) := by
-    generalize hA1 : p * (r / p) = A1 at hdm ⊢
-    omega
-  have hb1 := hbs (r % p) (Nat.mod_lt _ hp0) (r / p + k)
-  have hb0 := hbs (r % p) (Nat.mod_lt _ hp0) (r / p)
-  rw [harg1, harg0, hb1, hb0]
-  ring
 
 end SlicePeriodStar.AffineOnResiduesAt
 

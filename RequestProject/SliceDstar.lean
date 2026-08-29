@@ -8,26 +8,24 @@ counts the selected atoms `a` with `a ≺ d*`, so the strict part needs `d*`-ran
 `AffineOnResiduesZ` threshold per coordinate.
 
 This file builds, in order:
-* the SEMANTIC layer — `dstarRank` (defined directly as `rankOf` of the wrpOrd-minimal
-  selected `D`-atom via a finite-min extraction) and its consumer-facing `dstarRank_spec`;
-* supporting `lexMinList` minimality (`lexMinList_le`) and the D-existence EP gate
+* the supporting `lexMinList` minimality (`lexMinList_le`), the generic finite-min
+  extraction `exists_min_of_list`, and the D-existence EP gate
   (`Dpresent_eventuallyPeriodic`);
-* the selected-restricted per-class lex-boundary engine `selBvec_lex_is_lex_min`.
-
-The `AffineOnResiduesZ` proof (via a bridge to a constructive `lexMinList` of the
-RankAffine tower) is the remaining obligation; the semantic layer above is already the
-exact interface the rest of the discharge (`SliceOutput.fas_inner_collapse`) consumes.
+* the selected-restricted per-class lex-boundary engine `selBvec_lex_is_lex_min` and its
+  coordinate affineness `selBvecCoord_affineOnResiduesZ`;
+* the BIG-dominated gated lex-min `gated_lexMin_affine`: a lex-minimum over EP-gated
+  candidates is affine-on-residues.
 -/
+import RequestProject.SliceCountSlice
 import RequestProject.SliceDstarCore
 import RequestProject.SliceLexOrder
+import RequestProject.SliceOutput
 import RequestProject.SliceSelect
-import RequestProject.SliceBridge
-import RequestProject.SliceCountSlice
 
 namespace SliceDstar
 
 open WRP Step SliceThreshold SliceAffine SliceOrder SliceLexOrder SliceDstarCore
-  SliceBoundaryMinCore SliceCount MSOMark SliceMSO SliceVectorLexMin
+  SliceBoundaryMinCore SliceVectorLexMin
 open scoped Classical
 
 variable {d : ℕ}
@@ -73,7 +71,7 @@ theorem Dpresent_eventuallyPeriodic (P : WRP.Presentation Step Step) :
   obtain ⟨m, p, hp, hper⟩ := SliceSelect.selectedLabel_exists_slice_eventuallyPeriodic P.toPoly D
   exact ⟨p, hp, m, hper⟩
 
-/-! ## Semantic layer: `dstarRank` as `rankOf` of the wrpOrd-minimal selected D-atom -/
+/-! ## Finite-min extraction for the `≺`-minimal selected `D`-atom -/
 
 /-- **Generic finite-min for a strict total order on a list.**  Given trichotomy and
 transitivity of `R` on a nonempty list, some element `R`-precedes (or equals) every
@@ -115,77 +113,6 @@ theorem exists_min_of_list {α : Type*} (R : α → α → Prop) :
             rcases List.mem_cons.mp hb with rfl | hbxs
             · exact Or.inr hxm
             · exact hm'min b hbxs
-
-/-- The list of selected `D`-atoms of `W_n` (arity-1, enumerated by (copy, position));
-a `List` rather than a `Finset` to sidestep `DecidableEq` on the function-fiber `Atom`. -/
-noncomputable def selDList (P : WRP.Presentation Step Step) (n : ℕ) : List P.toPoly.Atom :=
-  ((List.finRange P.toPoly.K).flatMap (fun c =>
-    (List.range (wrappedFlat n).length).map (fun p => (⟨c, fun _ => p⟩ : P.toPoly.Atom)))).filter
-    (fun a => decide (P.toPoly.selectedAtom (wrappedFlat n) a ∧
-      P.toPoly.labelOf (wrappedFlat n) a = D))
-
-theorem mem_selDList (P : WRP.Presentation Step Step) (harity : ∀ c, P.toPoly.arity c = 1)
-    (n : ℕ) (a : P.toPoly.Atom) :
-    a ∈ selDList P n ↔
-      (P.toPoly.selectedAtom (wrappedFlat n) a ∧ P.toPoly.labelOf (wrappedFlat n) a = D) := by
-  rw [selDList, List.mem_filter, decide_eq_true_eq]
-  constructor
-  · rintro ⟨_, hsel, hlab⟩; exact ⟨hsel, hlab⟩
-  · rintro ⟨hsel, hlab⟩
-    refine ⟨?_, hsel, hlab⟩
-    rw [List.mem_flatMap]
-    refine ⟨a.1, List.mem_finRange _, ?_⟩
-    rw [List.mem_map]
-    refine ⟨a.2 (SliceBridge.z P.toPoly harity a.1), ?_,
-      (SliceBridge.atom_eq P.toPoly harity a).symm⟩
-    rw [List.mem_range]
-    exact (SliceBridge.valid_iff P.toPoly harity a.1 _ (wrappedFlat n)).mp
-      (by rw [← SliceBridge.atom_eq P.toPoly harity a]; exact hsel.1)
-
-/-- **Existence of the wrpOrd-minimal selected `D`-atom** (without the `IsOutput` sort).
-Directly extract the `≺`-min from the finite selected-`D` list via `exists_min_of_list`. -/
-theorem exists_min_selDAtom (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (harity : ∀ c, P.toPoly.arity c = 1) (n : ℕ)
-    (h : ∃ a, P.toPoly.selectedAtom (wrappedFlat n) a ∧ P.toPoly.labelOf (wrappedFlat n) a = D) :
-    ∃ dstar, P.toPoly.selectedAtom (wrappedFlat n) dstar ∧
-      P.toPoly.labelOf (wrappedFlat n) dstar = D ∧
-      ∀ b, P.toPoly.selectedAtom (wrappedFlat n) b → P.toPoly.labelOf (wrappedFlat n) b = D →
-        dstar = b ∨ P.wrpOrd (wrappedFlat n) dstar b := by
-  obtain ⟨a0, ha0⟩ := h
-  have hmemiff := mem_selDList P harity n
-  have hlne : selDList P n ≠ [] := fun hcon => by
-    have := (hmemiff a0).mpr ha0; rw [hcon] at this; exact absurd this (by simp)
-  obtain ⟨dstar, hdmem, hdmin⟩ := exists_min_of_list (P.wrpOrd (wrappedFlat n)) (selDList P n) hlne
-    (fun a ha b hb => hV.trichot (wrappedFlat n) a b ((hmemiff a).mp ha).1 ((hmemiff b).mp hb).1)
-    (fun a ha b hb c hc => hV.trans (wrappedFlat n) a b c
-      ((hmemiff a).mp ha).1 ((hmemiff b).mp hb).1 ((hmemiff c).mp hc).1)
-  obtain ⟨hdsel, hdD⟩ := (hmemiff dstar).mp hdmem
-  exact ⟨dstar, hdsel, hdD, fun b hbsel hbD => hdmin b ((hmemiff b).mpr ⟨hbsel, hbD⟩)⟩
-
-/-- **`d*`-rank(n)**: the rank vector of the wrpOrd-minimal selected `D`-atom of `W_n`
-(or `0` when there is no selected `D`-atom).  Defined directly so the consumer interface
-`dstarRank_spec` is correctness-free. -/
-noncomputable def dstarRank (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (harity : ∀ c, P.toPoly.arity c = 1) (n : ℕ) : Fin P.d → ℤ :=
-  if h : ∃ a, P.toPoly.selectedAtom (wrappedFlat n) a ∧ P.toPoly.labelOf (wrappedFlat n) a = D
-  then P.rankOf (wrappedFlat n) (Classical.choose (exists_min_selDAtom P hV harity n h))
-  else fun _ => 0
-
-/-- **The consumer interface.**  On a `D`-present slice, `dstarRank n` is `rankOf` of an
-actual `≺`-minimal selected `D`-atom `dstar` — exactly what `SliceOutput.fas_inner_collapse`
-consumes. -/
-theorem dstarRank_spec (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (harity : ∀ c, P.toPoly.arity c = 1) (n : ℕ)
-    (h : ∃ a, P.toPoly.selectedAtom (wrappedFlat n) a ∧ P.toPoly.labelOf (wrappedFlat n) a = D) :
-    ∃ dstar, P.toPoly.selectedAtom (wrappedFlat n) dstar ∧
-      P.toPoly.labelOf (wrappedFlat n) dstar = D ∧
-      (∀ b, P.toPoly.selectedAtom (wrappedFlat n) b → P.toPoly.labelOf (wrappedFlat n) b = D →
-        dstar = b ∨ P.wrpOrd (wrappedFlat n) dstar b) ∧
-      dstarRank P hV harity n = P.rankOf (wrappedFlat n) dstar := by
-  refine ⟨Classical.choose (exists_min_selDAtom P hV harity n h), ?_⟩
-  obtain ⟨hsel, hD, hmin⟩ := Classical.choose_spec (exists_min_selDAtom P hV harity n h)
-  refine ⟨hsel, hD, hmin, ?_⟩
-  unfold dstarRank; rw [dif_pos h]
 
 /-! ## The selected-restricted per-class lex-boundary engine -/
 
@@ -267,78 +194,6 @@ theorem selBvecCoord_affineOnResiduesZ {d : ℕ} (F : ℕ → Fin d → ℤ) (m 
         ((AffineOnResiduesZ.const (F (m + r) i)).add ((AffineOnResiduesZ.of_natCast hls).smul (P i)))
       simp only [selBvecVal, if_true]; ring
 
-/-! ## The D-block selectedness bit as a forward/backward convolution -/
-
-/-- **The D-block selectedness bit decomposed.**  A marked DFA's acceptance at the
-block-`j` `D`-position `1+2j+1` of `W_n` is a function of the forward iterate
-`(bF)^[j] q_pre` and the backward iterate function `(bF)^[n-1-j]` — the convolution shape
-(the `D`-position analogue of `SliceCount.ind_block`'s second indicator). -/
-theorem accepts_markAt_blockD (M : DetAuto (Step × Bool)) (n j : ℕ) (hj : j < n) :
-    M.accepts (markAt (wrappedFlat n) (1 + 2 * j + 1)) ↔
-      M.accept (fStep M ((bF M)^[n - 1 - j]
-        (M.δ (fStep M ((bF M)^[j] (qpre M)) U) (D, true))) D) := by
-  have hb : 1 + 2 * j + 1 < (wrappedFlat n).length := by rw [length_wrappedFlat]; omega
-  rw [accepts_markAt M (wrappedFlat n) (1 + 2 * j + 1) hb, fwd_blockU M n j hj,
-    wrappedFlat_getElem_D n j hj hb, tau_blockD M n j hj]
-
-/-- **Constancy from iterate equality.**  If two block-`D` positions of the *same* `W_n`
-have equal forward iterates and equal backward iterate functions, their selectedness bits
-agree.  (The slice bulk: within a residue class, both iterates are constant, so the
-selectedness bit is all-or-nothing — the key fact behind the bulk candidate.) -/
-theorem selBD_eq_of_iter (M : DetAuto (Step × Bool)) (n j j' : ℕ) (hj : j < n) (hj' : j' < n)
-    (hf : (bF M)^[j] (qpre M) = (bF M)^[j'] (qpre M))
-    (hb : (bF M)^[n - 1 - j] = (bF M)^[n - 1 - j']) :
-    M.accepts (markAt (wrappedFlat n) (1 + 2 * j + 1))
-      ↔ M.accepts (markAt (wrappedFlat n) (1 + 2 * j' + 1)) := by
-  rw [accepts_markAt_blockD M n j hj, accepts_markAt_blockD M n j' hj', hf, hb]
-
-/-- **The U-block selectedness bit decomposed** (the `U`-position analogue of
-`accepts_markAt_blockD`, = `SliceCount.ind_block`'s first indicator). -/
-theorem accepts_markAt_blockU (M : DetAuto (Step × Bool)) (n j : ℕ) (hj : j < n) :
-    M.accepts (markAt (wrappedFlat n) (1 + 2 * j)) ↔
-      M.accept (fStep M ((bF M)^[n - 1 - j]
-        (fStep M (M.δ ((bF M)^[j] (qpre M)) (U, true)) D)) D) := by
-  have hb : 1 + 2 * j < (wrappedFlat n).length := by rw [length_wrappedFlat]; omega
-  rw [accepts_markAt M (wrappedFlat n) (1 + 2 * j) hb, fwd_blockStart M n j (le_of_lt hj),
-    wrappedFlat_getElem_U n j hj hb, tau_blockU M n j hj]
-
-/-- Constancy from iterate equality, U-block version. -/
-theorem selBU_eq_of_iter (M : DetAuto (Step × Bool)) (n j j' : ℕ) (hj : j < n) (hj' : j' < n)
-    (hf : (bF M)^[j] (qpre M) = (bF M)^[j'] (qpre M))
-    (hb : (bF M)^[n - 1 - j] = (bF M)^[n - 1 - j']) :
-    M.accepts (markAt (wrappedFlat n) (1 + 2 * j))
-      ↔ M.accepts (markAt (wrappedFlat n) (1 + 2 * j')) := by
-  rw [accepts_markAt_blockU M n j hj, accepts_markAt_blockU M n j' hj', hf, hb]
-
-/-- The pre (leading-`U`, position 0) marked acceptance is a function of `(bF)^[n] (δ q₀ (U,true))`. -/
-theorem accepts_markAt_pre (M : DetAuto (Step × Bool)) (n : ℕ) :
-    M.accepts (markAt (wrappedFlat n) 0) ↔
-      M.accept (fStep M ((bF M)^[n] (M.δ M.q0 (U, true))) D) := by
-  have h := SliceCount.ind_pre M n
-  unfold SliceCount.ind at h
-  by_cases ha : M.accepts (markAt (wrappedFlat n) 0) <;>
-    by_cases hb : M.accept (fStep M ((bF M)^[n] (M.δ M.q0 (U, true))) D) <;> simp_all
-
-/-- The trailing-`D` (suf) marked acceptance is a function of the forward iterate `(bF)^[n] q_pre`. -/
-theorem accepts_markAt_suf (M : DetAuto (Step × Bool)) (n : ℕ) :
-    M.accepts (markAt (wrappedFlat n) (2 * n + 1))
-      ↔ M.accept (M.δ ((bF M)^[n] (qpre M)) (D, true)) := by
-  have h := SliceCount.ind_suf M n
-  unfold SliceCount.ind at h
-  by_cases ha : M.accepts (markAt (wrappedFlat n) (2 * n + 1)) <;>
-    by_cases hb : M.accept (M.δ ((bF M)^[n] (qpre M)) (D, true)) <;> simp_all
-
-/-- **Suf selectedness is eventually periodic in `n`.**  The trailing-`D` atom's marked
-acceptance depends only on the forward iterate `(bF)^[n] q_pre`, which is EP. -/
-theorem selS_EP (M : DetAuto (Step × Bool)) :
-    ∃ p, 1 ≤ p ∧ EventuallyPeriodic
-      (fun n => M.accepts (markAt (wrappedFlat n) (1 + 2 * n))) p := by
-  obtain ⟨mu, pu, hpu, hu⟩ := bF_iterate_eventuallyPeriodic M
-  refine ⟨pu, hpu, mu, fun n hn => ?_⟩
-  simp only []
-  rw [show (1 : ℕ) + 2 * (n + pu) = 2 * (n + pu) + 1 from by ring, accepts_markAt_suf M (n + pu),
-    show (1 : ℕ) + 2 * n = 2 * n + 1 from by ring, accepts_markAt_suf M n, hu n hn]
-
 /-! ## The BIG-dominated gated lex-min: lex-min over EP-gated candidates is affine -/
 
 /-- `lexLt` is asymmetric. -/
@@ -353,16 +208,6 @@ theorem affineOnResidues_natSubDiv (c d : ℕ) (hd : 1 ≤ d) :
   show (c + r + d * k - c) / d = (c + r - c) / d + k * 1
   rw [show c + r + d * k - c = r + d * k from by omega, show c + r - c = r from by omega,
     Nat.add_mul_div_left r k hd, Nat.mul_one]
-
-/-- A period-`p` recurrence `g (j+p) = g j` (beyond `m`) lifts to any multiple `p·t`.  Reused
-for the forward iterate `(bF)^[·] q_pre` and the backward iterate function `(bF)^[·]`. -/
-theorem fn_period_mul {α : Type*} (g : ℕ → α) {m p : ℕ} (h : ∀ j, m ≤ j → g (j + p) = g j) :
-    ∀ j t, m ≤ j → g (j + p * t) = g j := by
-  intro j t hj
-  induction t with
-  | zero => simp
-  | succ t ih =>
-      rw [show j + p * (t + 1) = (j + p * t) + p from by ring, h (j + p * t) (by omega), ih]
 
 /-- Eventual periodicity lifts to any multiple of the period. -/
 theorem EP_of_dvd {Pr : ℕ → Prop} {p p' : ℕ} (h : EventuallyPeriodic Pr p) (hdvd : p ∣ p') :

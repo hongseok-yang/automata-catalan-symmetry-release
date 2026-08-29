@@ -38,18 +38,6 @@ theorem neg {P : ℕ} {F : ℕ → ℤ} (h : AffineOnResiduesAtZ P F) :
   rw [hbs k]
   ring
 
-/-- Eventual agreement transfers pinned affineness (threshold absorbed). -/
-theorem congr_eventually {P : ℕ} (hP : 1 ≤ P) {F G : ℕ → ℤ} (N : ℕ)
-    (h : ∀ n, N ≤ n → F n = G n) (hF : AffineOnResiduesAtZ P F) :
-    AffineOnResiduesAtZ P G := by
-  obtain ⟨m, hm⟩ := hF.exists_rebase hP
-  refine ⟨max m N, fun j hj => ?_⟩
-  obtain ⟨b, s, hbs⟩ := hm (max m N) (le_max_left _ _) j hj
-  refine ⟨b, s, fun k => ?_⟩
-  rw [← h _ (le_trans (le_max_right m N)
-    (le_trans (Nat.le_add_right _ j) (Nat.le_add_right _ _)))]
-  exact hbs k
-
 /-- Exact class data at the base shifted by `P · K` (same slopes, intercepts
 shifted by `K` steps) — the rebase-past-kinks workhorse. -/
 theorem class_shift {P : ℕ} {F : ℕ → ℤ} {m : ℕ} {b s : ℤ} {j : ℕ}

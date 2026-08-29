@@ -17,7 +17,7 @@ Works for **any** arity (the constant tuple makes `ī s.π = 1+2j` regardless of
 import RequestProject.SliceRankAffine
 import RequestProject.SliceCountSlice
 
-open WRP Step
+open Step
 
 namespace SliceRankAtom
 
@@ -55,29 +55,5 @@ theorem summand_block_rankAffine {k : ℕ} (s : Summand Step d k) :
   exact (RankAffine.smul s.coeff (prefixRank_blockU_rankAffine s.A)).add
     (rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D]) (s.A.δ s.A.q0 U)
       (fun q => s.β q U))
-
-/-- A regular rank term at the block-`j` `U`-position is `RankAffine` in `j`. -/
-theorem rankTerm_block_rankAffine {k : ℕ} (κ : RankTerm Step d k) :
-    RankAffine (fun j => κ.eval (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j)) := by
-  refine RankAffine.congr (fun j => ?_)
-    ((RankAffine.const κ.c0).add (RankAffine.listSum κ.summands
-      (fun s j => s.eval (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j))
-      (fun s _ => summand_block_rankAffine s)))
-  unfold RankTerm.eval
-  funext c
-  have key : (κ.summands.map (fun s => s.eval (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j))).sum c =
-      (κ.summands.map (fun s => s.eval (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j) c)).sum := by
-    induction κ.summands with
-    | nil => rfl
-    | cons s t ih => simp only [List.map_cons, List.sum_cons, Pi.add_apply, ih]
-  rw [Pi.add_apply, key]
-
-/-- **The WRP rank of a slice block-`U`-atom is `RankAffine` in its loop-index** —
-`fas` piece (a).  (Independent of arity; ranks are prefix-determined.) -/
-theorem rank_block_rankAffine {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) :
-    RankAffine (fun j => P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j)) := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  exact RankAffine.congr (fun j => (hκ _ _).symm) (rankTerm_block_rankAffine κ)
 
 end SliceRankAtom

@@ -4,7 +4,7 @@
 The heart of the (4a) per-class uniformity that feeds `CopiedSufRunGate.gate_semantic_split`: on a
 homogeneous boundary run of `copiedSlice mS n` whose cell rank is affine-in-depth (from
 `CopiedDstarCMS.coordCands_cycle_lengths`) and on which "selected ∧ label = D" is constant on each
-`pc`-class (from `CopiedSelConst.selRun_suf_const`/`selRun_pre_const`), a SINGLE deep-interior achiever
+`pc`-class (from the `CopiedSelConst` run-shift lemmas), a SINGLE deep-interior achiever
 forces the WHOLE residue class to equal `d*`.
 
 Mechanism: the selBvec lex-min ENDPOINT of the class is selected-D by the constancy, so
@@ -199,10 +199,9 @@ theorem prefix_rank_eq_dstar_of_two_reps_abs_mod_update_slice
     hpc hF hag (r := rloc) (l := l) hrloc_lt h0 h1 hTl hlm hres
 
 /-- Arity-free update-tuple per-class uniformity core with direct validity for
-the updated tuples.  This is the same slope-zero argument as
-`run_class_uniform_core`, but the selected-D constancy and the selected witness
-are stated for `Function.update ī0 j0 (posOf l)`.  Thus the proof does not
-scalarize tuple fibres to constant tuples. -/
+the updated tuples: the slope-zero argument with the selected-D constancy and
+the selected witness stated for `Function.update ī0 j0 (posOf l)`.  Thus the
+proof does not scalarise tuple fibres to constant tuples. -/
 theorem run_class_uniform_update_core_of_valid
     (P : WRP.Presentation Step Step) (hV : P.Valid)
     (c : Fin P.toPoly.K) (j0 : Fin (P.toPoly.arity c)) (ī0 : Fin (P.toPoly.arity c) → ℕ)
@@ -311,149 +310,6 @@ theorem run_class_uniform_update_core_of_valid
     rw [hbnd] at hdom
     exact finish 0 hkne (by rw [Nat.mul_zero, Nat.add_zero]; omega) hdom
 
-/-- **Per-class uniformity math core (generic position `posOf`).**  Affine-in-depth rank (`hF`/`hag`) +
-selection-constancy on each `pc`-class (`hselconst`) + a deep-interior achiever (`M+pc ≤ l_b`,
-`l_b+pc < Nc`, `F l_b = d*`) ⟹ the whole residue class of `l_b` (over `[M, mS-1)`) equals `d*`.  The
-class endpoint (selBvec lex-min over band `Nc`) is selected-D via `hselconst`, bounded below by `d*` via
-`dstarRankGA'_lex_min`; being interior, `l_b ≠` endpoint, so `class_uniform_of_dom` collapses the class
-(slope 0).  `posOf = fun l => mS+2n+1+l` (suffix `D`-run) or `id` (prefix `U`-run). -/
-theorem run_class_uniform_core
-    (P : WRP.Presentation Step Step) (hV : P.Valid) (harity1 : ∀ c, P.toPoly.arity c = 1)
-    (c : Fin P.toPoly.K) (j0 : Fin (P.toPoly.arity c)) (ī0 : Fin (P.toPoly.arity c) → ℕ)
-    (mS n : ℕ)
-    (pc M Nc : ℕ) (F : ℕ → Fin P.d → ℤ) (hpc : 1 ≤ pc)
-    (hF : RankAffineAtFrom M pc F)
-    (posOf : ℕ → ℕ)
-    (hposval : ∀ l', l' < mS - 1 → posOf l' < (copiedSlice mS n).length)
-    (hag : ∀ l', l' < mS - 1 →
-      P.rank c (copiedSlice mS n) (Function.update ī0 j0 (posOf l')) = F l')
-    (hselconst : ∀ l₁ l₂, M ≤ l₁ → l₁ < Nc → M ≤ l₂ → l₂ < Nc →
-        (l₁ - M) % pc = (l₂ - M) % pc →
-        ((P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₁)
-            ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₁) = D)
-          ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₂)
-            ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₂) = D)))
-    (hNcmS : Nc ≤ mS - 1)
-    (l_b : ℕ) (hl_b_lo : M + pc ≤ l_b) (hl_bNc : l_b + pc < Nc)
-    (hselb : P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l_b)
-        ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l_b) = D)
-    (hach : F l_b = CopiedDstar.dstarRankGA_m P hV mS n) :
-    ∀ l', M ≤ l' → l' < mS - 1 → (l' - M) % pc = (l_b - M) % pc →
-      F l' = CopiedDstar.dstarRankGA_m P hV mS n := by
-  classical
-  have hsub : Subsingleton (Fin (P.toPoly.arity c)) := by rw [harity1 c]; infer_instance
-  have hupd : ∀ v : ℕ, Function.update ī0 j0 v = (fun _ => v) := by
-    intro v; funext i; rw [Subsingleton.elim i j0]; simp
-  obtain ⟨PR, hPR⟩ := hF
-  have hrec : ∀ (i : Fin P.d) (r' k : ℕ), F (M + r' + pc * k) i = F (M + r') i + k * PR i := by
-    intro i r' k
-    have hit := congrFun (SliceRankAtom.RankAffine.iterate hPR (M + r') k (by omega)) i
-    rw [Pi.add_apply, Pi.smul_apply, nsmul_eq_mul] at hit
-    exact hit
-  set dstar := CopiedDstar.dstarRankGA_m P hV mS n with hdstar
-  set r := (l_b - M) % pc with hrdef
-  set kd_b := (l_b - M) / pc with hkdbdef
-  have hrlt : r < pc := by rw [hrdef]; exact Nat.mod_lt _ hpc
-  have hjeq_b : M + r + pc * kd_b = l_b := by
-    rw [hrdef, hkdbdef]; have := Nat.mod_add_div (l_b - M) pc; omega
-  set Fc := fun κ => F (M + r + pc * κ) with hFcdef
-  have hrecFc : ∀ κ (i : Fin P.d), Fc κ i = Fc 0 i + (κ : ℤ) * PR i := by
-    intro κ i
-    show F (M + r + pc * κ) i = F (M + r + pc * 0) i + (κ : ℤ) * PR i
-    rw [Nat.mul_zero, Nat.add_zero, hrec i r κ]
-  have hD : ∃ a, P.toPoly.selectedAtom (copiedSlice mS n) a
-      ∧ P.toPoly.labelOf (copiedSlice mS n) a = D :=
-    ⟨⟨c, fun _ => posOf l_b⟩, ⟨fun _ => hposval l_b (by omega), hselb.1⟩, hselb.2⟩
-  -- the common finisher: given an endpoint index `ke` distinct from `kd_b`, dominating the class,
-  -- conclude the whole class equals d*
-  have finish : ∀ (ke : ℕ), ke ≠ kd_b → M + r + pc * ke < Nc →
-      ¬ WRP.lexLt (Fc kd_b) (Fc ke) →
-      ∀ l', M ≤ l' → l' < mS - 1 → (l' - M) % pc = (l_b - M) % pc → F l' = dstar := by
-    intro ke hne hkeNc hdom l' hMl' hl'mS hl'r
-    have hkemS : M + r + pc * ke < mS - 1 := by omega
-    have hclass_le : (l_b - M) % pc = ((M + r + pc * ke) - M) % pc := by
-      rw [show (M + r + pc * ke) - M = r + pc * ke from by omega, Nat.add_mul_mod_self_left,
-        Nat.mod_eq_of_lt hrlt, hrdef]
-    have hsel_le := (hselconst l_b (M + r + pc * ke) (by omega) (by omega) (by omega) hkeNc
-      hclass_le).mp hselb
-    have hrank_le : P.rankOf (copiedSlice mS n) ⟨c, fun _ => posOf (M + r + pc * ke)⟩ = Fc ke := by
-      show P.rank c (copiedSlice mS n) (fun _ => posOf (M + r + pc * ke)) = Fc ke
-      rw [← hupd (posOf (M + r + pc * ke)), hag (M + r + pc * ke) hkemS]
-    have hglob : ¬ WRP.lexLt (Fc ke) dstar := by
-      have hlm := CopiedDstarC.dstarRankGA'_lex_min P hV (copiedSlice mS n) hD
-        ⟨c, fun _ => posOf (M + r + pc * ke)⟩ ⟨fun _ => hposval _ hkemS, hsel_le.1⟩ hsel_le.2
-      rw [hrank_le] at hlm
-      exact hlm
-    have hb : Fc kd_b = dstar := by show F (M + r + pc * kd_b) = dstar; rw [hjeq_b]; exact hach
-    have hconst := CopiedSufRunGate.class_uniform_of_dom Fc PR dstar hrecFc hne hdom hglob hb
-    have hl'eq : M + r + pc * ((l' - M) / pc) = l' := by
-      have h1 : (l' - M) % pc = r := by rw [hl'r, hrdef]
-      have := Nat.mod_add_div (l' - M) pc
-      omega
-    have := hconst ((l' - M) / pc)
-    show F l' = dstar
-    rw [← hl'eq]; exact this
-  have hkd_b : kd_b < numReps M pc r Nc :=
-    (mem_iff_lt_numReps M pc r Nc kd_b hpc).mp (by rw [hjeq_b]; omega)
-  have hnr1 : 1 ≤ numReps M pc r Nc := Nat.lt_of_le_of_lt (Nat.zero_le kd_b) hkd_b
-  by_cases hslope : WRP.lexLt PR (fun _ => 0)
-  · -- DEEP: F decreasing; endpoint is the deepest class member (index numReps-1)
-    have hkd1 : kd_b + 1 < numReps M pc r Nc := by
-      have hpos : M + r + pc * (kd_b + 1) < Nc := by
-        have he : M + r + pc * (kd_b + 1) = l_b + pc := by rw [Nat.mul_succ]; omega
-        rw [he]; omega
-      exact (mem_iff_lt_numReps M pc r Nc (kd_b + 1) hpc).mp hpos
-    set ke := numReps M pc r Nc - 1 with hkedef
-    have hke_lt : ke < numReps M pc r Nc := by rw [hkedef]; omega
-    have hke_memNc : M + r + pc * ke < Nc := (mem_iff_lt_numReps M pc r Nc ke hpc).mpr hke_lt
-    have hkne : ke ≠ kd_b := by rw [hkedef]; omega
-    have hbnd : SliceDstar.selBvecVal F M r PR true 0 ke = F (M + r + pc * ke) := by
-      funext i; rw [hrec i r ke]; simp only [SliceDstar.selBvecVal, if_true]
-    have hdom := SliceDstarBridge.selBvec_le_member F PR true hrec (iff_of_true rfl hslope)
-      r Nc kd_b hkd_b
-    rw [hbnd] at hdom
-    exact finish ke hkne hke_memNc hdom
-  · -- SHALLOW: F nondecreasing; endpoint is the shallowest class member (index 0)
-    have hkne : (0 : ℕ) ≠ kd_b := by
-      intro h; rw [← h, Nat.mul_zero, Nat.add_zero] at hjeq_b; omega
-    have hbnd : SliceDstar.selBvecVal F M r PR false 0 (numReps M pc r Nc - 1)
-        = F (M + r + pc * 0) := by
-      funext i
-      simp only [SliceDstar.selBvecVal, Bool.false_eq_true, if_false, Nat.cast_zero, zero_mul,
-        add_zero, Nat.mul_zero]
-    have hdom := SliceDstarBridge.selBvec_le_member F PR false hrec
-      (iff_of_false Bool.false_ne_true hslope) r Nc kd_b hkd_b
-    rw [hbnd] at hdom
-    exact finish 0 hkne (by rw [Nat.mul_zero, Nat.add_zero]; omega) hdom
-    -- (finish's endpoint bound is now `< Nc`; `M+r < Nc` from `M+r ≤ l_b < Nc`)
-
-/-- Abstract affine-table run-class collapse.  This is the arity-free interface for the
-middle-band slope-zero conclusion itself: an interior affine-table achiever forces every depth in
-the same class to have the same affine value.  The separate `RunClassUniformCoverage` below is the
-bridge-facing constant-tuple-rank form. -/
-def RunClassAffineUniformCoverage (P : WRP.Presentation Step Step) (hV : P.Valid) : Prop :=
-    ∀ (c : Fin P.toPoly.K) (j0 : Fin (P.toPoly.arity c))
-      (ī0 : Fin (P.toPoly.arity c) → ℕ)
-      (mS n pc M Nc : ℕ) (F : ℕ → Fin P.d → ℤ) (_hpc : 1 ≤ pc)
-      (_hF : RankAffineAtFrom M pc F)
-      (posOf : ℕ → ℕ)
-      (_hposval : ∀ l', l' < mS - 1 → posOf l' < (copiedSlice mS n).length)
-      (_hag : ∀ l', l' < mS - 1 →
-        P.rank c (copiedSlice mS n) (Function.update ī0 j0 (posOf l')) = F l')
-      (_hselconst : ∀ l₁ l₂, M ≤ l₁ → l₁ < Nc → M ≤ l₂ → l₂ < Nc →
-          (l₁ - M) % pc = (l₂ - M) % pc →
-          ((P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₁)
-              ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₁) = D)
-            ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₂)
-              ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₂) = D)))
-      (_hNcmS : Nc ≤ mS - 1)
-      (l_b : ℕ) (_hl_b_lo : M + pc ≤ l_b) (_hl_bNc : l_b + pc < Nc)
-      (_hselb : P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l_b)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l_b) = D)
-      (_hach : F l_b = CopiedDstar.dstarRankGA_m P hV mS n),
-      ∀ l', M ≤ l' → l' < mS - 1 → (l' - M) % pc = (l_b - M) % pc →
-        F l' = CopiedDstar.dstarRankGA_m P hV mS n
-
 /-- Descriptor-facing run-class collapse for update tuples.  This is the
 bridge-facing arity-free form: selected-D constancy, the selected witness, and
 tuple validity are all stated for `Function.update ī0 j0 (posOf l)`. -/
@@ -494,100 +350,7 @@ theorem runClassUpdateUniformCoverage
     posOf hupdval hag hselconst hNcmS l_b hl_b_lo hl_bNc hselb hach l' hMl'
     hl'mS hres
 
-/-- Abstract run-class collapse used by the suffix/prefix semantic split.  The
-arity-1 proof below supplies it by scalarizing one coordinate; the
-arbitrary-arity route should replace that scalarization with descriptor-level
-middle-band coverage. -/
-def RunClassUniformCoverage (P : WRP.Presentation Step Step) (hV : P.Valid) : Prop :=
-    ∀ (c : Fin P.toPoly.K) (j0 : Fin (P.toPoly.arity c))
-      (ī0 : Fin (P.toPoly.arity c) → ℕ)
-      (mS n pc M Nc : ℕ) (F : ℕ → Fin P.d → ℤ) (_hpc : 1 ≤ pc)
-      (_hF : RankAffineAtFrom M pc F)
-      (posOf : ℕ → ℕ)
-      (_hposval : ∀ l', l' < mS - 1 → posOf l' < (copiedSlice mS n).length)
-      (_hag : ∀ l', l' < mS - 1 →
-        P.rank c (copiedSlice mS n) (Function.update ī0 j0 (posOf l')) = F l')
-      (_hselconst : ∀ l₁ l₂, M ≤ l₁ → l₁ < Nc → M ≤ l₂ → l₂ < Nc →
-          (l₁ - M) % pc = (l₂ - M) % pc →
-          ((P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₁)
-              ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₁) = D)
-            ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l₂)
-              ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l₂) = D)))
-      (_hNcmS : Nc ≤ mS - 1)
-      (l_b : ℕ) (_hl_b_lo : M + pc ≤ l_b) (_hl_bNc : l_b + pc < Nc)
-      (_hselb : P.toPoly.sel c (copiedSlice mS n) (fun _ => posOf l_b)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => posOf l_b) = D)
-      (_hach : P.rank c (copiedSlice mS n) (fun _ => posOf l_b)
-          = CopiedDstar.dstarRankGA_m P hV mS n),
-      ∀ l', M ≤ l' → l' < mS - 1 → (l' - M) % pc = (l_b - M) % pc →
-        P.rank c (copiedSlice mS n) (fun _ => posOf l')
-          = CopiedDstar.dstarRankGA_m P hV mS n
-
 /-! ## (4a-3) atom packaging — `hsufUniform`/`hpreUniform` in the `gate_semantic_split` shape -/
-
-/-- Supply `run_class_uniform_core`'s `hselconst` (suffix `D`-run, band `Nc`) from `selRun_suf_const`:
-two same-class (mod `pc`) deep positions differ by `pc·κ`, exactly the shift the G2 wrapper handles; the
-deep margin `T + Nc + 1 ≤ mS` is what keeps the shifted mark in the run. -/
-theorem selconst_suf
-    (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (M : SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-    (hM : ∀ (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        (M.accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D)))
-    (mS n pc T Nc : ℕ) (hm1 : 1 ≤ mS) (hNcm : T + Nc + 1 ≤ mS)
-    (hgate : ∀ κ b, T ≤ b →
-      (fun q => M.δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pc * κ]
-        = (fun q => M.δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b]) :
-    ∀ l₁ l₂, T ≤ l₁ → l₁ < Nc → T ≤ l₂ → l₂ < Nc → (l₁ - T) % pc = (l₂ - T) % pc →
-      ((P.toPoly.sel c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l₁)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l₁) = D)
-        ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l₂)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l₂) = D)) := by
-  have onedir : ∀ a d, T ≤ a → a ≤ d → d < Nc → (a - T) % pc = (d - T) % pc →
-      ((P.toPoly.sel c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + a)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + a) = D)
-        ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + d)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + d) = D)) := by
-    intro a d hTa had hdNc hres
-    obtain ⟨κ, hκ⟩ : pc ∣ (d - T) - (a - T) := (Nat.modEq_iff_dvd' (by omega)).mp hres
-    have hdeq : d = a + pc * κ := by omega
-    have := selRun_suf_const P c M hM mS n a pc T κ hm1 (fun b hb => hgate κ b hb) hTa (by omega)
-    rw [hdeq]; exact this
-  intro l₁ l₂ hT1 h1 hT2 h2 hres
-  rcases le_total l₁ l₂ with hle | hle
-  · exact onedir l₁ l₂ hT1 hle h2 hres
-  · exact (onedir l₂ l₁ hT2 hle h1 hres.symm).symm
-
-/-- Prefix twin of `selconst_suf` (initial `U`-run, positions `fun _ => l`). -/
-theorem selconst_pre
-    (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (M : SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-    (hM : ∀ (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        (M.accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D)))
-    (mS n pc T Nc : ℕ) (hm1 : 1 ≤ mS) (hNcm : T + Nc + 1 ≤ mS)
-    (hgate : ∀ κ b, T ≤ b →
-      (fun q => M.δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pc * κ]
-        = (fun q => M.δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) :
-    ∀ l₁ l₂, T ≤ l₁ → l₁ < Nc → T ≤ l₂ → l₂ < Nc → (l₁ - T) % pc = (l₂ - T) % pc →
-      ((P.toPoly.sel c (copiedSlice mS n) (fun _ => l₁)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => l₁) = D)
-        ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => l₂)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => l₂) = D)) := by
-  have onedir : ∀ a d, T ≤ a → a ≤ d → d < Nc → (a - T) % pc = (d - T) % pc →
-      ((P.toPoly.sel c (copiedSlice mS n) (fun _ => a)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => a) = D)
-        ↔ (P.toPoly.sel c (copiedSlice mS n) (fun _ => d)
-          ∧ P.toPoly.label c (copiedSlice mS n) (fun _ => d) = D)) := by
-    intro a d hTa had hdNc hres
-    obtain ⟨κ, hκ⟩ : pc ∣ (d - T) - (a - T) := (Nat.modEq_iff_dvd' (by omega)).mp hres
-    have hdeq : d = a + pc * κ := by omega
-    have := selRun_pre_const P c M hM mS n a pc T κ hm1 (fun b hb => hgate κ b hb) hTa (by omega)
-    rw [hdeq]; exact this
-  intro l₁ l₂ hT1 h1 hT2 h2 hres
-  rcases le_total l₁ l₂ with hle | hle
-  · exact onedir l₁ l₂ hT1 hle h2 hres
-  · exact (onedir l₂ l₁ hT2 hle h1 hres.symm).symm
 
 /-- Windowed suffix selection-constancy for update tuples.  If all non-moving
 coordinates stay outside a clear suffix window `[s,e)`, and every depth in the
@@ -733,163 +496,8 @@ theorem selconst_pre_update_window
   · exact onedir l₁ l₂ hM1 hle h2 hres
   · exact (onedir l₂ l₁ hM2 hle h1 hres.symm).symm
 
-/-- **(4a-3) atom packaging — suffix.**  `hsufUniform` in the EXACT shape consumed by
-`CopiedSufRunGate.gate_semantic_split`, for the slice predicates pinned by `tie_count_fibred_of_gate`
-(`selD = selectedAtom ∧ labelOf = D`, `ach = rankOf = dstarRankGA_m`).  A deep-interior final-`D`-run
-achiever forces every same-class selected competitor to also achieve d*.  `cls` is
-`Nat.pair`(copy, depth mod `pc`), so equal `cls` ⟹ same copy and same residue; the per-class collapse is
-`run_class_uniform_core` fed by `selconst_suf`.  Takes the marshalled per-copy data (`Mc`/`hMc`,
-`pcF`/`TF`/`FF`, the gate cycle `hgate`, the affine rank `hF`/`hag`) — supplied by
-`dstar_setup_fibred` + `coordCands_cycle_lengths` at the call site. -/
-theorem hsufUniform_slice
-    (P : WRP.Presentation Step Step) (hV : P.Valid) (hRunClass : RunClassUniformCoverage P hV)
-    (mS n : ℕ) (hm1 : 1 ≤ mS)
-    (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-    (hMc : ∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D)))
-    (pcF TF : Fin P.toPoly.K → ℕ) (hpcF : ∀ c, 1 ≤ pcF c)
-    (Nc : ℕ) (hNcmS : Nc ≤ mS - 1) (hNcm : ∀ c, TF c + Nc + 1 ≤ mS)
-    (FF : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ)
-    (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-    (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c))
-    (hF : ∀ c, RankAffineAtFrom (TF c) (pcF c) (FF c))
-    (hag : ∀ c l, l < mS - 1 →
-      P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l)) = FF c l)
-    (hgate : ∀ c κ b, TF c ≤ b →
-      (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pcF c * κ]
-        = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b]) :
-    ∀ b : P.toPoly.Atom,
-      (∃ l, TF b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => mS + 2 * n + 1 + l) →
-      (P.toPoly.selectedAtom (copiedSlice mS n) b
-        ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-      P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n →
-      ∀ b' : P.toPoly.Atom,
-        (∃ l, TF b'.1 + pcF b'.1 ≤ l ∧ l + pcF b'.1 < Nc ∧ b'.2 = fun _ => mS + 2 * n + 1 + l) →
-        Nat.pair b'.1.val ((b'.2 (j0F b'.1)) % pcF b'.1)
-          = Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) →
-        (P.toPoly.selectedAtom (copiedSlice mS n) b'
-          ∧ P.toPoly.labelOf (copiedSlice mS n) b' = D) →
-        P.rankOf (copiedSlice mS n) b' = CopiedDstar.dstarRankGA_m P hV mS n := by
-  classical
-  rintro ⟨cb, ib⟩ ⟨lb, hlo, hhi, hib⟩ hselb hachb ⟨cb', ib'⟩ ⟨lb', hlo', hhi', hib'⟩ hcls hselb'
-  dsimp only at hlo hhi hib hlo' hhi' hib' hcls
-  rw [hib, hib'] at hcls
-  dsimp only at hcls
-  have hdec : cb'.val = cb.val
-      ∧ (mS + 2 * n + 1 + lb') % pcF cb' = (mS + 2 * n + 1 + lb) % pcF cb := by
-    have h := congrArg Nat.unpair hcls
-    rwa [Nat.unpair_pair, Nat.unpair_pair, Prod.mk.injEq] at h
-  obtain ⟨hcopyval, hreseq⟩ := hdec
-  have hcopy : cb' = cb := Fin.val_injective hcopyval
-  subst cb'
-  have hselb_sl : P.toPoly.sel cb (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + lb)
-      ∧ P.toPoly.label cb (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + lb) = D := by
-    refine ⟨?_, ?_⟩
-    · have h := hselb.1; rw [hib] at h; exact h.2
-    · have h := hselb.2; rw [hib] at h; exact h
-  have hachRun :
-      P.rank cb (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + lb)
-        = CopiedDstar.dstarRankGA_m P hV mS n := by
-    show P.rank cb (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + lb)
-      = CopiedDstar.dstarRankGA_m P hV mS n
-    rw [hib] at hachb
-    exact hachb
-  have hcollapse := hRunClass cb (j0F cb) (ī0F cb) mS n
-    (pcF cb) (TF cb) Nc (FF cb) (hpcF cb) (hF cb) (fun l => mS + 2 * n + 1 + l)
-    (fun l' hl' => by
-      show mS + 2 * n + 1 + l' < (copiedSlice mS n).length
-      rw [length_copiedSlice]; omega)
-    (hag cb)
-    (selconst_suf P cb (Mc cb) (hMc cb) mS n (pcF cb) (TF cb) Nc hm1 (hNcm cb) (hgate cb))
-    hNcmS lb hlo hhi hselb_sl hachRun
-  have hresM : (lb' - TF cb) % pcF cb = (lb - TF cb) % pcF cb := by
-    have hmod : (lb' - TF cb) ≡ (lb - TF cb) [MOD pcF cb] := by
-      apply Nat.ModEq.add_right_cancel' (TF cb)
-      rw [Nat.sub_add_cancel (by omega), Nat.sub_add_cancel (by omega)]
-      exact Nat.ModEq.add_left_cancel' (mS + 2 * n + 1) hreseq
-    exact hmod
-  have hFlb' := hcollapse lb' (by omega) (by omega) hresM
-  show P.rank cb (copiedSlice mS n) ib' = CopiedDstar.dstarRankGA_m P hV mS n
-  rw [hib']
-  exact hFlb'
-
-/-- **(4a-3) atom packaging — prefix.**  Prefix twin of `hsufUniform_slice` for the initial `U`-run
-(positions `fun _ => l`, `posOf = id`, the `U`-letter gate cycle and `selconst_pre`). -/
-theorem hpreUniform_slice
-    (P : WRP.Presentation Step Step) (hV : P.Valid) (hRunClass : RunClassUniformCoverage P hV)
-    (mS n : ℕ) (hm1 : 1 ≤ mS)
-    (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-    (hMc : ∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D)))
-    (pcF TF : Fin P.toPoly.K → ℕ) (hpcF : ∀ c, 1 ≤ pcF c)
-    (Nc : ℕ) (hNcmS : Nc ≤ mS - 1) (hNcm : ∀ c, TF c + Nc + 1 ≤ mS)
-    (FF : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ)
-    (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-    (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c))
-    (hF : ∀ c, RankAffineAtFrom (TF c) (pcF c) (FF c))
-    (hag : ∀ c l, l < mS - 1 →
-      P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l) = FF c l)
-    (hgate : ∀ c κ b, TF c ≤ b →
-      (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pcF c * κ]
-        = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) :
-    ∀ b : P.toPoly.Atom,
-      (∃ l, TF b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => l) →
-      (P.toPoly.selectedAtom (copiedSlice mS n) b
-        ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-      P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n →
-      ∀ b' : P.toPoly.Atom,
-        (∃ l, TF b'.1 + pcF b'.1 ≤ l ∧ l + pcF b'.1 < Nc ∧ b'.2 = fun _ => l) →
-        Nat.pair b'.1.val ((b'.2 (j0F b'.1)) % pcF b'.1)
-          = Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) →
-        (P.toPoly.selectedAtom (copiedSlice mS n) b'
-          ∧ P.toPoly.labelOf (copiedSlice mS n) b' = D) →
-        P.rankOf (copiedSlice mS n) b' = CopiedDstar.dstarRankGA_m P hV mS n := by
-  classical
-  rintro ⟨cb, ib⟩ ⟨lb, hlo, hhi, hib⟩ hselb hachb ⟨cb', ib'⟩ ⟨lb', hlo', hhi', hib'⟩ hcls hselb'
-  dsimp only at hlo hhi hib hlo' hhi' hib' hcls
-  rw [hib, hib'] at hcls
-  dsimp only at hcls
-  have hdec : cb'.val = cb.val ∧ lb' % pcF cb' = lb % pcF cb := by
-    have h := congrArg Nat.unpair hcls
-    rwa [Nat.unpair_pair, Nat.unpair_pair, Prod.mk.injEq] at h
-  obtain ⟨hcopyval, hreseq⟩ := hdec
-  have hcopy : cb' = cb := Fin.val_injective hcopyval
-  subst cb'
-  have hselb_sl : P.toPoly.sel cb (copiedSlice mS n) (fun _ => lb)
-      ∧ P.toPoly.label cb (copiedSlice mS n) (fun _ => lb) = D := by
-    refine ⟨?_, ?_⟩
-    · have h := hselb.1; rw [hib] at h; exact h.2
-    · have h := hselb.2; rw [hib] at h; exact h
-  have hachRun :
-      P.rank cb (copiedSlice mS n) (fun _ => lb)
-        = CopiedDstar.dstarRankGA_m P hV mS n := by
-    show P.rank cb (copiedSlice mS n) (fun _ => lb)
-      = CopiedDstar.dstarRankGA_m P hV mS n
-    rw [hib] at hachb
-    exact hachb
-  have hcollapse := hRunClass cb (j0F cb) (ī0F cb) mS n
-    (pcF cb) (TF cb) Nc (FF cb) (hpcF cb) (hF cb) (fun l => l)
-    (fun l' hl' => by
-      show l' < (copiedSlice mS n).length
-      rw [length_copiedSlice]; omega)
-    (hag cb)
-    (selconst_pre P cb (Mc cb) (hMc cb) mS n (pcF cb) (TF cb) Nc hm1 (hNcm cb) (hgate cb))
-    hNcmS lb hlo hhi hselb_sl hachRun
-  have hresM : (lb' - TF cb) % pcF cb = (lb - TF cb) % pcF cb := by
-    have hmod : (lb' - TF cb) ≡ (lb - TF cb) [MOD pcF cb] := by
-      apply Nat.ModEq.add_right_cancel' (TF cb)
-      rw [Nat.sub_add_cancel (by omega), Nat.sub_add_cancel (by omega)]
-      exact hreseq
-    exact hmod
-  have hFlb' := hcollapse lb' (by omega) (by omega) hresM
-  show P.rank cb (copiedSlice mS n) ib' = CopiedDstar.dstarRankGA_m P hV mS n
-  rw [hib']
-  exact hFlb'
-
-/-- Update-tuple suffix atom packaging.  This is the descriptor-facing analogue
-of `hsufUniform_slice`: the suffix-run atoms are `Function.update` tuples, and
+/-- Update-tuple suffix atom packaging: the descriptor-facing form of the
+`hsufUniform` hypothesis — the suffix-run atoms are `Function.update` tuples, and
 the selected-D constancy is supplied directly in the same update-tuple shape. -/
 theorem hsufUniform_update_slice
     (P : WRP.Presentation Step Step) (hV : P.Valid)
@@ -1070,96 +678,6 @@ theorem hpreUniform_update_slice
 
 /-! ## (4c) the semantic split at the slice — `gate_semantic_split` instantiated with (4a) -/
 
-/-- The slice-level semantic split proposition for the tie competitor quantifier, using the shared
-combined period data (`pcF`, `Ts`, `Tp`, `Nc`, `j0F`).  This packages the long conclusion of
-`tie_semantic_split_slice` so downstream bridge/counting lemmas can name the split without
-repeating all three core/suffix/prefix obligations. -/
-def tieSemanticSplitAt
-    (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (mS n : ℕ)
-    (c0 : Fin P.toPoly.K) (ī0m : Fin (P.toPoly.arity c0) → ℕ)
-    (pcF Ts Tp : Fin P.toPoly.K → ℕ) (Nc : ℕ)
-    (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c)) : Prop :=
-    (∀ b : P.toPoly.Atom,
-        (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-        P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n →
-        P.toPoly.atomOrd (copiedSlice mS n) ⟨c0, ī0m⟩ b) ↔
-      ((∀ b : P.toPoly.Atom,
-          ¬ (∃ l, Ts b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => mS + 2 * n + 1 + l) →
-          ¬ (∃ l, Tp b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => l) →
-          (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-          P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n →
-          P.toPoly.atomOrd (copiedSlice mS n) ⟨c0, ī0m⟩ b)
-        ∧ (∀ r : ℕ,
-            (∀ b : P.toPoly.Atom,
-              (∃ l, Ts b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => mS + 2 * n + 1 + l) →
-              Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) = r →
-              (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-              P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n) →
-            (∀ b : P.toPoly.Atom,
-              (∃ l, Ts b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => mS + 2 * n + 1 + l) →
-              Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) = r →
-              (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-              P.toPoly.atomOrd (copiedSlice mS n) ⟨c0, ī0m⟩ b))
-        ∧ (∀ r : ℕ,
-            (∀ b : P.toPoly.Atom,
-              (∃ l, Tp b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => l) →
-              Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) = r →
-              (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-              P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n) →
-            (∀ b : P.toPoly.Atom,
-              (∃ l, Tp b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => l) →
-              Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1) = r →
-              (P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D) →
-              P.toPoly.atomOrd (copiedSlice mS n) ⟨c0, ī0m⟩ b)))
-
-/-- **(4c) semantic split at the slice.**  Instantiates `CopiedSufRunGate.gate_semantic_split` with the
-slice predicates pinned by `tie_count_fibred_of_gate` (`selD = selectedAtom ∧ labelOf = D`,
-`ach = rankOf = dstarRankGA_m`, `atOrd = atomOrd ⟨c0,ī0m⟩ ·`), fed by `hsufUniform_slice`/
-`hpreUniform_slice`.  Both halves use the COMBINED period `pcF = pc_s*pc_p` (lift the per-direction
-`coordCands` rank-affines/gate-cycles via `RankAffineAtFrom_mul` / κ-scaling), so the single shared
-`cls = Nat.pair b.1.val (b.2 (j0F b.1) % pcF b.1)` serves both directions.  The conclusion is the
-tie-membership competitor quantifier `(∀ b sel-D achieving, atomOrd ⟨c0,ī0m⟩ b)` ⟺ CORE (bounded
-competitors) ∧ ⋀_r suffix-class-r ∧ ⋀_r prefix-class-r — exactly what the assembled gate must realise. -/
-theorem tie_semantic_split_slice
-    (P : WRP.Presentation Step Step) (hV : P.Valid) (hRunClass : RunClassUniformCoverage P hV)
-    (mS n : ℕ) (hm1 : 1 ≤ mS)
-    (c0 : Fin P.toPoly.K) (ī0m : Fin (P.toPoly.arity c0) → ℕ)
-    (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-    (hMc : ∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D)))
-    (pcF Ts Tp : Fin P.toPoly.K → ℕ) (hpcF : ∀ c, 1 ≤ pcF c)
-    (Nc : ℕ) (hNcmS : Nc ≤ mS - 1)
-    (hNcs : ∀ c, Ts c + Nc + 1 ≤ mS) (hNcp : ∀ c, Tp c + Nc + 1 ≤ mS)
-    (FFs FFp : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ)
-    (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-    (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c))
-    (hFs : ∀ c, RankAffineAtFrom (Ts c) (pcF c) (FFs c))
-    (hFp : ∀ c, RankAffineAtFrom (Tp c) (pcF c) (FFp c))
-    (hags : ∀ c l, l < mS - 1 →
-      P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l)) = FFs c l)
-    (hagp : ∀ c l, l < mS - 1 →
-      P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l) = FFp c l)
-    (hgates : ∀ c κ b, Ts c ≤ b →
-      (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pcF c * κ]
-        = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b])
-    (hgatep : ∀ c κ b, Tp c ≤ b →
-      (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pcF c * κ]
-        = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) :
-    tieSemanticSplitAt P hV mS n c0 ī0m pcF Ts Tp Nc j0F :=
-  CopiedSufRunGate.gate_semantic_split
-    (fun b => P.toPoly.selectedAtom (copiedSlice mS n) b ∧ P.toPoly.labelOf (copiedSlice mS n) b = D)
-    (fun b => P.rankOf (copiedSlice mS n) b = CopiedDstar.dstarRankGA_m P hV mS n)
-    (fun b => P.toPoly.atomOrd (copiedSlice mS n) ⟨c0, ī0m⟩ b)
-    (fun b => ∃ l, Ts b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => mS + 2 * n + 1 + l)
-    (fun b => ∃ l, Tp b.1 + pcF b.1 ≤ l ∧ l + pcF b.1 < Nc ∧ b.2 = fun _ => l)
-    (fun b => Nat.pair b.1.val ((b.2 (j0F b.1)) % pcF b.1))
-    (hsufUniform_slice P hV hRunClass mS n hm1 Mc hMc pcF Ts hpcF Nc hNcmS hNcs FFs
-      ī0F j0F hFs hags hgates)
-    (hpreUniform_slice P hV hRunClass mS n hm1 Mc hMc pcF Tp hpcF Nc hNcmS hNcp FFp
-      ī0F j0F hFp hagp hgatep)
-
 /-- Update-shaped semantic split proposition for descriptor-facing bridge
 branches.  The suffix/prefix run classes are represented by the shared base
 tuple `ī0F c` with the distinguished coordinate `j0F c` updated to the run
@@ -1267,65 +785,10 @@ theorem tie_semantic_update_split_slice
     (hpreUniform_update_slice P hV hRunClass mS n pcF Tp hpcF Nc hNcmS FFp
       ī0F j0F hFp hupdvalp hagp hselconstp)
 
-/-- Update-shaped semantic split data consumed by the arbitrary-arity bridge
-route.  It extends the shared coordinate/rank-affine data with validity for the
-updated tuples and the update-shaped semantic split itself.  The clear-window
-construction of the selected-D constancy can be hidden behind this package. -/
-def TieSemanticUpdateSplitData (P : WRP.Presentation Step Step) (hV : P.Valid) : Prop :=
-    ∃ (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-      (pcF Ts Tp : Fin P.toPoly.K → ℕ)
-      (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-      (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c)) (Mbr : ℕ),
-      1 ≤ Mbr ∧ (∀ c, 1 ≤ pcF c) ∧ (∀ c, Ts c ≤ Mbr) ∧ (∀ c, Tp c ≤ Mbr) ∧
-      (∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D))) ∧
-      (∀ c κ b, Ts c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b]) ∧
-      (∀ c κ b, Tp c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) ∧
-      ∀ mS, Mbr ≤ mS → ∀ n,
-        ∃ (FFs FFp : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ) (Nc : ℕ),
-          Nc ≤ mS - 1 ∧ mS ≤ Nc + Mbr ∧
-          (∀ c, Ts c + Nc + 1 ≤ mS) ∧ (∀ c, Tp c + Nc + 1 ≤ mS) ∧
-          (∀ c, RankAffineAtFrom (Ts c) (pcF c) (FFs c)) ∧
-          (∀ c, RankAffineAtFrom (Tp c) (pcF c) (FFp c)) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n)
-              (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l)) = FFs c l) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l) = FFp c l) ∧
-          (∀ c l, l < mS - 1 →
-            ∀ i, Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l) i
-              < (copiedSlice mS n).length) ∧
-          (∀ c l, l < mS - 1 →
-            ∀ i, Function.update (ī0F c) (j0F c) l i < (copiedSlice mS n).length) ∧
-          (∀ c, ∀ l₁ l₂, Ts c ≤ l₁ → l₁ < Nc → Ts c ≤ l₂ → l₂ < Nc →
-            (l₁ - Ts c) % pcF c = (l₂ - Ts c) % pcF c →
-            ((P.toPoly.sel c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l₁))
-                ∧ P.toPoly.label c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l₁)) = D)
-              ↔ (P.toPoly.sel c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l₂))
-                ∧ P.toPoly.label c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l₂)) = D))) ∧
-          (∀ c, ∀ l₁ l₂, Tp c ≤ l₁ → l₁ < Nc → Tp c ≤ l₂ → l₂ < Nc →
-            (l₁ - Tp c) % pcF c = (l₂ - Tp c) % pcF c →
-            ((P.toPoly.sel c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l₁)
-                ∧ P.toPoly.label c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) l₁) = D)
-              ↔ (P.toPoly.sel c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l₂)
-                ∧ P.toPoly.label c (copiedSlice mS n)
-                  (Function.update (ī0F c) (j0F c) l₂) = D))) ∧
-          (∀ c0 ī0m, tieSemanticUpdateSplitAt P hV mS n c0 ī0m pcF Ts Tp Nc ī0F j0F)
-
-/-- Zero-base refinement of `TieSemanticUpdateSplitData`.  The canonical
+/-- Zero-base update-shaped semantic split data.  The canonical
 arbitrary-arity bridge rows are built for the shared base tuple
-`fun _ _ => 0`; this package preserves that fact while retaining the same
-destructuring shape as the general update split data. -/
+`fun _ _ => 0`; this package records that fact while retaining the
+destructuring shape of the general update split data. -/
 def TieSemanticUpdateZeroSplitData (P : WRP.Presentation Step Step) (hV : P.Valid) :
     Prop :=
     ∃ (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
@@ -1379,62 +842,7 @@ def TieSemanticUpdateZeroSplitData (P : WRP.Presentation Step Step) (hV : P.Vali
                   (Function.update (ī0F c) (j0F c) l₂) = D))) ∧
           (∀ c0 ī0m, tieSemanticUpdateSplitAt P hV mS n c0 ī0m pcF Ts Tp Nc ī0F j0F)
 
-/-- Forget the zero-base witness from the canonical update split package. -/
-theorem tieSemanticUpdateSplitData_of_zeroSplitData
-    (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (hZero : TieSemanticUpdateZeroSplitData P hV) :
-    TieSemanticUpdateSplitData P hV := by
-  obtain ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, _hzero, hMbr1, hpcF, hTsMbr,
-    hTpMbr, hMc, hsufcyc, hprefcyc, hrows⟩ := hZero
-  exact ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, hMbr1, hpcF, hTsMbr, hTpMbr, hMc,
-    hsufcyc, hprefcyc, hrows⟩
-
-/-! ## (4c) marshalling — the combined-period data feeding `tie_semantic_split_slice` -/
-
-/-- Coordinate/cycle data feeding the semantic split, before proving the
-suffix/prefix class-collapse obligations.  This separates the pure
-`coordCands` plumbing from the semantic run-class coverage supplier. -/
-def TieSemanticCoordData (P : WRP.Presentation Step Step) : Prop :=
-    ∃ (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-      (pcF Ts Tp : Fin P.toPoly.K → ℕ)
-      (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-      (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c)) (Mbr : ℕ),
-      1 ≤ Mbr ∧ (∀ c, 1 ≤ pcF c) ∧ (∀ c, Ts c ≤ Mbr) ∧ (∀ c, Tp c ≤ Mbr) ∧
-      (∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D))) ∧
-      (∀ c κ b, Ts c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b]) ∧
-      (∀ c κ b, Tp c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) ∧
-      ∀ mS, Mbr ≤ mS → ∀ n,
-        ∃ (FFs FFp : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ) (Nc : ℕ),
-          Nc ≤ mS - 1 ∧ mS ≤ Nc + Mbr ∧
-          (∀ c, Ts c + Nc + 1 ≤ mS) ∧ (∀ c, Tp c + Nc + 1 ≤ mS) ∧
-          (∀ c, RankAffineAtFrom (Ts c) (pcF c) (FFs c)) ∧
-          (∀ c, RankAffineAtFrom (Tp c) (pcF c) (FFp c)) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l)) = FFs c l) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l) = FFp c l)
-
-/-- Forget the update-shaped semantic split package down to the shared
-coordinate/rank-affine data. -/
-theorem tieSemanticCoordData_of_updateSplitData
-    (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (hUpdate : TieSemanticUpdateSplitData P hV) :
-    TieSemanticCoordData P := by
-  obtain ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, hMbr1, hpcF, hTsMbr, hTpMbr, hMc,
-    hsufcyc, hprefcyc, hrows⟩ := hUpdate
-  refine ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, hMbr1, hpcF, hTsMbr, hTpMbr, hMc,
-    hsufcyc, hprefcyc, ?_⟩
-  intro mS hMbr n
-  obtain ⟨FFs, FFp, Nc, hNcmS, hNcmMbr, hNcs, hNcp, hFs, hFp, hags, hagp,
-    _hupdvals, _hupdvalp, _hselconsts, _hselconstp, _hupdateSplit⟩ :=
-    hrows mS hMbr n
-  exact ⟨FFs, FFp, Nc, hNcmS, hNcmMbr, hNcs, hNcp, hFs, hFp, hags, hagp⟩
+/-! ## (4c) marshalling — the combined-period data feeding `tie_semantic_update_split_slice` -/
 
 /-- Zero-base update-shaped semantic split data for an arbitrary chosen
 distinguished coordinate in every copy.  This is the general-arity replacement
@@ -1624,57 +1032,5 @@ theorem tieSemanticUpdateZeroSplitData_of_coordChoice
         exact Nat.mul_le_mul (hpcs c) (hpcp c))
       Nc hNcmS FFs FFp ī0F j0F hFs hFp hupdvals hupdvalp hags hagp
       hselconsts hselconstp
-
-/-- Abstract package of the canonical semantic split data consumed by the
-row-indexed tie bridge.  The current constructor is arity-1; the general route
-can replace it by proving this package directly. -/
-def TieSemanticSplitData (P : WRP.Presentation Step Step) (hV : P.Valid) : Prop :=
-    ∃ (Mc : (c : Fin P.toPoly.K) → SliceMSO.DetAuto (MarkedN (P.toPoly.arity c)))
-      (pcF Ts Tp : Fin P.toPoly.K → ℕ)
-      (ī0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c) → ℕ)
-      (j0F : (c : Fin P.toPoly.K) → Fin (P.toPoly.arity c)) (Mbr : ℕ),
-      1 ≤ Mbr ∧ (∀ c, 1 ≤ pcF c) ∧ (∀ c, Ts c ≤ Mbr) ∧ (∀ c, Tp c ≤ Mbr) ∧
-      (∀ c (w : List Step) (ī : Fin (P.toPoly.arity c) → ℕ), (∀ i, ī i < w.length) →
-        ((Mc c).accepts (markAtN (P.toPoly.arity c) w ī) ↔
-          (P.toPoly.sel c w ī ∧ P.toPoly.label c w ī = D))) ∧
-      (∀ c κ b, Ts c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) D (fun _ => false)))^[b]) ∧
-      (∀ c κ b, Tp c ≤ b →
-        (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b + pcF c * κ]
-          = (fun q => (Mc c).δ q (mkLetter (P.toPoly.arity c) U (fun _ => false)))^[b]) ∧
-      ∀ mS, Mbr ≤ mS → ∀ n,
-        ∃ (FFs FFp : (c : Fin P.toPoly.K) → ℕ → Fin P.d → ℤ) (Nc : ℕ),
-          Nc ≤ mS - 1 ∧ mS ≤ Nc + Mbr ∧
-          (∀ c, Ts c + Nc + 1 ≤ mS) ∧ (∀ c, Tp c + Nc + 1 ≤ mS) ∧
-          (∀ c, RankAffineAtFrom (Ts c) (pcF c) (FFs c)) ∧
-          (∀ c, RankAffineAtFrom (Tp c) (pcF c) (FFp c)) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) (mS + 2 * n + 1 + l)) = FFs c l) ∧
-          (∀ c l, l < mS - 1 →
-            P.rank c (copiedSlice mS n) (Function.update (ī0F c) (j0F c) l) = FFp c l) ∧
-          (∀ c0 ī0m, tieSemanticSplitAt P hV mS n c0 ī0m pcF Ts Tp Nc j0F)
-
-/-- Build the semantic split package from coordinate/cycle data plus the
-run-class coverage supplier.  This is the arity-free constructor for the split
-layer; arity one is only one source of the supplier and coordinate data. -/
-theorem tieSemanticSplitData_of_coordData
-    (P : WRP.Presentation Step Step) (hV : P.Valid)
-    (hCoord : TieSemanticCoordData P)
-    (hRunClass : RunClassUniformCoverage P hV) :
-    TieSemanticSplitData P hV := by
-  classical
-  obtain ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, hMbr1, hpcF, hTsMbr, hTpMbr, hMc,
-    hsufcyc, hprefcyc, hcoord⟩ := hCoord
-  refine ⟨Mc, pcF, Ts, Tp, ī0F, j0F, Mbr, hMbr1, hpcF, hTsMbr, hTpMbr, hMc,
-    hsufcyc, hprefcyc, ?_⟩
-  intro mS hMbr n
-  obtain ⟨FFs, FFp, Nc, hNcmS, hNcmMbr, hNcs, hNcp, hFs, hFp, hags, hagp⟩ :=
-    hcoord mS hMbr n
-  refine ⟨FFs, FFp, Nc, hNcmS, hNcmMbr, hNcs, hNcp, hFs, hFp, hags, hagp, ?_⟩
-  intro c0 ī0m
-  exact tie_semantic_split_slice P hV hRunClass mS n (by omega) c0 ī0m Mc hMc
-    pcF Ts Tp hpcF Nc hNcmS hNcs hNcp FFs FFp ī0F j0F hFs hFp hags hagp
-    hsufcyc hprefcyc
 
 end CopiedSelUniform

@@ -22,7 +22,7 @@ import RequestProject.SliceFasGates
 
 namespace CopiedLandmark
 
-open WRP Step MSO CopiedRank SliceFasGates SliceFamilyCell
+open Step MSO CopiedRank SliceFasGates SliceFamilyCell
 
 /-! ## Letter facts for the landmark evaluations -/
 

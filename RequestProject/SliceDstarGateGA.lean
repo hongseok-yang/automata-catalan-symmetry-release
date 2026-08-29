@@ -251,5 +251,4 @@ theorem anchorGate_iff_accepts (P : WRP.Presentation Step Step) (c : Fin P.toPol
   (sat_anchorGate P c rs t₀ n hwin).trans
     (hM (wrappedFlat n) (cellTuple rs t₀ n) (cellTuple_valid rs t₀ n hwin)).symm
 
-
 end SliceDstarGateGA

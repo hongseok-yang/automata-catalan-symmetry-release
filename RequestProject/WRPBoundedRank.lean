@@ -517,19 +517,10 @@ private def surrPoly {Alpha Gamma : Type} (Pp : Polyreg.Presentation Alpha Gamma
     WRP.lexLt (r c w ī) (r c' w ī') ∨ (r c w ī = r c' w ī' ∧ Pp.ord c c' w ī ī')
   ordDef := hordDef
 
-@[simp] private theorem surrPoly_atom {Alpha Gamma : Type}
-    (Pp : Polyreg.Presentation Alpha Gamma) {D : ℕ} (r) (hordDef) :
-    (surrPoly Pp (D := D) r hordDef).Atom = Pp.Atom := rfl
-
 @[simp] private theorem surrPoly_selectedAtom {Alpha Gamma : Type}
     (Pp : Polyreg.Presentation Alpha Gamma) {D : ℕ} (r) (hordDef)
     (w : List Alpha) (a : Pp.Atom) :
     (surrPoly Pp (D := D) r hordDef).selectedAtom w a ↔ Pp.selectedAtom w a := Iff.rfl
-
-@[simp] private theorem surrPoly_labelOf {Alpha Gamma : Type}
-    (Pp : Polyreg.Presentation Alpha Gamma) {D : ℕ} (r) (hordDef)
-    (w : List Alpha) (a : Pp.Atom) :
-    (surrPoly Pp (D := D) r hordDef).labelOf w a = Pp.labelOf w a := rfl
 
 private theorem surrPoly_atomOrd {Alpha Gamma : Type}
     (Pp : Polyreg.Presentation Alpha Gamma) {D : ℕ} (r) (hordDef)

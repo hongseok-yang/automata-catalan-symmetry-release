@@ -24,9 +24,8 @@ The file supplies the closure operations at that interface:
 * `isSliceValueSemilinear2_const`, `IsSliceValueSemilinear2.add`,
   `IsSliceValueSemilinear2.smul`, `.neg`, `.sub`, `.listSum`, `.finsetSum` — constants,
   pointwise sums, integer multiples and finite sums of value graphs;
-* `isSliceValueSemilinear2_of_coords`, `IsSliceValueSemilinear2.coordGraph`,
-  `isSliceValueSemilinear2_iff_coords` — a value graph is semilinear exactly when each of
-  its `d` coordinate equations is;
+* `isSliceValueSemilinear2_of_coords` — a value graph is semilinear as soon as each of its `d`
+  coordinate equations is;
 * `isSliceValueSemilinear2_natCoeff`, `isSliceValueSemilinear2_natCoeffSum` — the bridge
   from `ℕ`-valued counts with semilinear count graphs (`IsSliceCountSemilinear2`) to the
   `ℤ^d`-valued functions `c ↦ λ c · count` and `c ↦ ∑ i, λ i c · countᵢ`;
@@ -173,16 +172,6 @@ private theorem cons_val_five {α : Type*} {m : ℕ} (x : α)
       = Matrix.vecHead (Matrix.vecTail (Matrix.vecTail (Matrix.vecTail (Matrix.vecTail u)))) :=
   rfl
 
-/-- Coordinate `c` of a `decodeZ`-encoded value is the difference of the two blocks. -/
-theorem decodeZ_apply {d : ℕ} (v : Fin (d + d) → ℕ) (c : Fin d) :
-    decodeZ v c = (v (Fin.castAdd d c) : ℤ) - (v (Fin.natAdd d c) : ℤ) := rfl
-
-/-- A `decodeZ` equation is a coordinatewise family of equations between the two blocks. -/
-theorem decodeZ_eq_iff {d : ℕ} (v : Fin (d + d) → ℕ) (z : Fin d → ℤ) :
-    z = decodeZ v ↔
-      ∀ c : Fin d, z c = (v (Fin.castAdd d c) : ℤ) - (v (Fin.natAdd d c) : ℤ) :=
-  funext_iff
-
 /-- The `decodeZ` **addition relation** between three selected value blocks is semilinear:
 one linear equation per coordinate, on the six selected `(positive, negative)` entries. -/
 theorem decodeZ_add_rel_semilinear2 {K d : ℕ} (sz sx sy : Fin (d + d) → Fin K) :
@@ -198,20 +187,6 @@ theorem decodeZ_add_rel_semilinear2 {K d : ℕ} (sz sx sy : Fin (d + d) → Fin 
   simp only [familyGraph2, Set.mem_ofPred_eq, decodeZ, Fin.sum_univ_six, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons,
     Matrix.cons_val_three, Matrix.cons_val_four, cons_val_five]
-  constructor <;> intro h <;> linarith
-
-/-- The `decodeZ` **equality relation at one coordinate** between two selected value
-blocks is semilinear. -/
-theorem decodeZ_eq_rel_at_semilinear2 {K d : ℕ} (sz sx : Fin (d + d) → Fin K) (c : Fin d) :
-    IsSliceFamilySemilinear2 (fun _mS _n (ī : Fin K → ℕ) =>
-      decodeZ (fun j => ī (sz j)) c = decodeZ (fun j => ī (sx j)) c) := by
-  refine isSemilinearNd_congr ?_ (intSelEq_semilinear2 (K := K) 0
-    ![1, -1, -1, 1]
-    ![sz (Fin.castAdd d c), sz (Fin.natAdd d c), sx (Fin.castAdd d c), sx (Fin.natAdd d c)])
-  ext w
-  simp only [familyGraph2, Set.mem_ofPred_eq, decodeZ, Fin.sum_univ_four, Matrix.cons_val_zero,
-    Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons,
-    Matrix.cons_val_three]
   constructor <;> intro h <;> linarith
 
 /-- The `decodeZ` **integer-multiple relation** `z = λ·x` between two selected value
@@ -278,49 +253,6 @@ theorem isSliceValueSemilinear2_of_coords {k d : ℕ}
   ext w
   simp only [familyGraph2, Set.mem_ofPred_eq]
   exact ⟨fun hc => funext hc, fun he c => congrFun he c⟩
-
-/-- **Coordinate projection of a value graph.**  Each coordinate's equation is semilinear
-once the full value graph is: quantify the value block of `f`, pin it with the hypothesis,
-and compare it with the ambient block at the one coordinate. -/
-theorem IsSliceValueSemilinear2.coordGraph {k d : ℕ}
-    {f : ℕ → ℕ → (Fin k → ℕ) → (Fin d → ℤ)} (hf : IsSliceValueSemilinear2 f) (c : Fin d) :
-    IsSliceFamilySemilinear2 (fun mS n (iv : Fin (k + (d + d)) → ℕ) =>
-      f mS n (fun t => iv (Fin.castAdd (d + d) t)) c
-        = decodeZ (fun j => iv (Fin.natAdd k j)) c) := by
-  have hA : IsSliceFamilySemilinear2
-      (fun mS n (u : Fin ((k + (d + d)) + (d + d)) → ℕ) =>
-        f mS n (fun t => u (Fin.castAdd (d + d) (Fin.castAdd (d + d) t)))
-          = decodeZ (fun j => u (Fin.natAdd (k + (d + d)) j))) := by
-    refine isSemilinearNd_congr ?_ (IsSliceFamilySemilinear2.comap
-      (Fin.append (fun t : Fin k => Fin.castAdd (d + d) (Fin.castAdd (d + d) t))
-        (fun j : Fin (d + d) => Fin.natAdd (k + (d + d)) j)) hf)
-    ext w
-    simp only [familyGraph2, Set.mem_ofPred_eq, Fin.append_left, Fin.append_right]
-  have hC := decodeZ_eq_rel_at_semilinear2 (d := d)
-    (fun j => Fin.natAdd (k + (d + d)) j)
-    (fun j => Fin.castAdd (d + d) (Fin.natAdd k j)) c
-  have hex := IsSliceFamilySemilinear2.exists_extra_tuple (k := k + (d + d))
-    (m := d + d) (hA.and hC)
-  refine isSemilinearNd_congr ?_ hex
-  ext w
-  simp only [familyGraph2, Set.mem_ofPred_eq, Fin.append_left, Fin.append_right]
-  constructor
-  · rintro ⟨bb, hfa, hc⟩
-    rw [hfa, ← hc]
-  · intro h
-    obtain ⟨b1, hb1⟩ :=
-      decodeZ_surjective (f (w 0) (w 1) (fun t => w (Fin.castAdd (d + d) t).succ.succ))
-    exact ⟨b1, hb1.symm, by rw [hb1, ← h]⟩
-
-/-- **The coordinatewise characterisation.**  A `ℤ^d`-valued value graph is semilinear
-exactly when each of its `d` coordinate equations is. -/
-theorem isSliceValueSemilinear2_iff_coords {k d : ℕ}
-    (f : ℕ → ℕ → (Fin k → ℕ) → (Fin d → ℤ)) :
-    IsSliceValueSemilinear2 f ↔
-      ∀ c : Fin d, IsSliceFamilySemilinear2 (fun mS n (iv : Fin (k + (d + d)) → ℕ) =>
-        f mS n (fun t => iv (Fin.castAdd (d + d) t)) c
-          = decodeZ (fun j => iv (Fin.natAdd k j)) c) :=
-  ⟨fun hf c => hf.coordGraph c, isSliceValueSemilinear2_of_coords f⟩
 
 /-- **Constants.**  A constant `ℤ^d`-valued slice function has a semilinear value graph. -/
 theorem isSliceValueSemilinear2_const {k d : ℕ} (z : Fin d → ℤ) :
@@ -429,34 +361,10 @@ theorem IsSliceValueSemilinear2.neg {k d : ℕ}
   IsSliceValueSemilinear2.congr (fun mS n ī => by funext c; simp)
     (IsSliceValueSemilinear2.smul (-1) hf)
 
-/-- **Differences.** -/
-theorem IsSliceValueSemilinear2.sub {k d : ℕ}
-    {f g : ℕ → ℕ → (Fin k → ℕ) → (Fin d → ℤ)}
-    (hf : IsSliceValueSemilinear2 f) (hg : IsSliceValueSemilinear2 g) :
-    IsSliceValueSemilinear2 (fun mS n ī => f mS n ī - g mS n ī) :=
-  IsSliceValueSemilinear2.congr (fun mS n ī => by funext c; simp; ring)
-    (hf.add hg.neg)
-
 /-- **The zero function.** -/
 theorem isSliceValueSemilinear2_zero {k d : ℕ} :
     IsSliceValueSemilinear2 (fun (_ _ : ℕ) (_ : Fin k → ℕ) => (0 : Fin d → ℤ)) :=
   isSliceValueSemilinear2_const 0
-
-/-- **List sums.**  A finite `List`-indexed pointwise sum of value graphs is a value
-graph. -/
-theorem IsSliceValueSemilinear2.listSum {k d : ℕ} :
-    ∀ (L : List (ℕ → ℕ → (Fin k → ℕ) → (Fin d → ℤ))),
-      (∀ f ∈ L, IsSliceValueSemilinear2 f) →
-      IsSliceValueSemilinear2 (fun mS n ī => (L.map (fun f => f mS n ī)).sum)
-  | [], _ => by
-      refine IsSliceValueSemilinear2.congr (fun mS n ī => ?_) isSliceValueSemilinear2_zero
-      simp
-  | f :: L, h => by
-      have hf : IsSliceValueSemilinear2 f := h f (by simp)
-      have hL := IsSliceValueSemilinear2.listSum L
-        (fun g hg => h g (by simp [hg]))
-      refine IsSliceValueSemilinear2.congr (fun mS n ī => ?_) (hf.add hL)
-      simp
 
 /-- **Finset sums.**  A finite `Finset`-indexed pointwise sum of value graphs is a value
 graph. -/

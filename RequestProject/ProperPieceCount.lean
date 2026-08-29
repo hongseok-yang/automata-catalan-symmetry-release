@@ -29,8 +29,6 @@ points are exactly those whose `c₀`-coordinate is that minimum plus a multiple
 
 All statements are unconditional; no counting input is admitted.
 -/
-import Mathlib
-import RequestProject.ProperLinearRep
 import RequestProject.SemilinearMinMax
 import RequestProject.KernelDichotomy
 

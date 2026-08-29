@@ -8,8 +8,7 @@ development), projection (`isSemilinearNd_proj`), and cylindrification under an
 injective coordinate selection (`isSemilinearNd_comap_injective`) — all proved,
 not admitted — plus the derived `univ`/`biInter`/`forall_last` closures.
 
-This is the toolkit the pin-free tie count (`CopiedTieCounting.lean`) is built
-on.  The slice atom-family wrapper used by the live general-arity result is the
+The slice atom-family wrapper used by the live general-arity result is the
 two-parameter `IsSliceFamilySemilinear2` in `SliceSemilinear2.lean`; the
 set-fibre ↔ `Finset.filter` count bridges (`natCard_setOf_eq_filter_card`,
 `finite_setOf_of_support`) live here.
@@ -399,7 +398,6 @@ theorem isSemilinearNd_forall_last {d : ℕ} {S : Set (Fin (d + 1) → ℕ)}
   ext v
   simp only [Set.mem_compl_iff, Set.mem_ofPred_eq, not_exists, Set.mem_compl_iff]
   exact ⟨fun h t => not_not.mp (h t), fun h t => not_not.mpr (h t)⟩
-
 
 /-! ## Finset-count bridges (set-fibre cardinality ↔ Finset.filter count) -/
 

@@ -5,11 +5,11 @@ The GA build order starts by PINNING the
 semantic interfaces every later milestone must agree against:
 
 * `selAtomsGA` / `mem_selAtomsGA` — the selected-atom `Finset` of `W_n` over all
-  copies and tuples (`Sigma.eta` replaces the arity-1 `atom_eq` machinery);
+  copies and tuples (`Sigma.eta` replaces the arity-1 atom-equality machinery);
 * `exists_isOutput_slice_GA` — output existence on the slice for ANY valid
   presentation (no arity hypothesis, no budget): sort the selected atoms by `≺`;
 * `atom_countP_eq_sigmaSum` — atom-list counts as `Σ copies, Σ tuples` double sums
-  (the GA replacement of the arity-1 `SliceBridge` z/coord machinery, which is
+  (the general-arity replacement of the arity-1 atom-enumeration bridge, which is
   dropped, not mirrored);
 * `fasCountGA` / `tailUCountGA` — THE pinned count shapes (semantic, `C`-free), their
   domain-gated forms `gatedFasCountGA` / `gatedTailUCountGA` (GA-7's agreement

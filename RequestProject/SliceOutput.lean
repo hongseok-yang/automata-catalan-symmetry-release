@@ -122,39 +122,4 @@ theorem fas_inner_collapse {Alpha : Type*} (P : Presentation Alpha Step) (hV : P
       · exact hadstar
       · exact hV.trans w a dstar b hasel hdsel hbsel hadstar hdb
 
-/-- **Existence of the `≺`-minimal selected `D`-atom.**  From `IsOutput` (the output is
-the `≺`-sorted selected atoms) and the presence of a selected `D`-atom, the first
-`D`-labelled atom in the sorted list is selected, `D`-labelled, and `≺`-minimal among
-selected `D`-atoms.  (Head of the `D`-filtered, still-`Pairwise`, nonempty list.) -/
-theorem exists_min_D_atom {Alpha : Type*} (P : Presentation Alpha Step) (w : List Alpha)
-    (out : List Step) (hout : P.IsOutput w out)
-    (hD : ∃ a, P.toPoly.selectedAtom w a ∧ P.toPoly.labelOf w a = D) :
-    ∃ dstar, P.toPoly.selectedAtom w dstar ∧ P.toPoly.labelOf w dstar = D ∧
-      ∀ b, P.toPoly.selectedAtom w b → P.toPoly.labelOf w b = D →
-        dstar = b ∨ P.wrpOrd w dstar b := by
-  obtain ⟨atoms, _, hmem, hpair, _⟩ := hout
-  obtain ⟨a0, ha0sel, ha0D⟩ := hD
-  have hmemD : ∀ b, P.toPoly.selectedAtom w b → P.toPoly.labelOf w b = D →
-      b ∈ atoms.filter (fun a => decide (P.toPoly.labelOf w a = D)) := by
-    intro b hbsel hbD
-    rw [List.mem_filter]
-    exact ⟨(hmem b).mpr hbsel, by simp [hbD]⟩
-  have hne : atoms.filter (fun a => decide (P.toPoly.labelOf w a = D)) ≠ [] :=
-    List.ne_nil_of_mem (hmemD a0 ha0sel ha0D)
-  obtain ⟨d, rest, hDeq⟩ := List.exists_cons_of_ne_nil hne
-  have hdmem : d ∈ atoms.filter (fun a => decide (P.toPoly.labelOf w a = D)) := by
-    rw [hDeq]; simp
-  rw [List.mem_filter] at hdmem
-  have hp : (d :: rest).Pairwise (P.wrpOrd w) := by
-    rw [← hDeq]; exact List.Pairwise.filter (fun a => decide (P.toPoly.labelOf w a = D)) hpair
-  rw [List.pairwise_cons] at hp
-  refine ⟨d, (hmem d).mp hdmem.1, by simpa using hdmem.2, ?_⟩
-  intro b hbsel hbD
-  have hbmem := hmemD b hbsel hbD
-  rw [hDeq, List.mem_cons] at hbmem
-  rcases hbmem with rfl | hbtail
-  · exact Or.inl rfl
-  · exact Or.inr (hp.1 b hbtail)
-
 end SliceOutput
-

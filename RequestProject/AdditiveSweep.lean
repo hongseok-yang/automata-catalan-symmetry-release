@@ -36,6 +36,7 @@ def heightSweepLR (w : List Step) : List Step :=
 /-- The height-level sweep with right-to-left ties (= Narayana sweep). -/
 def heightSweepRL (w : List Step) : List Step :=
   additiveSweep (fun | U => 1 | D => -1) true w
+
 /-! ## `ex:height-sweep` (paper.tex): Height sweep on UUDUDD -/
 
 /-- **`ex:height-sweep` (paper.tex).**
@@ -43,9 +44,10 @@ The height sweep with left-to-right ties on `UUDUDD` gives `UUUDDD`. -/
 theorem heightSweepLR_UUDUDD :
     heightSweepLR [U, U, D, U, D, D] = [U, U, U, D, D, D] := by native_decide
 
-/-
-The right-to-left height sweep is the same as our `heightSweep`.
--/
 theorem heightSweepRL_eq_heightSweep (w : List Step) :
     heightSweepRL w = heightSweep w := by
   rfl
+
+/-
+The right-to-left height sweep is the same as our `heightSweep`.
+-/

@@ -20,8 +20,8 @@ import RequestProject.SliceCellConvGA
 
 namespace CopiedGateEP
 
-open WRP Step SliceFamilyCell MSOMarkN SliceMarkN SliceMSO SliceReRoot
-  SliceDstarGA CopiedMark CopiedCells CopiedDstar CopiedRegionF
+open Step SliceFamilyCell MSOMarkN SliceMarkN SliceMSO SliceReRoot SliceDstarGA CopiedMark
+  CopiedCells CopiedDstar CopiedRegionF
 
 /-- The `n`-free relative `D`-stretch tuple: suffix-stretch offsets verbatim,
 everything else parked just past the window. -/

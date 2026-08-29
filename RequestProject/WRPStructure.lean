@@ -18,8 +18,6 @@ The §4 complexity results are NOT here: `thm:wrp-logspace` and
 import RequestProject.ZetaWRP
 import RequestProject.ZetaNotPolyreg
 
-open Step
-
 namespace WRPStructure
 
 /-! ## Strictness over polyregular (`thm:wrp-strict-over-poly`) -/

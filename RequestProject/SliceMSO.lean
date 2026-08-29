@@ -48,33 +48,6 @@ def DetAuto.accepts {Alpha : Type*} (M : DetAuto Alpha) (w : List Alpha) : Prop 
 
 namespace DetAuto
 
-/-- The automaton accepting the intersection of two deterministic acceptors. -/
-def inter {Alpha : Type*} (M N : DetAuto Alpha) : DetAuto Alpha :=
-  let _ := M.fintypeQ
-  letI := N.fintypeQ
-  { Q := M.Q × N.Q
-    fintypeQ := inferInstance
-    q0 := (M.q0, N.q0)
-    δ := fun q a => (M.δ q.1 a, N.δ q.2 a)
-    accept := fun q => M.accept q.1 ∧ N.accept q.2 }
-
-theorem foldl_inter {Alpha : Type*} (M N : DetAuto Alpha) (w : List Alpha)
-    (q : (inter M N).Q) :
-    List.foldl (inter M N).δ q w =
-      (List.foldl M.δ q.1 w, List.foldl N.δ q.2 w) := by
-  induction w generalizing q with
-  | nil => rfl
-  | cons a w ih =>
-      rw [List.foldl_cons, List.foldl_cons, List.foldl_cons]
-      exact ih (M.δ q.1 a, N.δ q.2 a)
-
-/-- Product acceptors recognize conjunction. -/
-theorem accepts_inter {Alpha : Type*} (M N : DetAuto Alpha) (w : List Alpha) :
-    (inter M N).accepts w ↔ M.accepts w ∧ N.accepts w := by
-  unfold DetAuto.accepts
-  rw [foldl_inter M N w ((inter M N).q0)]
-  simp [inter]
-
 /-- The always-accepting deterministic acceptor. -/
 def top {Alpha : Type*} : DetAuto Alpha where
   Q := PUnit
@@ -82,35 +55,6 @@ def top {Alpha : Type*} : DetAuto Alpha where
   q0 := PUnit.unit
   δ := fun q _ => q
   accept := fun _ => True
-
-theorem accepts_top {Alpha : Type*} (w : List Alpha) :
-    (top : DetAuto Alpha).accepts w := by
-  simp [DetAuto.accepts, top]
-
-/-- Finite intersection of deterministic acceptors. -/
-def all {Alpha : Type*} : List (DetAuto Alpha) → DetAuto Alpha
-  | [] => top
-  | M :: Ms => inter M (all Ms)
-
-/-- Finite intersections recognize finite conjunctions. -/
-theorem accepts_all {Alpha : Type*} :
-    ∀ (Ms : List (DetAuto Alpha)) (w : List Alpha),
-      (all Ms).accepts w ↔ ∀ M ∈ Ms, M.accepts w
-  | [], w => by
-      simp [all, accepts_top]
-  | M :: Ms, w => by
-      simp [all, accepts_inter, accepts_all Ms w]
-
-theorem accepts_all_map {Alpha ι : Type*} (xs : List ι) (F : ι → DetAuto Alpha)
-    (w : List Alpha) :
-    (all (xs.map F)).accepts w ↔ ∀ x ∈ xs, (F x).accepts w := by
-  rw [accepts_all]
-  constructor
-  · intro h x hx
-    exact h (F x) (List.mem_map.mpr ⟨x, hx, rfl⟩)
-  · intro h M hM
-    rcases List.mem_map.mp hM with ⟨x, hx, rfl⟩
-    exact h x hx
 
 end DetAuto
 
@@ -420,9 +364,6 @@ private theorem cons_at_one2 {β : Type*} (a : β) (ρ : Fin 2 → β) :
 
 private theorem cons_at_one1 {β : Type*} (a : β) (ρ : Fin 1 → β) :
     (Fin.cons a ρ : Fin 2 → β) 1 = ρ 0 := rfl
-
-private theorem cons_at_two2 {β : Type*} (a : β) (ρ : Fin 2 → β) :
-    (Fin.cons a ρ : Fin 3 → β) 2 = ρ 1 := rfl
 
 private theorem cons_at_one3 {β : Type*} (a : β) (ρ : Fin 3 → β) :
     (Fin.cons a ρ : Fin 4 → β) 1 = ρ 0 := rfl

@@ -44,7 +44,7 @@ import RequestProject.TwoDFT
 import RequestProject.WRPCompWitness
 import RequestProject.WRPNonemptyRegular
 
-open MSO Step WRPNotClosed TwoDFT
+open Step WRPNotClosed TwoDFT
 
 namespace WRPComp
 
@@ -88,17 +88,6 @@ def compS : TwoDFT GBD GBD where
 @[simp] theorem compS_η_init_lmark :
     compS.η init .lmark = some (first, true, []) := rfl
 
-@[simp] theorem compS_η_init_letter (x : GBD) :
-    compS.η init (.letter x) = none := rfl
-
-@[simp] theorem compS_η_first_lmark : compS.η first .lmark = none := rfl
-
-@[simp] theorem compS_η_seekSep_lmark : compS.η seekSep .lmark = none := rfl
-
-@[simp] theorem compS_η_copier_lmark : compS.η copier .lmark = none := rfl
-
-@[simp] theorem compS_η_sink_lmark : compS.η sink .lmark = none := rfl
-
 @[simp] theorem compS_η_first_letter (x : GBD) :
     compS.η first (.letter x)
       = (if x = GBD.g then some (seekSep, true, []) else some (sink, true, [])) := rfl
@@ -109,9 +98,6 @@ def compS : TwoDFT GBD GBD where
 
 @[simp] theorem compS_η_copier_letter (x : GBD) :
     compS.η copier (.letter x) = some (copier, true, [x]) := rfl
-
-@[simp] theorem compS_η_sink_letter (x : GBD) :
-    compS.η sink (.letter x) = some (sink, true, []) := rfl
 
 @[simp] theorem compS_η_rmark (q : SState) : compS.η q .rmark = none := by
   cases q <;> rfl

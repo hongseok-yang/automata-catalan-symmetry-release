@@ -1,9 +1,8 @@
 /-
 # The gated convolution kernel: counting loop-indices in a moving interval whose MSO bit is on
 
-`countAccept_slice_affineOnResidues` (SliceCountSlice) counts *all* slice positions whose
-marked-DFA gate is on; `countInterval` (SliceThreshold) counts loop-indices in an affine
-interval `[lo n, hi n)`.  The arity-1 `fas` count needs **both at once**: the loop-indices
+`SliceCountSlice` counts *all* slice positions whose marked-DFA gate is on; `countInterval`
+(`SliceThreshold`) counts loop-indices in an affine interval `[lo n, hi n)`.  The arity-1 `fas` count needs **both at once**: the loop-indices
 `j` in an affine interval whose per-position `{0,1}` MSO bit is on.  The bit, on the slice,
 has the forward/backward convolution shape (`b (u j) (v (n-1-j))` for eventually-periodic
 iterates `u`, `v`), and the interval rides on top of it.
@@ -11,7 +10,8 @@ iterates `u`, `v`), and the interval rides on top of it.
 This file builds that join abstractly (`affineOnResidues_gatedConvolution`) over an abstract
 bit `b : α → β → Prop` with eventually-periodic `u : ℕ → α`, `v : ℕ → β`, plus the supporting
 residue-restricted interval count `countIntervalResidue`.  Specialising `u`,`v`,`b` to the
-slice forward/backward iterates yields `countPeriodicInterval` (in `SliceFasCount`).
+slice forward/backward iterates yields the residue-restricted interval kernel
+`SliceFasCount.countPeriodicInterval_mod`.
 
 Axiom-clean (`[propext, Classical.choice, Quot.sound]`): purely arithmetic; the MSO/Büchi
 content lives in the marked DFA that is later plugged in for `b`.
@@ -338,7 +338,6 @@ theorem affineOnResidues_gatedConvolution {α β : Type*}
     eBK n hn, eBB n (by omega)]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The gated lex-convolution kernel (abstract).**  The lex analogue of
 `affineOnResidues_gatedConvolution`: for eventually-periodic iterates `u`, `v`, a bit
 `b`, a rank `R : ℕ → Fin d → ℤ` satisfying a period-`pR` recurrence (slope `PR`), and a

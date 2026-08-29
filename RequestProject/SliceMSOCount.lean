@@ -92,10 +92,6 @@ def RankSource.toDetAuto {Alpha : Type*} {d : ℕ} (A : RankSource Alpha d) :
   δ := A.δ
   accept := fun _ => True
 
-@[simp] theorem RankSource.toDetAuto_stateBefore {Alpha : Type*} {d : ℕ}
-    (A : RankSource Alpha d) (w : List Alpha) (i : ℕ) :
-    A.toDetAuto.stateBefore w i = A.stateBefore w i := rfl
-
 namespace SliceMSOCount
 
 open SliceSemilinearN MSO
@@ -246,12 +242,6 @@ The `MSODefinableRel` closure lemmas this file uses.  `mso_and` and `mso_congr` 
 standard pair (also derived, `private`, in `WRPBoundedRank.lean` and `WRPClosures.lean`);
 `mso_inRange` is the guard "position `i` lies inside the word", expressible because the
 first-order quantifier of `MSO.Formula.Sat` ranges exactly over the valid positions. -/
-
-/-- `MSODefinableRel` transfers along a pointwise iff. -/
-private theorem mso_congr {Alpha : Type*} {k : ℕ} {R S : List Alpha → (Fin k → ℕ) → Prop}
-    (h : ∀ w ī, R w ī ↔ S w ī) (hR : MSODefinableRel k R) : MSODefinableRel k S := by
-  obtain ⟨φ, hφ⟩ := hR
-  exact ⟨φ, fun w ī => (h w ī).symm.trans (hφ w ī)⟩
 
 /-- Conjunction of two `MSODefinableRel`s at the same arity. -/
 private theorem mso_and {Alpha : Type*} {k : ℕ} {R S : List Alpha → (Fin k → ℕ) → Prop}

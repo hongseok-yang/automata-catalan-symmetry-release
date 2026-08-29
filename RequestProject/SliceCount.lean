@@ -1,8 +1,8 @@
 /-
 # Counting MSO-satisfying positions on the slice (selection-counting, part 2)
 
-Connects the marked recogniser (`MSOMark.markedDFA_exists`, part 1) to the
-convolution heart (`SliceConv.convolution_affineOnResidues`, part 3).
+Connects the marked recogniser of `MSOMark` (part 1) to the convolution kernels of
+`SliceGatedConv` (part 3).
 
 This file is the forward–backward bridge.  For a deterministic automaton `M` over
 `Step × Bool`, reading the single-mark word `markAt w p` factors into
@@ -15,10 +15,9 @@ This file is the forward–backward bridge.  For a deterministic automaton `M` o
 So `M.accepts (markAt w p) ↔ tau w (p+1) (M.δ (fwd w p) (w[p], true))`.  The forward
 state is a left automaton iterate and the backward type a right automaton iterate;
 on the slice both are eventually periodic, and the position count becomes a
-convolution handled by `SliceConv`.
+convolution handled by `SliceGatedConv`.
 -/
 import RequestProject.MSOMark
-import RequestProject.SliceConv
 
 open MSOMark SliceMSO
 

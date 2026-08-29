@@ -16,7 +16,7 @@ import RequestProject.WRP
 import RequestProject.SliceWords
 import RequestProject.SliceRank
 
-open WRP Step
+open Step
 
 namespace SliceRankAtom
 
@@ -59,26 +59,6 @@ theorem summand_eval_const_prefix_stable {k : ℕ} (s : Summand Alpha d k) (w w'
   funext c
   rw [prefixRank_prefix_stable s.A w w' p hp, stateBefore_prefix_stable s.A w w' p p hp (le_refl p),
     hget]
-
-/-- A regular rank term's value at the constant tuple `· ↦ p` depends only on
-`w.take (p+1)`. -/
-theorem rankTerm_eval_const_prefix_stable {k : ℕ} (κ : RankTerm Alpha d k) (w w' : List Alpha)
-    (p : ℕ) (h : w.take (p + 1) = w'.take (p + 1)) :
-    κ.eval w (fun _ => p) = κ.eval w' (fun _ => p) := by
-  unfold RankTerm.eval
-  funext c
-  refine congrArg (κ.c0 c + ·) ?_
-  refine congrArg List.sum (List.map_congr_left (fun s _ => ?_))
-  rw [summand_eval_const_prefix_stable s w w' p h]
-
-/-- **The rank of an atom at position `p` is prefix-determined.**  If `w` and `w'`
-agree up to position `p`, the rank of copy `c` at the constant tuple `· ↦ p` is the
-same. -/
-theorem rank_const_prefix_stable {Gamma : Type*} (P : WRP.Presentation Alpha Gamma)
-    (c : Fin P.toPoly.K) (w w' : List Alpha) (p : ℕ) (h : w.take (p + 1) = w'.take (p + 1)) :
-    P.rank c w (fun _ => p) = P.rank c w' (fun _ => p) := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  rw [hκ w, hκ w', rankTerm_eval_const_prefix_stable κ w w' p h]
 
 /-- **Slice block-atom prefix-rank reduces to the one-loop family.**  The prefix-rank
 of a source `A` at the `U`-position `1+2j` of `W_n` equals its prefix-rank at the end

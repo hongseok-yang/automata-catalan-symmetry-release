@@ -16,7 +16,7 @@ import RequestProject.CopiedSlopeBound
 
 namespace CopiedKernels
 
-open SliceOrder SlicePeriodStar CopiedAffineAt CopiedAffineAt.AffineOnResiduesAtZ
+open SlicePeriodStar CopiedAffineAt
 open scoped Classical
 
 /-- **The bounded lex convolution kernel**: same as `gatedLexConvolution_at` but

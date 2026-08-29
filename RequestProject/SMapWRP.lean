@@ -34,7 +34,7 @@ admits `SliceMSO.buchi` through `Fge0_not_isWRP`.
 import RequestProject.WRPNotClosedComp
 import RequestProject.WRPArityPos
 
-open MSO Step WRPNotClosed TwoDFT
+open MSO WRPNotClosed TwoDFT
 
 namespace WRPComp
 
@@ -46,8 +46,6 @@ open SState
 def afterFirstSep : List GBD → List GBD
   | [] => []
   | a :: t => if a = GBD.sep then t else afterFirstSep t
-
-@[simp] theorem afterFirstSep_nil : afterFirstSep [] = [] := rfl
 
 theorem afterFirstSep_cons_sep (t : List GBD) :
     afterFirstSep (GBD.sep :: t) = t := by
@@ -405,10 +403,6 @@ theorem eq_sAtom (a : sPoly.Atom) : a = sAtom (sPos a) := by
   obtain ⟨c, ī⟩ := a
   obtain rfl : c = sC := sCopy_eq c
   exact congrArg (Sigma.mk sC) (funext fun t => by rw [sFin_arity_eq t]; rfl)
-
-theorem sAtom_injective : Function.Injective sAtom := fun p q h => by
-  have h' := congrArg sPos h
-  simpa using h'
 
 theorem atomOrd_sAtom (w : List GBD) (p q : ℕ) :
     sPoly.atomOrd w (sAtom p) (sAtom q) ↔ p < q := by

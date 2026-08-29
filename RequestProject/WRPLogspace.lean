@@ -49,9 +49,6 @@ theorem not_lexLt_of_firstDiff_gt {x y : Fin d → ℤ} (i : Fin d)
   · subst h; omega
   · have := hpre' i h; omega
 
-theorem not_lexLt_self (x : Fin d → ℤ) : ¬ WRP.lexLt x x := by
-  rintro ⟨i, -, hlt⟩; omega
-
 variable {Gamma : Type} (P : WRP.Presentation Step Gamma)
 
 theorem wrpOrd_of_dimLt {w : List Step} {a b : P.toPoly.Atom} (i : Fin P.d)
@@ -71,7 +68,7 @@ theorem wrpOrd_iff_atomOrd_of_rankEq {w : List Step} {a b : P.toPoly.Atom}
     P.wrpOrd w a b ↔ P.toPoly.atomOrd w a b := by
   constructor
   · rintro (h | ⟨-, h⟩)
-    · rw [heq] at h; exact absurd h (not_lexLt_self _)
+    · rw [heq] at h; exact absurd h (SliceLexOrder.lexLt_irrefl _)
     · exact h
   · intro h; exact Or.inr ⟨heq, h⟩
 
@@ -105,17 +102,6 @@ theorem payP_sub_payN (side : Bool) (v : ℤ) :
   rcases habs with ⟨he, hv⟩ | ⟨he, hv⟩
   · cases side <;> simp [payP, payN, tgtOf, hv, he]
   · cases side <;> simp [payP, payN, tgtOf, not_le.mpr hv, he]
-
-theorem payP_le (side : Bool) (v : ℤ) : payP side v ≤ v.natAbs := by
-  unfold payP; split <;> omega
-
-theorem payN_le (side : Bool) (v : ℤ) : payN side v ≤ v.natAbs := by
-  unfold payN; split <;> omega
-
-/-- Exactly one of the two payments is nonzero, and it is `|v|`. -/
-theorem payP_add_payN (side : Bool) (v : ℤ) :
-    payP side v + payN side v = v.natAbs := by
-  unfold payP payN; split <;> omega
 
 end PayTheory
 
@@ -694,7 +680,6 @@ theorem sorted_minSpec_succ (hV : P.Valid) (w : List Step)
     obtain ⟨j, hj, hij, rfl⟩ := hqualPos X hq
     omega
 
-
 /-! ## §5 Extracted evaluation data and the uniform weight bound -/
 
 section EvalDataSec
@@ -1027,9 +1012,6 @@ def jobArity (P : WRP.Presentation Step Gamma) :
 /-- The fixed enumeration of the output alphabet. -/
 def γenum (g : Fin (Fintype.card Gamma)) : Gamma := (Fintype.equivFin Gamma).symm g
 
-theorem γenum_injective : Function.Injective (γenum (Gamma := Gamma)) :=
-  fun _ _ h => (Fintype.equivFin Gamma).symm.injective h
-
 variable (E : EvalData P)
 
 /-- The deterministic acceptor run by each sweep job. -/
@@ -1048,7 +1030,6 @@ def jobHeads : (J : JobId P.toPoly.K (Fintype.card Gamma)) →
   | .lab _ _ => fun i => bestH (embedA i)
   | .ord π _ _ => Fin.addCases (fun i => sideHead π true (embedA i))
       (fun i => sideHead π false (embedA i))
-
 
 /-! Registers. -/
 
@@ -1510,7 +1491,6 @@ def evalM : Multihead.MHC Step Gamma (hN P) 2 where
     · rw [if_neg (fun hc => hmv hc.2)]
       exact hmv
 
-
 /-! ## §8 Run helpers, the rewind gadget, and the sweep lemma
 
 -/
@@ -1605,27 +1585,6 @@ theorem apply_mvOne (x : Fin (hN P)) (m : HeadMove) (pos : Fin (hN P) → ℕ) :
 theorem apply_opsKeep (cnt : Fin 2 → ℕ) :
     (fun j => ((opsKeep j).apply (cnt j))) = cnt := rfl
 
-theorem apply_opsInc (tgt : Bool) (cnt : Fin 2 → ℕ) :
-    (fun j => ((opsInc tgt j).apply (cnt j)))
-      = Function.update cnt (ctrIdx tgt) (cnt (ctrIdx tgt) + 1) := by
-  funext j
-  rw [opsInc]
-  by_cases h : j = ctrIdx tgt
-  · subst h; rw [if_pos rfl, Function.update_self]; rfl
-  · rw [if_neg h, Function.update_of_ne h]; rfl
-
-theorem apply_opsDec (tgt : Bool) (cnt : Fin 2 → ℕ) :
-    (fun j => ((opsDec tgt j).apply (cnt j)))
-      = Function.update cnt (ctrIdx tgt) (cnt (ctrIdx tgt) - 1) := by
-  funext j
-  rw [opsDec]
-  by_cases h : j = ctrIdx tgt
-  · subst h; rw [if_pos rfl, Function.update_self]; rfl
-  · rw [if_neg h, Function.update_of_ne h]; rfl
-
-theorem apply_opsDecBoth (cnt : Fin 2 → ℕ) :
-    (fun j => ((opsDecBoth j).apply (cnt j))) = fun j => cnt j - 1 := rfl
-
 /-! Counter pairs. -/
 
 /-- The counter vector `(p, n)`. -/
@@ -1633,33 +1592,6 @@ def c2 (p n : ℕ) : Fin 2 → ℕ := fun j => if j.val = 0 then p else n
 
 @[simp] theorem c2_zero (p n : ℕ) : c2 p n 0 = p := rfl
 @[simp] theorem c2_one (p n : ℕ) : c2 p n 1 = n := rfl
-
-theorem ctrIdx_true : ctrIdx true = (0 : Fin 2) := rfl
-theorem ctrIdx_false : ctrIdx false = (1 : Fin 2) := rfl
-
-theorem update_c2_zero (p n v : ℕ) : Function.update (c2 p n) (0 : Fin 2) v = c2 v n := by
-  funext j
-  by_cases h : j = (0 : Fin 2)
-  · subst h; rw [Function.update_self]; rfl
-  · rw [Function.update_of_ne h]
-    have : j.val ≠ 0 := fun hc => h (Fin.ext hc)
-    rw [c2, c2, if_neg this, if_neg this]
-
-theorem update_c2_one (p n v : ℕ) : Function.update (c2 p n) (1 : Fin 2) v = c2 p v := by
-  funext j
-  by_cases h : j = (1 : Fin 2)
-  · subst h; rw [Function.update_self]; rfl
-  · rw [Function.update_of_ne h]
-    have hj : j.val = 0 := by omega
-    rw [c2, c2, if_pos hj, if_pos hj]
-
-theorem c2_ext {cnt : Fin 2 → ℕ} : cnt = c2 (cnt 0) (cnt 1) := by
-  funext j
-  rcases j with ⟨(_ | _ | n), hj⟩
-  · rfl
-  · rfl
-  · omega
-
 
 /-! Rewind: walk the scan head home and dispatch. -/
 
@@ -1720,7 +1652,6 @@ theorem rewind_run {w : List Step}
         (hcnt₂ := apply_opsKeep _)
         (hrest := ih)
       simpa using hstep
-
 
 /-! Sweep-job η-computation lemmas. -/
 
@@ -1885,7 +1816,6 @@ theorem sweep_forward {w : List Step} {J : JobId P.toPoly.K (Fintype.card Gamma)
       · rw [apply_mvOne, Function.update_self, Function.update_idem]
         rfl
 
-
 /-- **The sweep lemma**: from a checkpoint (scan parked at `⊢`) the machine
 runs job `J`'s DFA over the marked word and dispatches on its acceptance,
 restoring all head positions. -/
@@ -1940,9 +1870,6 @@ theorem sweep_run {w : List Step} (J : JobId P.toPoly.K (Fintype.card Gamma))
     rw [hupdid] at hrew
     have hall := stepsTrans E hentry (stepsTrans E hfwd hrew)
     simpa using hall
-
-
-/-! ## §9 The walk gadgets (park and copy) -/
 
 /-! Walk gadgets: η-computation. -/
 
@@ -2051,7 +1978,6 @@ theorem walk_park_run (wk : WalkId) (hpark : wkPark wk = true) {w : List Step}
         split at hmvr <;> cases hmvr
       · rw [if_neg ha] at hmvr
         cases hmvr
-
 
 /-- **Copy walk**: all block heads walk right until they coincide with their
 partner heads (which sit outside the block), then the exit fires. -/
@@ -2195,12 +2121,6 @@ theorem walk_copy_run (wk : WalkId) (hcopy : wkPark wk = false) {w : List Step}
       · rw [if_neg ha] at hmvr
         cases hmvr
 
-
-
-/-! ## §10 Compare phase I: payments and the rank-sweep unit
-
--/
-
 /-! Fin-2 vector extensionality and evaluations. -/
 
 theorem fun2_ext {M : Type*} {f g : Fin 2 → M} (h0 : f 0 = g 0) (h1 : f 1 = g 1) :
@@ -2277,7 +2197,6 @@ theorem pay_run {w : List Step} (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin P
       · rw [apply_opsInc_c2]
         cases tgt <;> rfl
 
-
 /-- The `c0` payment loop. -/
 theorem c0pay_run {w : List Step} (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin P.d)
     (side tgt : Bool) {g : Glob P.toPoly.K} {reg : Reg E} {pos : Fin (hN P) → ℕ} :
@@ -2319,7 +2238,6 @@ theorem c0pay_run {w : List Step} (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin
       · rw [apply_opsInc_c2]
         cases tgt <;> rfl
 
-
 /-! Pointwise contribution rewrites. -/
 
 theorem ωAt_of_lt {D : ℕ} (A : RankSource Step D) {w : List Step} {j : ℕ}
@@ -2345,9 +2263,6 @@ theorem cond_pay_c2 (side : Bool) (v : ℤ) (a b : ℕ) :
   · show c2 (a + v.natAbs) b = _
     rw [payP, payN, h]
     rfl
-
-theorem stateBefore_zero {D : ℕ} (A : RankSource Step D) (w : List Step) :
-    A.stateBefore w 0 = A.q0 := rfl
 
 theorem stateBefore_succ {D : ℕ} (A : RankSource Step D) {w : List Step} {j : ℕ}
     (hj : j < w.length) :
@@ -2623,9 +2538,6 @@ theorem rankUnit_run {w : List Step} (π : CmpId) (cL cR : Fin P.toPoly.K)
   have hall := stepsTrans E hentry (stepsTrans E hfwd0 hrew)
   simpa using hall
 
-
-/-! ## §11 Compare phase II: the unit loops and one whole dimension -/
-
 /-! Unit-loop tags. -/
 
 /-- The tag at the start of right-side unit `r0` (drain when past the arity). -/
@@ -2640,9 +2552,6 @@ def unitTagL (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin P.d) (r0 : ℕ) : Ta
   if h : r0 < P.toPoly.arity cL then
     .cmp π cL cR i (.scanU true ⟨r0, lt_of_lt_of_le h (arity_le_kmax cL)⟩)
   else unitTagR E π cL cR i 0
-
-theorem firstRTag_eq (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin P.d) :
-    firstRTag E π cL cR i = unitTagR E π cL cR i 0 := rfl
 
 theorem firstUnitTag_eq (π : CmpId) (cL cR : Fin P.toPoly.K) (i : Fin P.d) :
     firstUnitTag E π cL cR i = unitTagL E π cL cR i 0 := rfl
@@ -2949,7 +2858,6 @@ theorem dim_run {w : List Step} (pi : CmpId) (cL cR : Fin P.toPoly.K)
   rw [hPfin, hNfin] at hall
   simpa using hall
 
-
 /-! ## §12 Compare phase III: drain, zero-out, and the verdict -/
 
 /-- The dimension-successor tag: next dimension, or the tie sweep after the
@@ -3127,7 +3035,6 @@ theorem drain_run_lt {w : List Step} (pi : CmpId) (cL cR : Fin P.toPoly.K)
   exact zero_loop E (w := w) pi cL cR i false true (g := g) (reg := reg)
     (pos := pos) hexit (b - a)
 
-
 /-! ## §13 The full ≺-comparison
 
 -/
@@ -3292,9 +3199,6 @@ theorem cmp_run {w : List Step} (pi : CmpId) (cL cR : Fin P.toPoly.K)
         have hcomp := stepsTrans E hdim hdrain
         simpa using hcomp
 
-
-/-! ## §14 Structured head positions and walk results -/
-
 /-! Structured head-position vectors. -/
 
 /-- Pad a tuple of copy `c` into a `kmax`-block of cell positions (coordinate
@@ -3360,19 +3264,6 @@ omit [Fintype Gamma] in
   refine Fin.ext ?_
   show 1 + 2 * kmaxP P + r.val - 1 - 2 * kmaxP P = r.val
   omega
-
-omit [Fintype Gamma] in
-theorem update_hpos_scanH (s s' : ℕ) (cu ca be : Fin (kmaxP P) → ℕ) :
-    Function.update (hpos s cu ca be) scanH s' = hpos s' cu ca be := by
-  funext x
-  by_cases hx : x = scanH
-  · subst hx
-    rw [Function.update_self, hpos_scanH]
-  · rw [Function.update_of_ne hx]
-    have hxv : x.val ≠ 0 := by
-      intro hc
-      exact hx (Fin.ext hc)
-    rw [hpos, hpos, dif_neg hxv, dif_neg hxv]
 
 omit [Fintype Gamma] in
 theorem pad_embedA (c : Fin P.toPoly.K) (t : Fin (P.toPoly.arity c) → ℕ)
@@ -3556,7 +3447,6 @@ theorem walkRes_copyCur (s : ℕ) (cu ca be : Fin (kmaxP P) → ℕ) :
       by_cases hca : x.val < 1 + 2 * kmaxP P
       · simp only [dif_neg h0, dif_neg hcu, dif_pos hca]
       · simp only [dif_neg h0, dif_neg hcu, dif_neg hca]
-
 
 /-! ## §15 Candidate gadgets: init, successor, carry -/
 
@@ -5760,7 +5650,6 @@ theorem firstUnitTag_pot_le {w : List Step} (pi : CmpId) (cL cR : Fin P.toPoly.K
       show (0 : ℕ) ≤ _
       omega
 
-set_option maxHeartbeats 1000000 in
 /-- **Preservation of the space invariant** (control cases; the compare phase
 is handled separately). -/
 theorem sbinv_preserved {w : List Step} :
@@ -6329,7 +6218,6 @@ theorem sbinv_preserved {w : List Step} :
                   = cnt 1 from rfl]
                 exact hother
 
-
 /-- **The evaluator is linearly counter-bounded.** -/
 theorem evalM_spaceBound : Multihead.SpaceBound (evalM E) (CB E) := by
   intro w out e N hs j
@@ -6350,10 +6238,6 @@ theorem evalM_spaceBound : Multihead.SpaceBound (evalM E) (CB E) := by
   · omega
 
 end SpaceBound
-
-/-! ## §21 The goal theorems
-
--/
 
 end
 
@@ -6417,4 +6301,3 @@ theorem wrp_strict_below_logspace :
     ∃ f : List Step → Option (List WRPComp.GBD),
       Multihead.IsLogspaceMH f ∧ ¬ WRP.IsWRP f :=
   ⟨fun T hT => wrp_isLogspaceMH T hT, Multihead.exists_logspaceMH_not_wrp⟩
-

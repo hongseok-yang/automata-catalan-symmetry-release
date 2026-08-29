@@ -82,14 +82,6 @@ theorem bitsVal_decBits : ∀ bs : List Bool, bitsVal bs ≠ 0 →
       simp [decBits, bitsVal_decBits bs hbs]
       omega
 
-theorem length_incBits : ∀ bs : List Bool, (incBits bs).length ≤ bs.length + 1
-  | [] => by simp [incBits]
-  | false :: bs => by simp [incBits]
-  | true :: bs => by
-      simp only [incBits, List.length_cons]
-      have := length_incBits bs
-      omega
-
 theorem length_decBits : ∀ bs : List Bool, (decBits bs).length = bs.length
   | [] => rfl
   | true :: bs => by simp [decBits]
@@ -118,14 +110,6 @@ theorem bitsVal_eq_zero_iff : ∀ bs : List Bool, bitsVal bs = 0 ↔ ∀ b ∈ b
           (bitsVal_eq_zero_iff bs).mpr fun x hx => h x (Or.inr hx)
         subst hb
         simp [hbs]
-
-/-- The value is bounded by the length: `bitsVal bs < 2 ^ bs.length`. -/
-theorem bitsVal_lt : ∀ bs : List Bool, bitsVal bs < 2 ^ bs.length
-  | [] => by simp
-  | b :: bs => by
-      have := bitsVal_lt bs
-      simp only [bitsVal_cons, List.length_cons, pow_succ]
-      cases b <;> simp <;> omega
 
 /-- Increment either keeps the length or extends an all-`true` list by one —
 and in the latter case the old length is forced by the value. -/
@@ -354,21 +338,6 @@ end Machine
 
 /-! ## Generic `LogTM` run helpers -/
 
-/-- `StepsN.head` with the successor configuration supplied up to equality. -/
-theorem _root_.LogspaceTM.LogTM.StepsN.head'' {Alpha Gamma : Type*}
-    {M : LogTM Alpha Gamma} {w : List Alpha} {q : M.Q} {i wh : ℕ} {T : ℕ → M.Delta}
-    {q' : M.Q} {mvI : HeadMove} {dw : M.Delta} {mvW : HeadMove} {u out : List Gamma}
-    {e : M.Config} {N : ℕ} {i2 wh2 : ℕ} {T2 : ℕ → M.Delta}
-    (hη : M.η q (tapeSym w i) (T wh) (wh == 0) = some (q', mvI, dw, mvW, u))
-    (hi : mvI.apply i = i2) (hwh : mvW.apply wh = wh2)
-    (hT : Function.update T wh dw = T2)
-    (rest : M.StepsN w (q', i2, wh2, T2) out e N) :
-    M.StepsN w (q, i, wh, T) (u ++ out) e (N + 1) := by
-  subst hi
-  subst hwh
-  subst hT
-  exact LogspaceTM.LogTM.StepsN.head hη rest
-
 /-- Two runs of the same length from the same configuration coincide. -/
 theorem _root_.LogspaceTM.LogTM.stepsN_same_len {Alpha Gamma : Type*}
     {M : LogTM Alpha Gamma} {w : List Alpha} :
@@ -427,7 +396,7 @@ theorem _root_.LogspaceTM.LogTM.BStepsN.end_le {Alpha Gamma : Type*}
     (h : LogspaceTM.LogTM.BStepsN M w B cfg out e N) : e.2.2.1 ≤ B :=
   h.2 N out e (le_refl N) h.1
 
-/-- `StepsN.head''` for bounded runs: one bounded step in front. -/
+/-- One bounded step in front of a bounded run. -/
 theorem _root_.LogspaceTM.LogTM.BStepsN.head'' {Alpha Gamma : Type*}
     {M : LogTM Alpha Gamma} {w : List Alpha} {B : ℕ} {q : M.Q} {i wh : ℕ}
     {T : ℕ → M.Delta} {q' : M.Q} {mvI : HeadMove} {dw : M.Delta} {mvW : HeadMove}
@@ -487,30 +456,6 @@ theorem _root_.LogspaceTM.LogTM.stepsN_le_of_halted {Alpha Gamma : Type*}
   cases hsuf with
   | head hη rest =>
       exact LogspaceTM.LogTM.not_halted_of_step hη hh
-
-/-- Every machine either runs for `K` steps or halts earlier. -/
-theorem _root_.LogspaceTM.LogTM.exists_run_upto {Alpha Gamma : Type*}
-    {M : LogTM Alpha Gamma} (w : List Alpha) :
-    ∀ K : ℕ, ∃ (out : List Gamma) (e : M.Config) (K' : ℕ), K' ≤ K ∧
-      M.StepsN w M.initConfig out e K' ∧ (K' = K ∨ M.Halted w e) := by
-  intro K
-  induction K with
-  | zero => exact ⟨[], M.initConfig, 0, le_refl 0, LogspaceTM.LogTM.StepsN.refl _, Or.inl rfl⟩
-  | succ K ih =>
-      obtain ⟨out, e, K', hle, hrun, hcase⟩ := ih
-      rcases hcase with rfl | hhalt
-      · obtain ⟨eq, ei, ewh, eT⟩ := e
-        rcases hη : M.η eq (tapeSym w ei) (eT ewh) (ewh == 0)
-            with _ | ⟨q', mvI, dw, mvW, u⟩
-        · refine ⟨out, (eq, ei, ewh, eT), K', by omega, hrun, Or.inr ?_⟩
-          show M.η eq (tapeSym w ei) (eT ewh) (ewh == 0) = none
-          exact hη
-        · exact ⟨out ++ (u ++ []),
-            (q', mvI.apply ei, mvW.apply ewh, Function.update eT ewh dw),
-            K' + 1, le_refl _,
-            hrun.trans (LogspaceTM.LogTM.StepsN.head hη (LogspaceTM.LogTM.StepsN.refl _)),
-            Or.inl rfl⟩
-      · exact ⟨out, e, K', by omega, hrun, Or.inr hhalt⟩
 
 section Runs
 

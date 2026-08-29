@@ -15,7 +15,7 @@ distributes over `++` and over `flatten ∘ replicate`, together with the run-si
 primitives: the unmarked single step `fStepN`, the unmarked block map `bFN`, and the
 **unmarked-segment fold** (`foldl_blocks_unmarked`): folding the DFA over a run of
 mark-free blocks is the `bFN` iterate.  These are the GA-2 ingredients for the
-separated-group shift lemma (`acceptsN_moveGroup_step` below), which drives the growth
+separated-group shift lemma (`acceptsN_moveGroup` below), which drives the growth
 collapse (GA-3).
 
 Axiom-clean (`[propext, Classical.choice, Quot.sound]`): pure list/automaton algebra.
@@ -24,7 +24,7 @@ import RequestProject.MSOMarkN
 
 namespace SliceMarkN
 
-open MSO Step MSOMarkN
+open Step MSOMarkN
 
 /-! ## The offset-generalised marker -/
 
@@ -262,7 +262,6 @@ theorem shiftGroup_bitsAt_inside {m : ℕ} (ī : Fin m → ℕ) (b c δ q : ℕ)
     show decide (q + 2 * δ = ī i) = decide (q = ī i)
     rw [decide_eq_false (by omega), decide_eq_false (by omega)]
 
-set_option maxHeartbeats 800000 in
 /-- **The separated-group shift lemma** (route GA-2).  If the marks of `ī` split into
 a LEFT part (positions `< 1+2a`), a GROUP (positions in `[1+2b, 1+2c)`), and a RIGHT
 part (positions `≥ 1+2d`), with `a ≤ b ≤ c`, `c + δ ≤ d ≤ n`, then shifting the group
@@ -431,27 +430,5 @@ theorem acceptsN_moveGroup (n : ℕ) (ī : Fin m → ℕ) (a b c d δ : ℕ)
       · omega
     rw [hgapL, hgapL', hgapR, hgapR', hiter1, hiter2]
   rw [hkey]
-
-
-/-- **Single-period step** (the GA-3 interface): with the eventual periodicity of the
-`bFN`-iterate function (`hEP` at threshold `mv`, period `pv`), a group flanked by an
-unmarked gap of length `≥ mv` on the left and `≥ mv + pv` on the right may move right
-by one period. -/
-theorem acceptsN_moveGroup_step (mv pv : ℕ) (hpv : 1 ≤ pv)
-    (hEP : ∀ g, mv ≤ g → (bFN M)^[g + pv] = (bFN M)^[g])
-    (n : ℕ) (ī : Fin m → ℕ) (a b c d : ℕ)
-    (hab : a ≤ b) (hbc : b ≤ c) (hdn : d ≤ n)
-    (hgapL : mv ≤ b - a) (hgapR : mv + pv ≤ d - c)
-    (hclass : ∀ i, ī i < 1 + 2 * a ∨ (1 + 2 * b ≤ ī i ∧ ī i < 1 + 2 * c)
-      ∨ 1 + 2 * d ≤ ī i) :
-    M.accepts (markAtN m (wrappedFlat n) (shiftGroup m ī b c pv))
-      ↔ M.accepts (markAtN m (wrappedFlat n) ī) := by
-  refine acceptsN_moveGroup M n ī a b c d pv hab hbc (by omega) hdn hclass ?_ ?_
-  · rw [show b + pv - a = (b - a) + pv from by omega]
-    exact hEP (b - a) hgapL
-  · have h := hEP (d - (c + pv)) (by omega)
-    rw [show d - (c + pv) + pv = d - c from by omega] at h
-    exact h.symm
-
 
 end SliceMarkN

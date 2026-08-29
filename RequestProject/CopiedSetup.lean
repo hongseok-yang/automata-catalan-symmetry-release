@@ -25,8 +25,8 @@ import RequestProject.SliceDstarBridgeGA
 
 namespace CopiedSetup
 
-open WRP Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell
-  CopiedCells CopiedMark CopiedRank CopiedDstar MSOMarkN SliceMarkN
+open WRP Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell CopiedCells CopiedRank
+  CopiedDstar MSOMarkN SliceMarkN
 open scoped Classical
 
 variable {d : ℕ}
@@ -499,30 +499,6 @@ theorem rank_cell_decomp_fibred_uniform {B : ℕ} (P : WRP.Presentation Step Ste
   obtain ⟨R, Bn, PR, PBn, h1, h2, h3⟩ := hterm mS hm rs hv
   exact ⟨R, Bn, PR, PBn, h1, h2,
     fun t n ht htn => by rw [hκ]; exact h3 t n ht htn⟩
-
-/-- A zero base-slope recurrence is constant on each pinned period class.  This is the
-rank-only arithmetic needed before feeding slope-zero classes to the `φ_rs` anchoring
-producer: the constancy is per residue class `m + r + p * k`, not across all residues. -/
-theorem rank_part_eq_of_zero_period_slope {d : ℕ} {R : ℕ → Fin d → ℤ}
-    {PR : Fin d → ℤ} {m p r k : ℕ}
-    (hrec : ∀ t, m ≤ t → R (t + p) = R t + PR) (hPR : PR = 0) :
-    R (m + r + p * k) = R (m + r) := by
-  induction k with
-  | zero =>
-      rw [Nat.mul_zero, add_zero]
-  | succ k ih =>
-      have harg : m + r + p * (k + 1) = (m + r + p * k) + p := by ring
-      rw [harg, hrec (m + r + p * k) (by omega), ih, hPR]
-      simp
-
-/-- Two representatives in the same pinned period class have equal `R`-part when the
-base-slope is zero. -/
-theorem rank_part_eq_of_zero_period_slope₂ {d : ℕ} {R : ℕ → Fin d → ℤ}
-    {PR : Fin d → ℤ} {m p r k k' : ℕ}
-    (hrec : ∀ t, m ≤ t → R (t + p) = R t + PR) (hPR : PR = 0) :
-    R (m + r + p * k) = R (m + r + p * k') := by
-  rw [rank_part_eq_of_zero_period_slope (R := R) (PR := PR) hrec hPR,
-    rank_part_eq_of_zero_period_slope (R := R) (PR := PR) hrec hPR]
 
 /-! ## The fibred setup fold -/
 

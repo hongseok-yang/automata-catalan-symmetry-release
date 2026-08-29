@@ -81,8 +81,8 @@ theorem lexLt_negtrans (x y z : Fin d → ℤ)
 /-! ## Lex algebra: translation and scaling
 
 These reduce a comparison of two boundary vectors `F(m+r) + k·P` and `F(m+r) + k₀·P`
-to a comparison of `(k-k₀)·P` against the zero vector — the vector analog of the
-`omega`/`nlinarith` slope-sign arithmetic in `SliceBoundaryMinCore.bvalue_is_min`. -/
+to a comparison of `(k-k₀)·P` against the zero vector — the vector analogue of the
+`omega`/`nlinarith` slope-sign arithmetic on scalar boundary values. -/
 
 /-- **Translation invariance.** `lexLt x y ↔ lexLt (x - y) 0`. -/
 theorem lexLt_sub_zero (x y : Fin d → ℤ) :

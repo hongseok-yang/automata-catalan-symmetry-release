@@ -3,7 +3,8 @@
 
 The general-arity discharge uses the growth hypothesis `|T(W_n)| ≤ C(n+1)`
 STRUCTURALLY: a selected atom whose marks form two bulk clusters admits, by composed
-`SliceMarkN.acceptsN_moveGroup_step` moves, a `Θ((n/p)²)`-sized orbit of distinct
+group moves (`acceptsN_moveGroup_multi`, `acceptsN_moveGroup_left`), a `Θ((n/p)²)`-sized orbit of
+distinct
 selected atoms — contradicting linear growth for large `n`.  Hence eventually every
 selected atom has the ONE-CLUSTER property (all block coordinates within `[0,B) ∪
 (n−B, n) ∪ [t−B, t+B]` for a single base `t`), and the selected-atom set is a finite
@@ -15,13 +16,9 @@ This file starts the GA-3 build with its self-contained combinatorial pieces:
   any `(m+1)·G` consecutive blocks contain a fully unmarked run of `G` blocks.  This
   is what locates the flanking gaps required by the shift lemma inside any stretch
   between two far-apart bulk coordinates.
-* `shiftGroup_ne` — distinct shift amounts give distinct tuples (the orbit members
-  are pairwise distinct atoms), provided the group window is inhabited.
-
-Not formalised here (the rest of the GA-3 plan): the canonical-configuration
-reachability (park both bulk clusters left by monotone move sequences, then place
-them at arbitrary grid targets), the orbit count, and the contradiction against the
-`IsOutput` length bound.
+* `no_two_bulk_groups_right` / `no_two_bulk_groups_between` / `no_two_bulk_groups_left` — the
+  three placements of the second bulk cluster, each contradicting the linear-growth bound via
+  `quadratic_beats_linear` and the orbit count `card_le_of_injOn_accepted`.
 
 Axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -31,7 +28,7 @@ import RequestProject.WrappedFlat
 
 namespace SliceGrowthCollapse
 
-open MSO Step MSOMarkN SliceMarkN
+open MSO MSOMarkN SliceMarkN
 
 /-- **Pigeonhole gap-finder.**  There are at most `m` marks, so among any `m + 1`
 consecutive chunks of `G` blocks some chunk is fully unmarked. -/
@@ -78,18 +75,6 @@ theorem exists_unmarked_gap {m : ℕ} (ī : Fin m → ℕ) (G lo : ℕ) :
     rcases Nat.lt_or_ge t.val t'.val with hlt | hge
     · exact key t t' hlt hteq
     · exact key t' t (by omega) hteq.symm
-
-/-- Distinct shift amounts give distinct tuples, as soon as the group window is
-inhabited: the orbit members of the move sequence are pairwise distinct atoms. -/
-theorem shiftGroup_ne {m : ℕ} (ī : Fin m → ℕ) (b c δ δ' : ℕ) (hne : δ ≠ δ')
-    (hin : ∃ i, 1 + 2 * b ≤ ī i ∧ ī i < 1 + 2 * c) :
-    shiftGroup m ī b c δ ≠ shiftGroup m ī b c δ' := by
-  obtain ⟨i, hi⟩ := hin
-  intro heq
-  have h := congrFun heq i
-  unfold shiftGroup at h
-  rw [if_pos hi, if_pos hi] at h
-  omega
 
 /-- Iterate-function periodicity extends to arbitrary multiples of the period. -/
 theorem bFN_iterate_period_mul {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m)) (mv pv : ℕ)
@@ -145,7 +130,6 @@ theorem card_le_of_injOn_accepted {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m))
   have hl := hcard (S.toList.map f) hnodup hmem
   rwa [List.length_map, Finset.length_toList] at hl
 
-
 /-- **Per-copy growth bound from `IsOutput`**: a `Nodup` list of selected tuples of one
 copy embeds into the output's atom list, so its length is at most the output length. -/
 theorem nodup_selected_length_le {Alpha Gamma : Type*} (P : WRP.Presentation Alpha Gamma)
@@ -177,14 +161,6 @@ theorem exists_selDFA (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K) :
   obtain ⟨M, hM⟩ := MSOMarkN.markedDFAN_exists (P.toPoly.arity c) φ
   exact ⟨M, fun w ī hval => (hM w ī hval).trans (hφ w ī).symm⟩
 
-
-/-- The zero shift is the identity. -/
-theorem shiftGroup_zero {m : ℕ} (ī : Fin m → ℕ) (b c : ℕ) :
-    shiftGroup m ī b c 0 = ī := by
-  funext i
-  unfold shiftGroup
-  split <;> omega
-
 /-- Shifted tuples remain valid positions of `W_n` when the moved window stays inside
 the blocks. -/
 theorem shiftGroup_valid {m : ℕ} (ī : Fin m → ℕ) (b c δ n : ℕ) (hcd : c + δ ≤ n)
@@ -199,7 +175,6 @@ theorem shiftGroup_valid {m : ℕ} (ī : Fin m → ℕ) (b c δ n : ℕ) (hcd : 
     omega
   · rw [if_neg hcond]
     exact hv
-
 
 /-- An unmarked block window excludes all mark positions: every coordinate lies
 strictly left or strictly right of it. -/
@@ -436,7 +411,6 @@ theorem acceptsN_moveGroup_left {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m))
       · exact absurd h1 hB
       · right; right; omega
 
-
 /-- **The inward two-move quadratic family** (adjudicated L2): the long unmarked run
 lies BETWEEN the two witness groups; the left group slides rightward into it
 (parameter `u`) and the right group leftward into it (parameter `v`); the two
@@ -569,7 +543,6 @@ theorem no_two_bulk_groups_between {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m))
   have hScard : S.card = h * h := by
     rw [hSdef, Finset.card_product, Finset.card_range]
   omega
-
 
 /-- **The leftward two-move quadratic family** (adjudicated L3): the long unmarked run
 lies LEFT of both witness groups; the left group parks into it (parameter
@@ -709,7 +682,6 @@ theorem no_two_bulk_groups_left {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m))
     omega
   omega
 
-
 /-- **Quadratic beats linear** (adjudicated L4): beyond an explicit threshold, the
 square of `(n / D - E) / (2p)` exceeds `C * (n + 1)`. -/
 theorem quadratic_beats_linear (C D E p : ℕ) (hp : 1 ≤ p) (hD : 1 ≤ D) :
@@ -760,7 +732,6 @@ theorem quadratic_beats_linear (C D E p : ℕ) (hp : 1 ≤ p) (hD : 1 ≤ D) :
     have t2 : C*D*(2*p+E+1) = C*D*(2*p+E) + C*D := by ring
     omega
   omega
-
 
 /-- **The bad-pair collapse** (adjudicated L5, tuple level): for any per-atom DFA `M`
 and growth budget `C`, beyond explicit thresholds `B, N` no accepted valid tuple has
@@ -839,7 +810,6 @@ theorem bad_pair_collapse {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m)) (C : ℕ)
     exact no_two_bulk_groups_right M mv pv G hpv hGdef hEP C n hcard ī hval hacc
       sA sB σ G' h hgapA hgapB hbig
       ⟨i₁, by omega⟩ ⟨i₂, by omega⟩ hσn hroom hcount
-
 
 /-- **The bad-pair collapse, pinned and machine-quantified** (§9 tower,
 Stage D): the depth constant is the EXPLICIT `(m+2)·(mv+pv)+2` and the
@@ -930,27 +900,6 @@ theorem bad_pair_collapse_pinned {m : ℕ} (mv pv : ℕ) (hpv : 1 ≤ pv) (C : �
       sA sB σ G' h hgapA hgapB hbig
       ⟨i₁, by omega⟩ ⟨i₂, by omega⟩ hσn hroom hcount
 
-
-/-- The budget-hoisted corollary: `B` before `C`. -/
-theorem bad_pair_collapse_hoisted {m : ℕ} (M : SliceMSO.DetAuto (MarkedN m)) :
-    ∃ B : ℕ, 1 ≤ B ∧ ∀ C : ℕ, ∃ N : ℕ, ∀ n, N ≤ n → ∀ ī : Fin m → ℕ,
-      (∀ i, ī i < (wrappedFlat n).length) →
-      M.accepts (markAtN m (wrappedFlat n) ī) →
-      (∀ l : List (Fin m → ℕ), l.Nodup →
-        (∀ x ∈ l, (∀ i, x i < (wrappedFlat n).length) ∧
-          M.accepts (markAtN m (wrappedFlat n) x)) →
-        l.length ≤ C * (n + 1)) →
-      ∀ (i₁ i₂ : Fin m) (j j' : ℕ),
-        (ī i₁ = 1 + 2 * j ∨ ī i₁ = 1 + 2 * j + 1) →
-        (ī i₂ = 1 + 2 * j' ∨ ī i₂ = 1 + 2 * j' + 1) →
-        B ≤ j → j + B ≤ j' → j' + B ≤ n → False := by
-  obtain ⟨mv, pv, hpv, hEP⟩ := bFN_func_iterate_eventuallyPeriodic M
-  refine ⟨(m + 2) * (mv + pv) + 2, by omega, fun C => ?_⟩
-  obtain ⟨N, hN⟩ := bad_pair_collapse_pinned mv pv hpv C (m := m)
-  exact ⟨N, fun n hn ī hval hacc hcard i₁ i₂ j j' hbj hbj' hBj hjj' hj'n =>
-    hN M hEP n hn ī hval hacc hcard i₁ i₂ j j' hbj hbj'
-      hBj (by omega) (by omega)⟩
-
 /-- **The one-cluster property** (adjudicated L6, the GA-3 capstone): for a WRP
 presentation and growth budget `C` there are thresholds `B, N` such that for all
 `n ≥ N`, no selected atom of any copy whose per-copy selected-tuple counts respect
@@ -986,7 +935,6 @@ theorem one_cluster (P : WRP.Presentation Step Step) (C : ℕ) :
   refine hcard l hnd (fun x hx => ?_)
   exact ⟨(hmem x hx).1, ((hM c (wrappedFlat n) x (hmem x hx).1).mp (hmem x hx).2)⟩
 
-
 /-- The growth-budget hypothesis of `one_cluster`, supplied at in-domain slices by
 any output of length `≤ C(n+1)` (downstream: from `hPT` and `hgrow`). -/
 theorem one_cluster_hcard_of_output {Alpha Gamma : Type*} (P : WRP.Presentation Alpha Gamma)
@@ -996,7 +944,6 @@ theorem one_cluster_hcard_of_output {Alpha Gamma : Type*} (P : WRP.Presentation 
       (∀ x ∈ l, P.toPoly.selectedAtom w ⟨c, x⟩) →
       l.length ≤ C * (n + 1) :=
   fun l hnd hsel => le_trans (nodup_selected_length_le P w out hout c l hnd hsel) hlen
-
 
 /-! ## The cells form (the GA-4 interface) -/
 
@@ -1093,6 +1040,5 @@ theorem one_cluster_cells (P : WRP.Presentation Step Step) (C : ℕ) :
           have harg : n - (n - j) = j := by omega
           rw [harg]
           exact hblk
-
 
 end SliceGrowthCollapse

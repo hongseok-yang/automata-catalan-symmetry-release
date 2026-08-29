@@ -1293,8 +1293,6 @@ theorem heightSweep_not_involutive_counterexample :
     · simp [height]
   · native_decide
 
-/-! ## Small verifications of the Narayana sweep -/
-
 /-- Verification: H sends UUDD to UDUD. -/
 theorem heightSweep_UUDD :
     heightSweep [U, U, D, D] = [U, D, U, D] := by native_decide

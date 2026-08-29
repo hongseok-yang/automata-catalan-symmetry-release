@@ -1,16 +1,14 @@
 /-
 # The general-arity equal-rank cell selector — prerequisites (GA-6.3a/b/c)
 
-The GA-6.3 selector (the general-arity mirror of `eqRankD_position_selector`) determines which cells `(c', rs, t)` carry equal-rank selected
-`D`-atoms per residue class of `n`.  This file lands its support layer:
+The GA-6.3 selector `eqRankD_cell_selector` determines which cells `(c', rs, t)` carry equal-rank
+selected `D`-atoms per residue class of `n`.  This file lands it and its support layer:
 
 * `dstarRankGA_lex_min` — no selected `D`-atom's rank lex-precedes the `d*`-rank
-  (the minimality input to the Case-A chain forcing; verbatim port of the arity-1
-  `dstarRank_lex_min` minus the arity hypothesis);
+  (the minimality input to the Case-A chain forcing);
 * `freeze_front_descr` / `freeze_back_descr` — the bundled re-freezes: a cell whose
   base sits in a boundary zone IS a cluster-free cell over the enlarged bound at the
   dummy base `Bh + 1`;
-* `cellTuple_base_det` — a cluster coordinate pins the base;
 * `clusterFree_regionLift` + `cellTuple_regionLift` — descriptor lifting transport;
 * `base_mod_iff` — the base-position residue translation
   `(1+2t) % 2p = (1+2(m'+r)) % 2p ↔ (t−m') % p = r`.
@@ -72,14 +70,6 @@ theorem freeze_back_descr {B Bh k : ℕ} (hBB : B ≤ Bh) (hBh1 : 1 ≤ Bh)
 
 /-! ## GA-6.3b: glue -/
 
-/-- A cluster coordinate pins the base. -/
-theorem cellTuple_base_det {B k : ℕ} (rs : Fin k → RegionSpec B) (i₀ : Fin k)
-    (δ₀ : Fin B) (e₀ : Bool) (h : rs i₀ = .cluster δ₀ e₀) (t n : ℕ) :
-    cellTuple rs t n i₀ = 1 + 2 * (t + δ₀.val) + e₀.toNat := by
-  show (rs i₀).posAt t n = _
-  rw [h]
-  rfl
-
 /-- Lifting preserves cluster-freedom in both directions. -/
 theorem clusterFree_regionLift {B B' : ℕ} (h : B ≤ B') (r : RegionSpec B) :
     clusterFree (regionLift h r) ↔ clusterFree r := by
@@ -119,9 +109,8 @@ theorem base_mod_iff (m' p t r : ℕ) (hp : 1 ≤ p) (hr : r < p) (ht : m' ≤ t
 
 /-! ## GA-6.3e: the equal-rank cell selector -/
 
-set_option maxHeartbeats 1600000 in
-/-- **The equal-rank cell selector** (GA-6.3e, the general-arity mirror of
-`eqRankD_position_selector`).  Parameterized on the GA-5 monolith output
+/-- **The equal-rank cell selector** (GA-6.3e, the general-arity cell form of the arity-1
+position selector).  Parameterized on the GA-5 monolith output
 `(dstarC, N0, hCaff, hCagree)`; produces `M := 2p`, `mthr := 2·tBk`, a class period
 `p0`, a threshold `N1`, and per-class two-layer data: bulk residue classes `S₁` (the
 collinear full classes — both Case-A chain endpoints land in the freeze zones) over
@@ -622,7 +611,6 @@ theorem eqRankD_cell_selector (P : WRP.Presentation Step Step) (hV : P.Valid) (C
         · rw [if_neg hcond] at hf
           exact absurd hf (Finset.notMem_empty _)
       · exact absurd hk (Finset.notMem_empty _)
-
 
 /-- **The self-contained selector** (GA-6.3f): the zero-shim wrapper destructuring the
 GA-5 monolith. -/

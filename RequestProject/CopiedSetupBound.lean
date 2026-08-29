@@ -15,8 +15,8 @@ import RequestProject.CopiedSlopeBound
 
 namespace CopiedSetup
 
-open WRP Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell
-  CopiedCells CopiedMark CopiedRank CopiedDstar MSOMarkN SliceMarkN
+open WRP Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell CopiedCells CopiedRank
+  CopiedDstar MSOMarkN SliceMarkN
 open scoped Classical
 
 variable {d : ℕ}

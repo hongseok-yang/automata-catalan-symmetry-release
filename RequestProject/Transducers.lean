@@ -13,10 +13,7 @@ weighted-rank polyregular class (`WRP.IsWRP`, `def:wrp`), `SRR1.lean` the
 scan-order fragment (`WRP.IsSRR1`), `TwoDFT.lean` the two-way transducers,
 and `Multihead.lean`/`LogspaceTM.lean` the logspace machine models.
 -/
-import Mathlib
 import RequestProject.DyckPath
-
-open Step
 
 /-! ## Realisation -/
 
@@ -56,5 +53,3 @@ def DFA'.language (A : DFA' Alpha) : Set (List Alpha) :=
 A language is *regular* if it is accepted by some DFA. -/
 def IsRegularLang {Alpha : Type} (L : Set (List Alpha)) : Prop :=
   ∃ A : DFA' Alpha, A.language = L
-
-

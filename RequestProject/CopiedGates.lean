@@ -21,7 +21,7 @@ import RequestProject.CopiedRank
 
 namespace CopiedGates
 
-open WRP Step CopiedRank
+open WRP Step
 
 /-- **The canonical block form of the copied slice**:
 `U^mS (UD)^n D^mS` as `pre ++ loop^n ++ suf`. -/

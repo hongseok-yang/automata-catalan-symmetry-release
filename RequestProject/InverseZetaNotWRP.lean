@@ -9,12 +9,11 @@ it unconditionally:
 * `pyramid_section_not_affine` — the arithmetic finisher: the ceiling
   `(m+n+m)/(m+1)` violates row-affineness at `m := p` (two evaluations;
   `(p+1)·s = p` is impossible);
+* `wrp_not_closed_under_inverse_of_rowAffine` — the closure form: WRP contains
+  a realiser of ζ (`zetaSweep_isWRP`) but no realiser of ζ⁻¹;
 * `inverse_zeta_not_wrp_of_rowAffine` — the honest, ζ-bijectivity-free
   `cor:inverse-zeta-not-wrp`, conditional on the row theorem: no WRP transduction is a
   left inverse of `zetaMap` on Dyck paths;
-* `wrp_not_closed_under_inverse_of_rowAffine` — the closure form: WRP contains
-  a realiser of ζ (`zetaSweep_isWRP`) but no realiser of ζ⁻¹.
-
 THE QUANTIFIER ORDER IN `RowAffine` IS LOAD-BEARING: the period `p` is fixed
 BEFORE `m`.  The per-`m` form (period allowed to depend on `m`) is vacuous
 here, because for each fixed `m` the ceiling IS eventually affine in `n` on
@@ -24,8 +23,6 @@ linear-growth slice-total WRP transduction via the fibred re-rooting route;
 -/
 import RequestProject.InverseZetaFas
 import RequestProject.ZetaWRP
-
-open Step
 
 /-- **The frozen interface** (the row-uniform fas-only fragment of
 `thm:two-parameter-semilinearity`): ONE period `p ≥ 1` such that for EVERY `m ≥ 1` the section

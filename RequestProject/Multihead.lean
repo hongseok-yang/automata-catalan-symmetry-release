@@ -26,8 +26,7 @@ run relation is *step-indexed*, so halting runs carry an explicit length.
   discipline `rmark_no_right`).
 * `SpaceBound` / `IsLogspaceMH` — the linear counter bound and the
   logspace-computable partial maps in the multihead model.
-* `stepsN_split`, `halting_length_le`, `computes_halting_length` — **the
-  polynomial halting-time bound**: a halting run of a space-bounded machine
+* `stepsN_split`, `halting_length_le`, `computes_halting_length` — **the polynomial halting-time bound**: a halting run of a space-bounded machine
   never repeats a configuration, so its length is less than
   `|Q| · (n+2)^h · (C·(n+1)+1)^c` — polynomial in `n` for fixed machine data.
 * `ofCounter` — the single-head embedding of `Logspace.CounterDFT`, with the
@@ -231,7 +230,6 @@ theorem stepsN_invariant {w : List Alpha} {P : M.Config → Prop}
   | head hη _ ih =>
       intro hP
       exact ih (hstep _ _ _ _ _ _ _ hP hη)
-
 
 /-! ## The generic head bound -/
 

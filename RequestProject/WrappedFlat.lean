@@ -242,8 +242,6 @@ theorem dinv_le_coarea (Q : List Step) (hQ : IsDyckPath Q) :
   rw [Finset.sum_sub_distrib, sum_fin_areaSeq Q, sum_fin_cast_int, hlen]
   rfl
 
-/-! ## `lem:wrapped-flat-stats` specific values for small n -/
-
 /-- Verification: `area(W_0) = 0`. -/
 theorem area_wrappedFlat_zero : area (wrappedFlat 0) = 0 := by native_decide
 

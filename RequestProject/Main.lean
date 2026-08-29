@@ -71,11 +71,11 @@ The headline results and where they live:
 See `README.md` for building and verifying, and `ARCHITECTURE.md` for the
 module map.
 -/
+import Mathlib
 import RequestProject.AdditiveSweep
 import RequestProject.AdditiveSweepWRP
 import RequestProject.AreaSeq
 import RequestProject.ArityLift
-import RequestProject.CopiedAchSetFold
 import RequestProject.CopiedAchSetFold2
 import RequestProject.CopiedAchieverLocus
 import RequestProject.CopiedAffineAt
@@ -93,7 +93,6 @@ import RequestProject.CopiedDischarge
 import RequestProject.CopiedDstar
 import RequestProject.CopiedDstarC
 import RequestProject.CopiedDstarCMS
-import RequestProject.CopiedFullGate
 import RequestProject.CopiedGateEP
 import RequestProject.CopiedGates
 import RequestProject.CopiedKernels
@@ -107,7 +106,6 @@ import RequestProject.CopiedRegionF
 import RequestProject.CopiedSelConst
 import RequestProject.CopiedSelUniform
 import RequestProject.CopiedSelector
-import RequestProject.CopiedSelectorMS
 import RequestProject.CopiedSetup
 import RequestProject.CopiedSetupBound
 import RequestProject.CopiedSetupMS
@@ -115,7 +113,6 @@ import RequestProject.CopiedSlopeBound
 import RequestProject.CopiedSufRunGate
 import RequestProject.CopiedTie2b
 import RequestProject.CopiedTieBridge
-import RequestProject.CopiedTieCounting
 import RequestProject.CopiedTieGate
 import RequestProject.CopiedTieGateF
 import RequestProject.CopiedTieSemilinear2
@@ -162,10 +159,8 @@ import RequestProject.SliceAffine
 import RequestProject.SliceAffineSelect
 import RequestProject.SliceAutomata
 import RequestProject.SliceBoundaryMinCore
-import RequestProject.SliceBridge
 import RequestProject.SliceCellClassifyGA
 import RequestProject.SliceCellConvGA
-import RequestProject.SliceConv
 import RequestProject.SliceCount
 import RequestProject.SliceCountGlobal
 import RequestProject.SliceCountSlice
@@ -207,9 +202,7 @@ import RequestProject.SliceRankAffine
 import RequestProject.SliceRankAtom
 import RequestProject.SliceRankBlock
 import RequestProject.SliceRankRegions
-import RequestProject.SliceRankThreshold
 import RequestProject.SliceReRoot
-import RequestProject.SliceSelCount
 import RequestProject.SliceSelect
 import RequestProject.SliceSemilinear
 import RequestProject.SliceSemilinear2

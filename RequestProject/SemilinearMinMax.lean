@@ -191,10 +191,6 @@ theorem isSemilinearSet_minGraph_sum {p : ℕ} {S : Set (Fin p ⊕ Fin 1 → ℕ
 
 end MinMaxCoord
 
-/-! ## The `Fin (p+1)` packaging: least value of the last coordinate -/
-
-section MinGraph
-
 /-- **Min graph, `Fin (p+1)` packaging.**  For semilinear `S ⊆ ℕ^(p+1)`, the set of `z ∈ S`
 whose last coordinate is the least value that keeps the point in `S` is semilinear. -/
 theorem isSemilinearSet_minGraph {p : ℕ} {S : Set (Fin (p + 1) → ℕ)} (hS : IsSemilinearSet S) :
@@ -291,18 +287,11 @@ theorem isSemilinearSet_leastGraph {p : ℕ} (R : (Fin p → ℕ) → ℕ → Pr
   · rintro ⟨hmem, hlb⟩
     exact ⟨hmem, fun m hm => hlb m ((hup m).mpr hm)⟩
 
-end MinGraph
-
-/-! ## Lexicographic argmin -/
-
-section Lex
-
-variable {A : Set ℕ}
-
 /-- Strict lexicographic order on tuples: `v` precedes `w` at the first differing
 coordinate. -/
 def LexLt {q : ℕ} (v w : Fin q → ℕ) : Prop :=
   ∃ j : Fin q, (∀ i : Fin q, i < j → v i = w i) ∧ v j < w j
+variable {A : Set ℕ}
 
 /-- Distinct tuples are lexicographically comparable. -/
 theorem lexLt_or_of_ne {q : ℕ} {v w : Fin q → ℕ} (h : v ≠ w) : LexLt v w ∨ LexLt w v := by
@@ -391,7 +380,5 @@ theorem lexArgmin_unique {ι : Type} {q : ℕ} {S : Set (ι ⊕ Fin q → ℕ)} 
   cases x with
   | inl i => exact congrFun hagree i
   | inr j => exact congrFun hcore j
-
-end Lex
 
 end SemilinearMinMax

@@ -22,7 +22,7 @@ import RequestProject.SliceDstarGateGA
 
 namespace CopiedRegionF
 
-open WRP Step SliceFamilyCell SliceDstarGateGA CopiedCells CopiedDstar
+open SliceFamilyCell SliceDstarGateGA CopiedCells CopiedDstar
 
 /-! ## Cluster-freedom (Bool-valued) -/
 

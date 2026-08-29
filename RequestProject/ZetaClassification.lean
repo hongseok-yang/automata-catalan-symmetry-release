@@ -668,6 +668,7 @@ theorem area_zetaMap_eq_dinv (P : List Step) (hP : IsDyckPath P) :
 **Key property of ζ (`def:zeta`, paper.tex).**
 `ζ` preserves the semilength: `|ζ(P)| = |P|`.
 -/
+
 theorem length_zetaMap_eq (P : List Step) (hP : IsDyckPath P) :
     (zetaMap P).length = P.length := by
       -- Since each entry a_i in the area sequence contributes exactly two letters to the zeta map output, the total length is 2n.
@@ -1314,6 +1315,3 @@ theorem inRegularProbe_zetaMap_twoPyramid (m n : ℕ) (hm : 0 < m) (hn : 0 < n) 
     rw [if_pos hle]
     -- exhibit q = m - 1, s = n - m
     exact ⟨m - 1, n - m, rfl⟩
-
-
-/-! ## Zeta is not regular/MSO (`cor:zeta-not-regular`, paper.tex) -/

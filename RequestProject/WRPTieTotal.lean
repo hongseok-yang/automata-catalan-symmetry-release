@@ -39,8 +39,6 @@ Everything here is axiom-clean.
 -/
 import RequestProject.WRPArityPos
 
-open MSO Step
-
 namespace WRP
 
 variable {Alpha Gamma : Type*}

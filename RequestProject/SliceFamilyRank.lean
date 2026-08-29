@@ -247,7 +247,6 @@ theorem rankTerm_cell_decomp {B k : ℕ} (κ : RankTerm Step d k)
         rw [list_sum_pi_apply, list_sum_pi_apply]
         ring
 
-
 /-- **The family rank shape at the presentation level** (route GA-4, capstone): the
 rank of the atom a cell describes splits as `R(t) + B(n)` on the window, with both
 parts `RankAffine`. -/
@@ -260,6 +259,5 @@ theorem rank_cell_decomp {B : ℕ} (P : WRP.Presentation Step Step) (c : Fin P.t
   obtain ⟨κ, hκ⟩ := P.rankReg c
   obtain ⟨R, Bn, hR, hBn, heq⟩ := rankTerm_cell_decomp κ r
   exact ⟨R, Bn, hR, hBn, fun t n ht htn => by rw [hκ, heq t n ht htn]⟩
-
 
 end SliceFamilyRank

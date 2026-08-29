@@ -31,7 +31,6 @@ open scoped Classical
 
 /-! ## GA-7.3: the total selected-`U` count -/
 
-set_option maxHeartbeats 800000 in
 /-- **The total selected-`U` count is affine-on-residues** (GA-7.3): the kernel
 pipeline shakedown — frozen cells are EP indicators, bulk cells feed the gated
 convolution through the cell-tuple convolution form. -/
@@ -208,7 +207,6 @@ theorem lexLt_sub_right {d : ℕ} (x y z : Fin d → ℤ) :
     exact ⟨i, fun j hj => by have := hpre j hj; simp only [] at *; omega,
       by simp only [] at *; omega⟩
 
-set_option maxHeartbeats 1600000 in
 /-- **The strict count is affine-on-residues** (GA-7.4): selected `U`-atoms whose rank
 lex-precedes the `d*`-rank. -/
 theorem strict_count_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ)
@@ -558,7 +556,6 @@ theorem vec_eq_sub_right {d : ℕ} (x y z : Fin d → ℤ) :
   constructor <;> intro h <;> funext i <;> have := congrFun h i <;>
     omega
 
-set_option maxHeartbeats 1600000 in
 /-- **The TIE count is affine-on-residues** (GA-7.5): selected `U`-atoms of `d*`-rank
 that `atomOrd`-precede every equal-rank selected `D`-atom. -/
 theorem tie_count_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ)
@@ -911,7 +908,6 @@ theorem tie_count_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (C : ℕ)
           subst ht
           exact hQZ hQ
 
-
 /-! ## GA-7.6: the pinned deliverables -/
 
 /-- **The fas-predicate trichotomy** (the keystone split): on `D`-present slices the
@@ -1022,7 +1018,6 @@ theorem fas_pred_split_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (n : �
   · rw [if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩), if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩),
       if_neg (fun hc => hsU ⟨hc.1, hc.2.1⟩)]
 
-set_option maxHeartbeats 800000 in
 /-- **The first-ascent count is affine-on-residues** (GA-7.6, THE pinned deliverable):
 agrees with `gatedFasCountGA` past a threshold, with NO domain or `D`-presence
 hypothesis — the three-way Boolean select absorbs both. -/
@@ -1238,6 +1233,5 @@ theorem tailU_count_affineOnResidues_GA (P : WRP.Presentation Step Step) (hV : P
     beta_reduce
     rw [if_neg (by omega)]
   exact SliceFasCount.AffineOnResidues.sub_of_partition hg2A hf2A hpart
-
 
 end SliceFasCountGA

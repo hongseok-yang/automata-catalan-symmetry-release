@@ -48,16 +48,6 @@ theorem congr {F G : ℕ → ℤ} (h : ∀ n, F n = G n) (hF : AffineOnResiduesZ
   obtain ⟨m, p, s, hp, hF⟩ := hF
   exact ⟨m, p, s, hp, fun r k => by rw [← h, ← h]; exact hF r k⟩
 
-/-- Transfer along eventual pointwise equality. -/
-theorem congr_eventually {F G : ℕ → ℤ} {N : ℕ} (h : ∀ n, N ≤ n → F n = G n)
-    (hG : AffineOnResiduesZ G) : AffineOnResiduesZ F := by
-  obtain ⟨mg, pg, sg, hpg, hg⟩ := hG
-  refine ⟨max N mg, pg, fun r => sg (max N mg + r - mg), hpg, fun r k => ?_⟩
-  set m := max N mg with hm
-  rw [h _ (show N ≤ m + r + pg * k from by omega), h _ (show N ≤ m + r from by omega)]
-  have hb : m + r = mg + (m + r - mg) := by omega
-  rw [show m + r + pg * k = mg + (m + r - mg) + pg * k from by rw [← hb], hg (m + r - mg) k, ← hb]
-
 theorem const (v : ℤ) : AffineOnResiduesZ (fun _ => v) :=
   ⟨0, 1, fun _ => 0, le_refl 1, fun r k => by simp⟩
 

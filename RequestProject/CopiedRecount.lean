@@ -16,8 +16,7 @@ import RequestProject.SliceCellClassifyGA
 
 namespace CopiedRecount
 
-open WRP Step SliceFamilyCell CopiedCells CopiedRank CopiedRegionF CopiedDstar
-  SliceFasCountGA
+open WRP SliceFamilyCell CopiedCells CopiedRank CopiedRegionF CopiedDstar SliceFasCountGA
 open scoped Classical
 
 /-- The fibred frozen cells: cluster-free descriptor tuples (every coordinate

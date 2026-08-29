@@ -64,7 +64,7 @@ import RequestProject.SliceCountGlobal
 
 namespace TwoParamSemilinearity
 
-open WRP Step SliceSemilinearN MSO CopiedTieSemilinear2
+open WRP Step SliceSemilinearN CopiedTieSemilinear2
 open scoped Classical
 
 /-! ## A. Small additions to the semilinear toolkit
@@ -1007,18 +1007,6 @@ theorem two_param_profile_semilinear
       (fun c _ => hcount _ _ (selUPhi_semilinear P c) (fun mS n => selUPhi_finite P c mS n)
         ⟨C, fun mS n => selUPhi_card_le P hV T C hPT hC c mS n⟩)
 
-/-! ## F. Unconditional row semilinearity from the row-wise counting consequence
-
-What the row-wise consequence `SliceSemilinearN.isSliceFamilySemilinear2_count_global`
-already gives: for every fixed `m ≥ 1`, the row
-`{(fas(T(W_{m,n})), tailU(T(W_{m,n}))) : n ≥ 1}` of `S_T` is semilinear — the
-two-parameter generalisation of `wrp_slice_profile_semilinear` (`NoSwapWRP.lean`),
-which is the row `m = 1` (`W_{1,n} = W_n`).  The period is even uniform across `m`,
-but the base/slope data is not, which is exactly why the joint statement needs
-`TwoParamCountGraph`. -/
-
-section RowTheorem
-
 /-- Raise the threshold of a residue-wise affine description: affinity beyond `m`
 implies affinity beyond any `M ≥ m` (re-aligning the residue offsets). -/
 private theorem affine_shift {p : ℕ} (hp : 1 ≤ p) {f : ℕ → ℕ} {m : ℕ} (M : ℕ)
@@ -1173,8 +1161,6 @@ theorem two_param_profile_row_semilinear
           tailU_eq_totUCnt_sub_fasCnt P hV hmS hdomW hout]⟩
   rw [hset]
   exact hker
-
-end RowTheorem
 
 /-! ## The counting principle, derived from `lem:presburger-counting` -/
 

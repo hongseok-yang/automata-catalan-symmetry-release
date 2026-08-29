@@ -14,9 +14,9 @@ is stated for an arbitrary `pre`).  Layer by layer:
 * `prefixRank_pre_blocks_tail_rankAffine` — THE one new piece of mathematics
   (CS-4): the `D^l`-tail variant of the pre-blocks engine, by splitting the
   fold and reading the tail correction off the post-loop state iterate;
-* `summand_region_decomp_fibred` / `rank_cell_decomp_fibred` — the per-cell
-  `R(t) + B(n)` split over `RegionSpecF`, prefix/suffix stretches landing as
-  constants and the `D`-stretch families;
+* the per-cell summand families over `RegionSpecF` — `summand_copied_block_eq`,
+  `summand_copied_blockD_eq`, `summand_copied_suf_eq`, `summand_copied_sufStretch_eq` —
+  with the prefix/suffix stretches landing as constants;
 * `regionSpecFs` / `regionTuplesF` — the per-`mS` EXPLICIT `Finset`
   enumerations of valid descriptors (deliberately never `Fintype` instances —
   the CS-4 freeze keeps them out of `Finset.univ` period products).
@@ -27,8 +27,7 @@ import RequestProject.CopiedMark
 
 namespace CopiedRank
 
-open WRP Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell
-  CopiedCells CopiedMark
+open Step SliceRankAtom SliceRank SliceFamilyRank SliceFamilyCell CopiedCells CopiedMark
 
 variable {d : ℕ}
 
@@ -197,16 +196,6 @@ theorem prefixRank_copied_blockU (A : RankSource Step d) (mS j n : ℕ)
     rw [copiedSlice_take_block mS j n hm h, List.take_of_length_le hlen.le]
   rw [SliceRankAtom.prefixRank_prefix_stable A _ _ (mS + 2 * j) htake, hlen]
 
-/-- The `pre := U^mS` one-loop prefix-rank family is `RankAffine` — the
-pre-blocks engine consumed verbatim at the copied prefix. -/
-theorem prefixRank_copied_blockU_rankAffine (A : RankSource Step d) (mS : ℕ) :
-    RankAffine (fun j => A.prefixRank
-      (List.replicate mS U ++ (List.replicate j [U, D]).flatten)
-      (List.replicate mS U ++ (List.replicate j [U, D]).flatten).length) := by
-  obtain ⟨m, p, P, hp, haff⟩ :=
-    SliceRank.prefixRank_pre_blocks_affineOnResidues A (List.replicate mS U) [U, D]
-  exact rankAffine_of_pre_blocks hp haff
-
 /-- Copied `stateBefore` at the block-`j` `U`-position is the `j`-fold one-block
 iterate from the post-prefix state. -/
 theorem stateBefore_copied_block (A : RankSource Step d) (mS j n : ℕ)
@@ -235,16 +224,6 @@ theorem summand_copied_block_eq {k : ℕ} (s : Summand Step d k) (mS j : ℕ)
   funext c
   rw [hget]
   simp [smul_eq_mul]
-
-/-- The copied block-`U` summand family is `RankAffine` in `j`. -/
-theorem summand_copied_block_rankAffine {k : ℕ} (s : Summand Step d k)
-    (mS : ℕ) (hm : 1 ≤ mS) :
-    RankAffine (fun j => s.eval (copiedSlice mS (j + 1)) (fun _ => mS + 2 * j)) := by
-  have := s.A.fintypeQ
-  refine RankAffine.congr (fun j => (summand_copied_block_eq s mS j hm).symm) ?_
-  exact (RankAffine.smul s.coeff (prefixRank_copied_blockU_rankAffine s.A mS)).add
-    (rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D])
-      (List.foldl s.A.δ s.A.q0 (List.replicate mS U)) (fun q => s.β q U))
 
 /-- The copied block-`D` summand, in engine form. -/
 theorem summand_copied_blockD_eq {k : ℕ} (s : Summand Step d k) (mS j : ℕ)
@@ -285,21 +264,6 @@ theorem summand_copied_blockD_eq {k : ℕ} (s : Summand Step d k) (mS j : ℕ)
   rw [hgetD?, Option.elim_some, hpref, hstate]
   simp [smul_eq_mul, Pi.add_apply, mul_add]
 
-/-- The copied block-`D` summand family is `RankAffine` in `j`. -/
-theorem summand_copied_blockD_rankAffine {k : ℕ} (s : Summand Step d k)
-    (mS : ℕ) (hm : 1 ≤ mS) :
-    RankAffine (fun j => s.eval (copiedSlice mS (j + 1))
-      (fun _ => mS + 2 * j + 1)) := by
-  have := s.A.fintypeQ
-  refine RankAffine.congr (fun j => (summand_copied_blockD_eq s mS j hm).symm) ?_
-  refine (RankAffine.smul s.coeff
-    ((prefixRank_copied_blockU_rankAffine s.A mS).add ?_)).add ?_
-  · exact rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D])
-      (List.foldl s.A.δ s.A.q0 (List.replicate mS U)) (fun q => s.A.ω q U)
-  · exact rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D])
-      (List.foldl s.A.δ s.A.q0 (List.replicate mS U))
-      (fun q => s.β (s.A.δ q U) D)
-
 /-- The copied suf summand (the wrapped trailing `D` at `mS + 2n`), in engine
 form. -/
 theorem summand_copied_suf_eq {k : ℕ} (s : Summand Step d k) (mS n : ℕ)
@@ -318,16 +282,6 @@ theorem summand_copied_suf_eq {k : ℕ} (s : Summand Step d k) (mS n : ℕ)
   funext c
   rw [hget]
   simp [smul_eq_mul]
-
-/-- The copied suf summand family is `RankAffine` in `n`. -/
-theorem summand_copied_suf_rankAffine {k : ℕ} (s : Summand Step d k)
-    (mS : ℕ) (hm : 1 ≤ mS) :
-    RankAffine (fun n => s.eval (copiedSlice mS n) (fun _ => mS + 2 * n)) := by
-  have := s.A.fintypeQ
-  refine RankAffine.congr (fun n => (summand_copied_suf_eq s mS n hm).symm) ?_
-  exact (RankAffine.smul s.coeff (prefixRank_copied_blockU_rankAffine s.A mS)).add
-    (rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D])
-      (List.foldl s.A.δ s.A.q0 (List.replicate mS U)) (fun q => s.β q D))
 
 /-! ## The suffix-stretch family (the one new piece of mathematics) -/
 
@@ -416,24 +370,8 @@ theorem summand_copied_sufStretch_eq {k : ℕ} (s : Summand Step d k)
   rw [hget, Option.elim_some, hpref, hstate]
   simp [smul_eq_mul]
 
-/-- **The suffix-stretch summand family is `RankAffine` in `n`** (CS-4's one
-new piece of mathematics, assembled from the tail engine). -/
-theorem summand_copied_sufStretch_rankAffine {k : ℕ} (s : Summand Step d k)
-    (mS l : ℕ) (hl : l < mS - 1) :
-    RankAffine (fun n => s.eval (copiedSlice mS n)
-      (fun _ => mS + 2 * n + 1 + l)) := by
-  have := s.A.fintypeQ
-  refine RankAffine.congr
-    (fun n => (summand_copied_sufStretch_eq s mS l hl n).symm) ?_
-  exact (RankAffine.smul s.coeff
-      (prefixRank_pre_blocks_tail_rankAffine s.A (List.replicate mS U) [U, D]
-        (List.replicate (l + 1) D))).add
-    (rankAffine_of_iterate (fun q => List.foldl s.A.δ q [U, D])
-      (List.foldl s.A.δ s.A.q0 (List.replicate mS U))
-      (fun q => s.β (List.foldl s.A.δ q (List.replicate (l + 1) D)) D))
-
-/-- `foldl` over a uniform run is the single-step iterate (local copy; the `CopiedSetupMS` twin imports
-this file). -/
+/-- **`foldl` over a uniform run is the single-step iterate.**  Reading `x^k` through the
+transition `δ` from any start state is the `k`-fold iterate of the one-letter step. -/
 theorem foldl_replicate_iterate {Alpha : Type*} {Q : Type*} (δ : Q → Alpha → Q)
     (x : Alpha) (a : Q) (k : ℕ) :
     List.foldl δ a (List.replicate k x) = (fun q => δ q x)^[k] a := by
@@ -441,290 +379,13 @@ theorem foldl_replicate_iterate {Alpha : Type*} {Q : Type*} (δ : Q → Alpha �
   | zero => rfl
   | succ k ih => rw [List.replicate_succ, List.foldl_cons, Function.iterate_succ_apply, ih]
 
-/-- `(replicate k [x]).flatten = replicate k x` (local copy). -/
+/-- **Flatten of a replicated singleton**: `[x]^k` flattened is `x^k`. -/
 theorem flatten_replicate_singleton {Alpha : Type*} (x : Alpha) (k : ℕ) :
     (List.replicate k [x]).flatten = List.replicate k x := by
   induction k with
   | zero => rfl
   | succ k ih => rw [List.replicate_succ, List.flatten_cons, ih, List.singleton_append,
       ← List.replicate_succ]
-
-/-- **The l-DIRECTION rank recurrence of a suffix-stretch summand** (d3.3 crux): for FIXED `mS, n`, the
-sufIdx-`l` summand FORMULA (`s.coeff • prefixRank(U^mS (UD)^n D^{l+1}) + β(…)`) is `RankAffine` in the
-suffix depth `l`.  The l-twin of `summand_copied_sufStretch_rankAffine` (which binds `n`); strictly easier
-because the prefix `U^mS (UD)^n` and the pre-state are FROZEN — only the `D^{l+1}` tail grows.  Stated on
-the FORMULA (not `s.eval`, which is out of range for `l ≥ mS-1`); `summand_copied_sufStretch_eq` bridges
-formula↔`s.eval` on `l < mS-1`.  PART A = growing-D-tail prefixRank; PART B = `β` over the `D`-iterate. -/
-theorem sufStretch_formula_rankAffine_l {k : ℕ} (s : Summand Step d k) (mS n : ℕ) :
-    RankAffine (fun l =>
-      s.coeff • s.A.prefixRank
-          (List.replicate mS U ++ (List.replicate n [U, D]).flatten ++ List.replicate (l + 1) D)
-          (List.replicate mS U ++ (List.replicate n [U, D]).flatten
-            ++ List.replicate (l + 1) D).length
-        + s.β (List.foldl s.A.δ
-            ((fun q => List.foldl s.A.δ q [U, D])^[n] (List.foldl s.A.δ s.A.q0 (List.replicate mS U)))
-            (List.replicate (l + 1) D)) D) := by
-  have := s.A.fintypeQ
-  refine RankAffine.add (RankAffine.smul s.coeff ?_) ?_
-  · -- PART A: prefixRank over the growing D^{l+1} tail
-    have hbase : RankAffine (fun count => s.A.prefixRank
-        (List.replicate mS U ++ (List.replicate n [U, D]).flatten ++ List.replicate count D)
-        (List.replicate mS U ++ (List.replicate n [U, D]).flatten ++ List.replicate count D).length) := by
-      refine RankAffine.congr (fun count => ?_)
-        (prefixRank_pre_blocks_tail_rankAffine s.A
-          (List.replicate mS U ++ (List.replicate n [U, D]).flatten) [D] [])
-      rw [flatten_replicate_singleton, List.append_nil]
-    obtain ⟨m, p, P, hp, hbr⟩ := hbase
-    refine ⟨m, p, P, hp, fun l hl => ?_⟩
-    have h := hbr (l + 1) (by omega)
-    rwa [show l + 1 + p = l + p + 1 from by omega] at h
-  · -- PART B: the β-correction over the D-iterate
-    have hbase : RankAffine (fun l' => s.β (List.foldl s.A.δ
-        ((fun q => List.foldl s.A.δ q [U, D])^[n] (List.foldl s.A.δ s.A.q0 (List.replicate mS U)))
-        (List.replicate l' D)) D) := by
-      refine RankAffine.congr (fun l' => ?_)
-        (rankAffine_of_iterate (fun q => s.A.δ q D)
-          ((fun q => List.foldl s.A.δ q [U, D])^[n] (List.foldl s.A.δ s.A.q0 (List.replicate mS U)))
-          (fun q => s.β q D))
-      rw [foldl_replicate_iterate s.A.δ D]
-    obtain ⟨m, p, P, hp, hbr⟩ := hbase
-    refine ⟨m, p, P, hp, fun l hl => ?_⟩
-    have h := hbr (l + 1) (by omega)
-    rwa [show l + 1 + p = l + p + 1 from by omega] at h
-
-/-- **The CELL rank as a function of the suffix depth `l` is `RankAffine`** (d3.3): for a cell whose
-coordinate `j0` is the suffix-stretch D-atom at `sufIdx l` (position `mS+2n+1+l`) with the OTHER coords
-fixed (`ī0`), there is a `RankAffine` family `F` agreeing with the actual cell rank on the valid range
-`l < mS-1`.  `F` is the FORMULA extrapolation (the actual rank saturates at `l ≥ mS-1`).  Built by summing
-the per-summand l-recurrences (`sufStretch_formula_rankAffine_l` for the `s.π = j0` summands, constant for
-the rest) via `RankAffine.listSum`; agreement on `l < mS-1` via `rankTerm_eval_proj` +
-`summand_copied_sufStretch_eq` + `Function.update`.  This `F` feeds `SliceDstarBridge.selBvec_le_member`. -/
-theorem rank_cell_sufStretch_rankAffine_l (P : WRP.Presentation Step Step) (c : Fin P.toPoly.K)
-    (ī0 : Fin (P.toPoly.arity c) → ℕ) (j0 : Fin (P.toPoly.arity c)) (mS n : ℕ) :
-    ∃ F : ℕ → Fin P.d → ℤ, RankAffine F ∧
-      ∀ l, l < mS - 1 → P.rank c (copiedSlice mS n)
-        (Function.update ī0 j0 (mS + 2 * n + 1 + l)) = F l := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  refine ⟨fun l => κ.c0 + (κ.summands.map (fun s =>
-      if s.π = j0 then
-        s.coeff • s.A.prefixRank
-            (List.replicate mS U ++ (List.replicate n [U, D]).flatten ++ List.replicate (l + 1) D)
-            (List.replicate mS U ++ (List.replicate n [U, D]).flatten
-              ++ List.replicate (l + 1) D).length
-          + s.β (List.foldl s.A.δ
-              ((fun q => List.foldl s.A.δ q [U, D])^[n]
-                (List.foldl s.A.δ s.A.q0 (List.replicate mS U)))
-              (List.replicate (l + 1) D)) D
-      else s.eval (copiedSlice mS n) (fun _ => ī0 (s.π)))).sum, ?_, ?_⟩
-  · refine RankAffine.add (RankAffine.const _)
-      (RankAffine.listSum κ.summands _ (fun s _ => ?_))
-    by_cases hπ : s.π = j0
-    · simp only [if_pos hπ]; exact sufStretch_formula_rankAffine_l s mS n
-    · simp only [if_neg hπ]; exact RankAffine.const _
-  · intro l hl
-    rw [hκ (copiedSlice mS n) _, rankTerm_eval_proj]
-    funext c'
-    simp only [Pi.add_apply]
-    rw [list_sum_pi_apply]
-    refine congrArg (κ.c0 c' + ·) (congrArg List.sum (List.map_congr_left (fun s _ => ?_)))
-    by_cases hπ : s.π = j0
-    · rw [if_pos hπ, hπ, Function.update_self]
-      exact congrFun (summand_copied_sufStretch_eq s mS l hl n) c'
-    · rw [if_neg hπ, Function.update_of_ne hπ]
-
-/-! ## The fibred per-summand region decomposition -/
-
-/-- **One summand splits by the fibred region of its coordinate**: on the
-window, its value is `Rs t + Bs n` with both parts `RankAffine` — stretch and
-front/pre regions are constants, cluster regions are shifted copied block
-families in `t`, back/suf/suffix-stretch regions are families in `n`. -/
-theorem summand_region_decomp_fibred {B k : ℕ} (s : Summand Step d k)
-    (mS : ℕ) (hm : 1 ≤ mS) (r : RegionSpecF B) (hv : r.valid mS) :
-    ∃ Rs Bs : ℕ → Fin d → ℤ, RankAffine Rs ∧ RankAffine Bs ∧
-      ∀ t n, B + 1 ≤ t → t + B + 1 ≤ n →
-        s.eval (copiedSlice mS n) (fun _ => r.posAt mS t n)
-          = fun c => Rs t c + Bs n c := by
-  rcases r with r | q | l
-  case prefIdx =>
-    -- prefix stretch: a constant
-    have hq : q < mS - 1 := hv
-    refine ⟨fun _ => s.eval (copiedSlice mS 0) (fun _ => q), fun _ => 0,
-      RankAffine.const _, RankAffine.const _, fun t n _ _ => ?_⟩
-    show s.eval (copiedSlice mS n) (fun _ => q) = _
-    rw [summand_copied_pref_stable s mS q n 0 hm (by omega)]
-    funext c
-    simp
-  case sufIdx =>
-    -- suffix stretch: the D-tail family
-    have hlv : l < mS - 1 := hv
-    refine ⟨fun _ => 0,
-      fun n => s.eval (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l),
-      RankAffine.const _, summand_copied_sufStretch_rankAffine s mS l hlv,
-      fun t n _ _ => ?_⟩
-    show s.eval (copiedSlice mS n) (fun _ => mS + 2 * n + 1 + l) = _
-    funext c
-    simp
-  case core =>
-    rcases r with _ | _ | ⟨f, e⟩ | ⟨l, e⟩ | ⟨δ, e⟩
-    · -- pre: a constant
-      refine ⟨fun _ => s.eval (copiedSlice mS 0) (fun _ => mS - 1 + 0),
-        fun _ => 0, RankAffine.const _, RankAffine.const _, fun t n _ _ => ?_⟩
-      show s.eval (copiedSlice mS n) (fun _ => mS - 1 + 0) = _
-      rw [summand_copied_mid_stable s mS 0 n 0 hm (by omega) (by omega)]
-      funext c
-      simp
-    · -- suf: the trailing-D n-family
-      refine ⟨fun _ => 0,
-        fun n => s.eval (copiedSlice mS n) (fun _ => mS + 2 * n),
-        RankAffine.const _, summand_copied_suf_rankAffine s mS hm,
-        fun t n _ _ => ?_⟩
-      have hpos : mS - 1 + (1 + 2 * n) = mS + 2 * n := by omega
-      show s.eval (copiedSlice mS n) (fun _ => mS - 1 + (1 + 2 * n)) = _
-      rw [hpos]
-      funext c
-      simp
-    · -- front-pinned: constant once the slice clears the pin
-      rcases e with _ | _
-      · refine ⟨fun _ => s.eval (copiedSlice mS (f.val + 1))
-            (fun _ => mS - 1 + (1 + 2 * f.val)),
-          fun _ => 0, RankAffine.const _, RankAffine.const _,
-          fun t n ht htn => ?_⟩
-        have hf := f.isLt
-        show s.eval (copiedSlice mS n) (fun _ => mS - 1 + (1 + 2 * f.val)) = _
-        rw [summand_copied_mid_stable s mS (1 + 2 * f.val) n (f.val + 1) hm
-          (by omega) (by omega)]
-        funext c
-        simp
-      · refine ⟨fun _ => s.eval (copiedSlice mS (f.val + 1))
-            (fun _ => mS - 1 + (1 + 2 * f.val + 1)),
-          fun _ => 0, RankAffine.const _, RankAffine.const _,
-          fun t n ht htn => ?_⟩
-        have hf := f.isLt
-        show s.eval (copiedSlice mS n)
-          (fun _ => mS - 1 + (1 + 2 * f.val + 1)) = _
-        rw [summand_copied_mid_stable s mS (1 + 2 * f.val + 1) n (f.val + 1) hm
-          (by omega) (by omega)]
-        funext c
-        simp
-    · -- back-pinned: the copied block family read at index n − (1 + l)
-      rcases e with _ | _
-      · refine ⟨fun _ => 0,
-          fun n => s.eval (copiedSlice mS (n - (1 + l.val) + 1))
-            (fun _ => mS + 2 * (n - (1 + l.val))),
-          RankAffine.const _,
-          rankAffine_subShift (summand_copied_block_rankAffine s mS hm)
-            (1 + l.val), fun t n ht htn => ?_⟩
-        have hl := l.isLt
-        have harg : n - 1 - l.val = n - (1 + l.val) := by omega
-        have hpos : mS - 1 + (1 + 2 * (n - (1 + l.val)))
-            = mS + 2 * (n - (1 + l.val)) := by omega
-        show s.eval (copiedSlice mS n)
-          (fun _ => mS - 1 + (1 + 2 * (n - 1 - l.val))) = _
-        rw [harg, summand_copied_mid_stable s mS (1 + 2 * (n - (1 + l.val))) n
-          (n - (1 + l.val) + 1) hm (by omega) (by omega), hpos]
-        funext c
-        simp
-      · refine ⟨fun _ => 0,
-          fun n => s.eval (copiedSlice mS (n - (1 + l.val) + 1))
-            (fun _ => mS + 2 * (n - (1 + l.val)) + 1),
-          RankAffine.const _,
-          rankAffine_subShift (summand_copied_blockD_rankAffine s mS hm)
-            (1 + l.val), fun t n ht htn => ?_⟩
-        have hl := l.isLt
-        have harg : n - 1 - l.val = n - (1 + l.val) := by omega
-        have hpos : mS - 1 + (1 + 2 * (n - (1 + l.val)) + 1)
-            = mS + 2 * (n - (1 + l.val)) + 1 := by omega
-        show s.eval (copiedSlice mS n)
-          (fun _ => mS - 1 + (1 + 2 * (n - 1 - l.val) + 1)) = _
-        rw [harg, summand_copied_mid_stable s mS
-          (1 + 2 * (n - (1 + l.val)) + 1) n (n - (1 + l.val) + 1) hm
-          (by omega) (by omega), hpos]
-        funext c
-        simp
-    · -- cluster: the copied block family shifted to base t
-      rcases e with _ | _
-      · refine ⟨fun t => s.eval (copiedSlice mS (t + δ.val + 1))
-            (fun _ => mS + 2 * (t + δ.val)),
-          fun _ => 0,
-          rankAffine_shift (summand_copied_block_rankAffine s mS hm) δ.val,
-          RankAffine.const _, fun t n ht htn => ?_⟩
-        have hδ := δ.isLt
-        have hpos : mS - 1 + (1 + 2 * (t + δ.val)) = mS + 2 * (t + δ.val) := by
-          omega
-        show s.eval (copiedSlice mS n)
-          (fun _ => mS - 1 + (1 + 2 * (t + δ.val))) = _
-        rw [summand_copied_mid_stable s mS (1 + 2 * (t + δ.val)) n
-          (t + δ.val + 1) hm (by omega) (by omega), hpos]
-        funext c
-        simp
-      · refine ⟨fun t => s.eval (copiedSlice mS (t + δ.val + 1))
-            (fun _ => mS + 2 * (t + δ.val) + 1),
-          fun _ => 0,
-          rankAffine_shift (summand_copied_blockD_rankAffine s mS hm) δ.val,
-          RankAffine.const _, fun t n ht htn => ?_⟩
-        have hδ := δ.isLt
-        have hpos : mS - 1 + (1 + 2 * (t + δ.val) + 1)
-            = mS + 2 * (t + δ.val) + 1 := by omega
-        show s.eval (copiedSlice mS n)
-          (fun _ => mS - 1 + (1 + 2 * (t + δ.val) + 1)) = _
-        rw [summand_copied_mid_stable s mS (1 + 2 * (t + δ.val) + 1) n
-          (t + δ.val + 1) hm (by omega) (by omega), hpos]
-        funext c
-        simp
-
-/-! ## The fibred per-cell rank decomposition -/
-
-/-- The fibred rank-term split `R(t) + B(n)` on a cell. -/
-theorem rankTerm_cell_decomp_fibred {B k : ℕ} (κ : RankTerm Step d k)
-    (mS : ℕ) (hm : 1 ≤ mS) (r : Fin k → RegionSpecF B)
-    (hv : ∀ i, (r i).valid mS) :
-    ∃ R Bn : ℕ → Fin d → ℤ, RankAffine R ∧ RankAffine Bn ∧
-      ∀ t n, B + 1 ≤ t → t + B + 1 ≤ n →
-        κ.eval (copiedSlice mS n) (fun i => (r i).posAt mS t n)
-          = fun c => R t c + Bn n c := by
-  have hdec := fun s : Summand Step d k =>
-    summand_region_decomp_fibred s mS hm (r s.π) (hv s.π)
-  choose Rs Bs hRA hBA heq using hdec
-  refine ⟨fun t => κ.c0 + (κ.summands.map (fun s => Rs s t)).sum,
-    fun n => (κ.summands.map (fun s => Bs s n)).sum,
-    (RankAffine.const κ.c0).add (RankAffine.listSum _ _ (fun s _ => hRA s)),
-    RankAffine.listSum _ _ (fun s _ => hBA s), ?_⟩
-  intro t n ht htn
-  rw [rankTerm_eval_proj]
-  funext c
-  have hsummand : ∀ s ∈ κ.summands,
-      s.eval (copiedSlice mS n)
-        (fun _ => (fun i => (r i).posAt mS t n) s.π) c
-        = Rs s t c + Bs s n c := by
-    intro s _
-    rw [heq s t n ht htn]
-  calc κ.c0 c + (κ.summands.map (fun s =>
-        s.eval (copiedSlice mS n)
-          (fun _ => (fun i => (r i).posAt mS t n) s.π) c)).sum
-      = κ.c0 c + (κ.summands.map (fun s => Rs s t c + Bs s n c)).sum := by
-        rw [congrArg List.sum (List.map_congr_left hsummand)]
-    _ = κ.c0 c + ((κ.summands.map (fun s => Rs s t c)).sum
-          + (κ.summands.map (fun s => Bs s n c)).sum) := by
-        rw [list_sum_map_add]
-    _ = (κ.c0 c + ((κ.summands.map (fun s => Rs s t)).sum) c)
-          + ((κ.summands.map (fun s => Bs s n)).sum) c := by
-        rw [list_sum_pi_apply, list_sum_pi_apply]
-        ring
-
-/-- **The fibred family rank shape** (Stage E capstone): the rank of the atom
-a valid fibred cell describes splits as `R(t) + B(n)` on the window, with both
-parts `RankAffine` (`mS`-parameterised families). -/
-theorem rank_cell_decomp_fibred {B : ℕ} (P : WRP.Presentation Step Step)
-    (c : Fin P.toPoly.K) (mS : ℕ) (hm : 1 ≤ mS)
-    (r : Fin (P.toPoly.arity c) → RegionSpecF B)
-    (hv : ∀ i, (r i).valid mS) :
-    ∃ R Bn : ℕ → Fin P.d → ℤ, RankAffine R ∧ RankAffine Bn ∧
-      ∀ t n, B + 1 ≤ t → t + B + 1 ≤ n →
-        P.rank c (copiedSlice mS n) (fun i => (r i).posAt mS t n)
-          = fun i => R t i + Bn n i := by
-  obtain ⟨κ, hκ⟩ := P.rankReg c
-  obtain ⟨R, Bn, hR, hBn, heq⟩ := rankTerm_cell_decomp_fibred κ mS hm r hv
-  exact ⟨R, Bn, hR, hBn, fun t n ht htn => by rw [hκ, heq t n ht htn]⟩
 
 /-! ## The per-`mS` explicit descriptor enumerations (CS-4 freeze) -/
 

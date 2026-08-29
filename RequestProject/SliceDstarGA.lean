@@ -4,7 +4,7 @@
 The GA-5 mechanical layer:
 
 * `selDListGA` / `mem_selDListGA` — the selected-`D`-atom list of `W_n` over all
-  copies and tuples (`Sigma.eta` replaces the arity-1 `atom_eq` machinery);
+  copies and tuples (`Sigma.eta` replaces the arity-1 atom-equality machinery);
 * `exists_min_selDAtomGA` / `dstarRankGA` / `dstarRankGA_spec` — verbatim ports of
   the arity-1 `SliceDstar` block minus the arity hypothesis.  `dstarRankGA` is
   SEMANTIC and `C`-free; its sole downstream consumer

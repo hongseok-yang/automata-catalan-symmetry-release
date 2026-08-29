@@ -1,8 +1,8 @@
 /-
 # The `fas` count assembly: joining the MSO selection gate with the rank lex-below count
 
-The rank-comparison count (`SliceLexCount.countLexL` / `countLexL_residue`) counts loop
-indices whose rank is `≺`-below a moving threshold.  `fas` counts only the **selected**
+The rank-comparison count of `SliceLexCount` counts loop indices whose rank is `≺`-below a
+moving threshold.  `fas` counts only the **selected**
 `U`-atoms below the threshold, so the rank count must be intersected with the MSO
 selection gate — which, on the slice, has the forward/backward convolution shape of
 `SliceCountSlice` (`selected(j,n)` is a function of the forward iterate `bF^[j] qpre` and
@@ -47,45 +47,6 @@ theorem affineOnResidues_indicator_of_EP {Pr : ℕ → Prop} {p : ℕ} (hp : 1 �
         exact ih
   exact if_congr (hiff k) rfl rfl
 
-/-- Iterating the `AffineOnResidues` recurrence: beyond the threshold, `f(x+p·t) = f x +
-t·s((x-m)%p)`. -/
-theorem affineOnResidues_iterate {f : ℕ → ℕ} (hf : AffineOnResidues f) :
-    ∃ (m p : ℕ) (s : ℕ → ℕ), 1 ≤ p ∧ ∀ x t, m ≤ x → f (x + p * t) = f x + t * s ((x - m) % p) := by
-  obtain ⟨m, p, s, hp, hrec⟩ := hf
-  refine ⟨m, p, s, hp, fun x t hx => ?_⟩
-  set r := (x - m) % p with hr
-  set q := (x - m) / p with hq
-  have hxform : x = m + r + p * q := by have := Nat.div_add_mod (x - m) p; rw [hr, hq]; omega
-  have e1 : f (x + p * t) = f (m + r) + (q + t) * s r := by
-    rw [show x + p * t = m + r + p * (q + t) from by rw [hxform]; ring, hrec r (q + t)]
-  have e2 : f x = f (m + r) + q * s r := by rw [hxform, hrec r q]
-  rw [e1, e2]; ring
-
-/-- **The final discharge glue.**  Two `AffineOnResidues` sequences `fas`, `tailU` give a
-common-period period-index-affine pair witness — the exact shape
-`SliceSemilinear.isSemilinear2_of_affineInPeriod` (hence the axiom) consumes. -/
-theorem pair_affineOnResidues_glue {fas tailU : ℕ → ℕ}
-    (hF : AffineOnResidues fas) (hT : AffineOnResidues tailU) :
-    ∃ p m : ℕ, 1 ≤ p ∧ 1 ≤ m ∧ ∀ j, j < p → ∃ b₁ s₁ b₂ s₂ : ℕ,
-      ∀ k, (fas (m + j + p * k), tailU (m + j + p * k)) = (b₁ + k * s₁, b₂ + k * s₂) := by
-  obtain ⟨mF, pF, sF, hpF, hiterF⟩ := affineOnResidues_iterate hF
-  obtain ⟨mT, pT, sT, hpT, hiterT⟩ := affineOnResidues_iterate hT
-  set m := max 1 (max mF mT) with hmdef
-  have hmF : mF ≤ m := le_trans (le_trans (le_max_left mF mT) (le_max_right 1 _)) (le_refl m)
-  have hmT : mT ≤ m := le_trans (le_trans (le_max_right mF mT) (le_max_right 1 _)) (le_refl m)
-  refine ⟨pF * pT, m, Nat.mul_pos hpF hpT, le_trans (le_max_left 1 _) (le_refl m),
-    fun j _ => ⟨fas (m + j), pT * sF ((m + j - mF) % pF), tailU (m + j),
-      pF * sT ((m + j - mT) % pT), fun k => ?_⟩⟩
-  have hxF : mF ≤ m + j := le_trans hmF (Nat.le_add_right m j)
-  have hxT : mT ≤ m + j := le_trans hmT (Nat.le_add_right m j)
-  have eF : fas (m + j + pF * pT * k) = fas (m + j) + k * (pT * sF ((m + j - mF) % pF)) := by
-    rw [show m + j + pF * pT * k = (m + j) + pF * (pT * k) from by ring, hiterF (m + j) (pT * k) hxF]
-    ring
-  have eT : tailU (m + j + pF * pT * k) = tailU (m + j) + k * (pF * sT ((m + j - mT) % pT)) := by
-    rw [show m + j + pF * pT * k = (m + j) + pT * (pF * k) from by ring, hiterT (m + j) (pF * k) hxT]
-    ring
-  rw [eF, eT]
-
 /-- **Truncated-subtraction closure (partition form).**  If `f` and `g` are
 `AffineOnResidues` and `f = g + h` pointwise (so `h = f - g` is a genuine `ℕ`-count),
 then `h` is `AffineOnResidues`.  Used for `tailUCount = totalSelectedU − fasCount` (step
@@ -129,53 +90,11 @@ theorem AffineOnResidues.sub_of_partition {f g h : ℕ → ℕ} (hf : AffineOnRe
     rw [Nat.mul_comm k (Sf - Sg), Nat.sub_mul, Nat.mul_comm Sf k, Nat.mul_comm Sg k]
   omega
 
-/-- Any eventually-periodic `ℕ`-sequence is `AffineOnResidues` (slope `0` per class). -/
-theorem affineOnResidues_of_ev_periodic_seq {f : ℕ → ℕ} {m p : ℕ} (hp : 1 ≤ p)
-    (h : ∀ n, m ≤ n → f (n + p) = f n) : AffineOnResidues f := by
-  refine affineOnResidues_of_period (m := m) (p := p) (fun _ => 0) hp ?_
-  intro r _ k
-  show f (m + r + p * k) = f (m + r) + k * 0
-  rw [Nat.mul_zero, Nat.add_zero]
-  induction k with
-  | zero => simp
-  | succ k ih =>
-      rw [show m + r + p * (k + 1) = (m + r + p * k) + p from by ring, h _ (by omega), ih]
-
-/-- **`countPeriodicInterval`** (the linchpin kernel).  Counts loop-indices `j < n` in an
-affine interval `[lo n, hi n)` whose marked-DFA gate `M.accepts (markAt W_n (1+2j))` is on,
-and shows the count is `AffineOnResidues` in `n`.  Specialises the abstract gated convolution
-(`SliceGatedConv.affineOnResidues_gatedConvolution`) to the slice forward iterate
-`u j = bF^[j] q_pre` and backward iterate function `v m = bF^[m]`, with the marked-DFA
-acceptance as the convolution bit (via `SliceCount.accepts_markAt`/`fwd_blockStart`/
-`tau_blockU`).  This is the meeting point of the rank-interval clock and the MSO gate. -/
-theorem countPeriodicInterval (M : DetAuto (Step × Bool)) {lo hi : ℕ → ℤ}
-    (hlo : AffineOnResiduesZ lo) (hhi : AffineOnResiduesZ hi) :
-    AffineOnResidues (fun n => ((Finset.range n).filter
-      (fun j : ℕ => lo n ≤ (j : ℤ) ∧ (j : ℤ) < hi n
-        ∧ M.accepts (markAt (wrappedFlat n) (1 + 2 * j)))).card) := by
-  obtain ⟨mu, pu, hpu, hu⟩ := SliceCount.bF_iterate_eventuallyPeriodic M
-  obtain ⟨mv, pv, hpv, hv⟩ := SliceCount.bF_func_iterate_eventuallyPeriodic M
-  have hgc := SliceGatedConv.affineOnResidues_gatedConvolution
-    (fun j => (bF M)^[j] (qpre M)) (fun m => (bF M)^[m])
-    (fun q g => M.accept (fStep M (g (fStep M (M.δ q (U, true)) D)) D))
-    hpu hu hpv hv hlo hhi
-  refine AffineOnResidues.congr_eventually (N := 0) (fun n _ => ?_) hgc
-  apply congrArg Finset.card
-  apply Finset.filter_congr
-  intro j hj
-  rw [Finset.mem_range] at hj
-  refine and_congr_right (fun _ => and_congr_right (fun _ => ?_))
-  have hb1 : 1 + 2 * j < (wrappedFlat n).length := by rw [length_wrappedFlat]; omega
-  rw [SliceCount.accepts_markAt M (wrappedFlat n) (1 + 2 * j) hb1,
-    SliceCount.fwd_blockStart M n j (le_of_lt hj),
-    SliceCount.wrappedFlat_getElem_U n j hj hb1, SliceCount.tau_blockU M n j hj]
-
-/-- **`countPeriodicInterval_mod`** (residue-restricted interval kernel).  Like
-`countPeriodicInterval`, but the loop-index `j` is additionally restricted to one residue class
-`j % m = a` (for `1 ≤ m`).  This is the count primitive of the CORRECTED step-9 TIE route: the
-residue restriction lets the tie count slice the loop index by its mod-period class — so per
-class the block-`U` rank has a single per-residue slope (collinear with the affine `dstarRank`
-threshold).  Specialises the abstract gated convolution to the *paired* forward iterate
+/-- **`countPeriodicInterval_mod`** (residue-restricted interval kernel).  The interval count of
+loop indices, with the loop-index `j` additionally restricted to one residue class `j % m = a`
+(for `1 ≤ m`).  This is the count primitive of the corrected step-9 TIE route: the residue
+restriction lets the tie count slice the loop index by its mod-period class — so per class the
+block-`U` rank has a single per-residue slope, collinear with the affine `d*`-rank threshold.  Specialises the abstract gated convolution to the *paired* forward iterate
 `u j = (bF^[j] q_pre, j % m)` with period `pu·m`; the residue bit `(u j).2 = a` rides inside the
 convolution alongside the marked-DFA acceptance, both constant per residue class. -/
 theorem countPeriodicInterval_mod (M : DetAuto (Step × Bool)) (m a : ℕ) (hm : 1 ≤ m)
@@ -213,9 +132,8 @@ theorem countPeriodicInterval_mod (M : DetAuto (Step × Bool)) (m a : ℕ) (hm :
 
 /-! ## The rank-EQUALITY count (corrected TIE route, build-order steps L1–L2)
 
-The vector rank-equality count, built by dimension augmentation onto the existing lex kernel
-(`affineOnResidues_gatedEqConvolution`) plus its slice specialisation `lexEq_count_per_region`.
-No reversed-lex kernel is needed.  Axiom-clean. -/
+The vector rank-equality count `affineOnResidues_gatedEqConvolution`, built by dimension
+augmentation onto the existing lex kernel.  No reversed-lex kernel is needed.  Axiom-clean. -/
 
 /-- `List.ofFn` of a `Fin.snoc` appends the new element to `List.ofFn` of the base. -/
 theorem ofFn_snoc {α : Type*} {d : ℕ} (f : Fin d → α) (a : α) :
@@ -349,78 +267,5 @@ theorem affineOnResidues_gatedEqConvolution {α β : Type*} {d : ℕ}
       · rw [if_neg (fun hh => (hle.mp hh.1).elim hlex heq), if_neg (fun hh => hlex (hlt.mp hh.1)),
           if_neg (fun hh => heq hh.1)]
   · rw [if_neg (fun hh => hb hh.2), if_neg (fun hh => hb hh.2), if_neg (fun hh => hb hh.2)]
-
-/-- **`lexEq_count_per_region`** (build-order step L2 of the corrected mod-counting route).
-Counts loop-indices `j < n` with `j % m = a`, block-`U` rank `P.rank c W_{j+1} (·↦1+2j)` EQUAL to a
-moving `AffineOnResiduesZ` threshold `T n`, AND the marked-DFA gate on — `AffineOnResidues` in `n`.
-The rank-equality analogue of `lexLt_below_count_per_region`: specialises
-`affineOnResidues_gatedEqConvolution` to the slice rank with the `j % m`-paired forward iterate
-(mirroring `countPeriodicInterval_mod`). -/
-theorem lexEq_count_per_region {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) {T : ℕ → Fin P.d → ℤ} (hT : ∀ i, AffineOnResiduesZ (fun n => T n i))
-    (m a : ℕ) (hm : 1 ≤ m) (M : DetAuto (Step × Bool)) :
-    AffineOnResidues (fun n => ((Finset.range n).filter
-      (fun j : ℕ => P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j) = T n
-        ∧ j % m = a ∧ M.accepts (markAt (wrappedFlat n) (1 + 2 * j)))).card) := by
-  obtain ⟨mR, pR, PR, hpR, hR⟩ := SliceRankAtom.rank_block_rankAffine P c
-  obtain ⟨mu, pu, hpu, hu⟩ := SliceCount.bF_iterate_eventuallyPeriodic M
-  obtain ⟨mv, pv, hpv, hv⟩ := SliceCount.bF_func_iterate_eventuallyPeriodic M
-  have hu_iter : ∀ s t, mu ≤ s → (bF M)^[s + pu * t] (qpre M) = (bF M)^[s] (qpre M) := by
-    intro s t hs
-    induction t with
-    | zero => simp
-    | succ t ih => rw [Nat.mul_succ, ← Nat.add_assoc, hu _ (by omega), ih]
-  have hu' : ∀ i, mu ≤ i →
-      ((bF M)^[i + pu * m] (qpre M), (i + pu * m) % m) = ((bF M)^[i] (qpre M), i % m) := by
-    intro i hi
-    refine Prod.ext (hu_iter i m hi) ?_
-    show (i + pu * m) % m = i % m
-    rw [Nat.mul_comm pu m, Nat.add_mul_mod_self_left]
-  have hker := affineOnResidues_gatedEqConvolution
-    (fun j => ((bF M)^[j] (qpre M), j % m)) (fun mm => (bF M)^[mm])
-    (fun qr g => qr.2 = a ∧ M.accept (fStep M (g (fStep M (M.δ qr.1 (U, true)) D)) D))
-    (Nat.mul_pos hpu hm) hu' hpv hv
-    (fun j => P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j)) PR hpR hR T hT
-  refine AffineOnResidues.congr_eventually (N := 0) (fun n _ => ?_) hker
-  apply congrArg Finset.card
-  ext j
-  simp only [Finset.mem_filter, Finset.mem_range]
-  refine and_congr_right
-    (fun hj => and_congr_right (fun _ => and_congr Iff.rfl ?_))
-  have hb1 : 1 + 2 * j < (wrappedFlat n).length := by rw [length_wrappedFlat]; omega
-  rw [SliceCount.accepts_markAt M (wrappedFlat n) (1 + 2 * j) hb1,
-    SliceCount.fwd_blockStart M n j (le_of_lt hj),
-    SliceCount.wrappedFlat_getElem_U n j hj hb1, SliceCount.tau_blockU M n j hj]
-
-/-- **`lexLt_below_count_per_region`** (build-order step 6).  Counts loop-indices `j < n`
-whose block-`U` rank `P.rank c W_{j+1} (·↦1+2j)` is `lexLt` below a moving `AffineOnResiduesZ`
-threshold `T n` AND whose marked-DFA gate is on — `AffineOnResidues` in `n`.  The slice
-specialisation of the gated **lex**-convolution kernel `affineOnResidues_gatedLexConvolution`
-(rank `RankAffine` via `rank_block_rankAffine`; gate via the same `accepts_markAt`/
-`fwd_blockStart`/`tau_blockU` decomposition as `countPeriodicInterval`). -/
-theorem lexLt_below_count_per_region {Gamma : Type*} (P : WRP.Presentation Step Gamma)
-    (c : Fin P.toPoly.K) {T : ℕ → Fin P.d → ℤ} (hT : ∀ i, AffineOnResiduesZ (fun n => T n i))
-    (M : DetAuto (Step × Bool)) :
-    AffineOnResidues (fun n => ((Finset.range n).filter
-      (fun j : ℕ => WRP.lexLt (P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j)) (T n)
-        ∧ M.accepts (markAt (wrappedFlat n) (1 + 2 * j)))).card) := by
-  obtain ⟨mR, pR, PR, hpR, hR⟩ := SliceRankAtom.rank_block_rankAffine P c
-  obtain ⟨mu, pu, hpu, hu⟩ := SliceCount.bF_iterate_eventuallyPeriodic M
-  obtain ⟨mv, pv, hpv, hv⟩ := SliceCount.bF_func_iterate_eventuallyPeriodic M
-  have hgc := SliceGatedConv.affineOnResidues_gatedLexConvolution
-    (fun j => (bF M)^[j] (qpre M)) (fun m => (bF M)^[m])
-    (fun q g => M.accept (fStep M (g (fStep M (M.δ q (U, true)) D)) D))
-    hpu hu hpv hv
-    (fun j => P.rank c (wrappedFlat (j + 1)) (fun _ => 1 + 2 * j)) PR hpR hR T hT
-  refine AffineOnResidues.congr_eventually (N := 0) (fun n _ => ?_) hgc
-  apply congrArg Finset.card
-  apply Finset.filter_congr
-  intro j hj
-  rw [Finset.mem_range] at hj
-  refine and_congr_right (fun _ => ?_)
-  have hb1 : 1 + 2 * j < (wrappedFlat n).length := by rw [length_wrappedFlat]; omega
-  rw [SliceCount.accepts_markAt M (wrappedFlat n) (1 + 2 * j) hb1,
-    SliceCount.fwd_blockStart M n j (le_of_lt hj),
-    SliceCount.wrappedFlat_getElem_U n j hj hb1, SliceCount.tau_blockU M n j hj]
 
 end SliceFasCount

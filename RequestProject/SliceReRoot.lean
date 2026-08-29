@@ -13,7 +13,7 @@ copied-slice decomposition lives in `CopiedMark.lean`.
 -/
 import RequestProject.SliceMarkN
 
-open Step SliceMSO MSOMarkN
+open SliceMSO MSOMarkN
 
 namespace SliceReRoot
 

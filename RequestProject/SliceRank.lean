@@ -21,8 +21,6 @@ import RequestProject.SliceAutomata
 
 namespace SliceRank
 
-open WRP
-
 variable {Alpha : Type*} {d : ℕ} (A : RankSource Alpha d)
 
 /-- One-step rank accumulator: advance the state and add the transition weight. -/

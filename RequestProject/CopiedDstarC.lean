@@ -20,15 +20,12 @@ fibred twins through the fixed reduced machine.
 import RequestProject.CopiedSetup
 import RequestProject.CopiedGateEP
 import RequestProject.CopiedAffineAt
-import RequestProject.SliceDstarBridgeGA
 
 namespace CopiedDstarC
 
-open WRP Step SliceOrder SliceLexOrder SliceDstarCore SliceDstar
-  SliceDstarBridge SliceBoundaryMinCore SlicePeriodStar SliceFamilyCell
-  MSOMarkN SliceMarkN SliceMSO
-  CopiedAffineAt CopiedAffineAt.AffineOnResiduesAtZ CopiedCells CopiedRank
-  CopiedRegionF CopiedDstar CopiedGateEP
+open WRP Step SliceOrder SliceLexOrder SliceDstarCore SliceDstar SliceDstarBridge
+  SliceBoundaryMinCore SlicePeriodStar MSOMarkN SliceMarkN SliceMSO CopiedAffineAt
+  CopiedAffineAt.AffineOnResiduesAtZ CopiedCells CopiedRank CopiedRegionF CopiedDstar CopiedGateEP
 open scoped Classical
 
 /-- No selected `D`-atom's rank lex-precedes the word-generic `d*`-rank. -/
@@ -78,7 +75,6 @@ theorem selBvecCoord_affineOnResiduesAtZ {d : ℕ} (F : ℕ → Fin d → ℤ)
         = SliceDstar.selBvecVal F m r PRv true (firstSel N) (lastSel N) i
       simp only [SliceDstar.selBvecVal, if_true]
 
-set_option maxHeartbeats 1600000 in
 /-- **The fibred constructive `d*`-rank exists** (the F3.4 monolith): the
 period `pstar = p · p₂` is machine-level, hoisted BEFORE the budget and the
 boundary width; per `(C, mS)` there is a per-coordinate `pstar`-pinned

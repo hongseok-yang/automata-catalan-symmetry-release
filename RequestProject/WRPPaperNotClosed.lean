@@ -45,7 +45,7 @@ import RequestProject.WRPNotClosedComp
 import RequestProject.SMapWRP
 import RequestProject.ArityLift
 
-open MSO Step
+open MSO
 
 /-! ## Relabelling preserves `χ`-totality -/
 
@@ -196,11 +196,6 @@ variable [DecidableEq Γ]
 data as `ccPres`. -/
 @[reducible] def ccPresT : WRP.Presentation Alpha Γ :=
   { ccPres sep Wf Wg with toPoly := ccPolyT sep Wf Wg }
-
-theorem ccPresT_selectedAtom (w : List Alpha) (x : (ccPres sep Wf Wg).toPoly.Atom) :
-    (ccPresT sep Wf Wg).toPoly.selectedAtom w x ↔
-      (ccPres sep Wf Wg).toPoly.selectedAtom w x :=
-  Iff.rfl
 
 theorem ccPolyT_atomOrd_iff (w : List Alpha) (x y : (ccPres sep Wf Wg).toPoly.Atom) :
     (ccPolyT sep Wf Wg).atomOrd w x y ↔

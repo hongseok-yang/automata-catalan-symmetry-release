@@ -167,8 +167,8 @@ The slice analysis that powers both §8 and §9.
   copied slice `C_{m,n}`, its ζ-preimage pyramid rows, the first-ascent
   formula `⌈(m+n)/(m+1)⌉`, and the non-semilinear band.
 * The `Copied*` tower (from `CopiedMark.lean` and `CopiedSetup.lean` through
-  `CopiedTieSlice.lean`, `CopiedTieCounting.lean`, `CopiedTieSemilinear2.lean`
-  and `CopiedD4.lean`) — the copied-slice analysis: marked automata over the
+  `CopiedTieSlice.lean`, `CopiedTieSemilinear2.lean` and `CopiedD4.lean`) —
+  the copied-slice analysis: marked automata over the
   two-parameter slice, region descriptors and cells, the `d*`-rank and its
   lex-minimum characterisation, gated argmin machinery, tie counting, and the
   final assemblies `CopiedD4.inverse_zeta_not_wrp_arity1` (arity 1,

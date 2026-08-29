@@ -69,9 +69,6 @@ returning `0` for the (coordinate-free) sentinel. -/
 /-- Arity of copy `c`: `0` for the sentinel, `1` for the `B`-copy. -/
 @[reducible] def wncArity (c : Fin 2) : ℕ := if c = 0 then 0 else 1
 
-@[simp] theorem wncArity_zero : wncArity 0 = 0 := rfl
-@[simp] theorem wncArity_one : wncArity 1 = 1 := rfl
-
 /-- A coordinate-1 access proof for the `B`-copy. -/
 theorem one_lt_wncArity_of_ne {c : Fin 2} (h : c ≠ 0) : 0 < wncArity c := by
   rw [wncArity, if_neg h]; exact Nat.one_pos
@@ -288,8 +285,6 @@ theorem sel_bAtom (w : List Step) (p : ℕ) :
       omega
     show (bAtom p).2 t < w.length
     exact hlt
-
-@[simp] theorem labelOf_sentinel (w : List Step) : wncPoly.labelOf w sentinel = g := rfl
 
 @[simp] theorem labelOf_bAtom (w : List Step) (p : ℕ) : wncPoly.labelOf w (bAtom p) = b := rfl
 

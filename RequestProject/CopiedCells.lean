@@ -20,7 +20,7 @@ GA descriptor type accordingly and delivers the fibred cover form:
 import RequestProject.CopiedCluster
 import RequestProject.SliceFamilyCell
 
-open Step SliceFamilyCell
+open SliceFamilyCell
 
 namespace CopiedCells
 

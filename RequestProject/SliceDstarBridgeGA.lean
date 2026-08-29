@@ -180,10 +180,8 @@ theorem eventuallyPeriodic_align (l : List (ℕ → Prop))
       · exact SliceDstar.EP_of_dvd hEP0 (dvd_mul_right p0 p')
       · exact SliceDstar.EP_of_dvd (hrest Pr hPr) (dvd_mul_left p' p0)
 
-
 /-! ## The constructive `d*`-rank, general arity (GA-5.12–5.15) -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The constructive `d*`-rank exists, general arity** (GA-5.12–5.15).  Under the
 pinned per-copy budget (the exact conclusion shape of
 `SliceProfileDischargeGA.hbud_of_hgrow`), there is an `AffineOnResiduesZ`-per-coordinate
@@ -656,6 +654,5 @@ theorem dstarC_exists_GA (P : WRP.Presentation Step Step) (hV : P.Valid) (C : �
   · exact absurd h hIfinal
   · exact h
   · exact absurd h hIIfinal
-
 
 end SliceDstarBridgeGA

@@ -23,7 +23,7 @@ and shows that the *inverse* zeta map is not WRP.
 | Path | Contents |
 |---|---|
 | `paper.tex`, `paper.bib` | the paper |
-| `RequestProject/` | the Lean sources (one library) |
+| `RequestProject/` | the Lean sources: one library, 162 modules, ≈82,000 lines |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | the pinned build configuration |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | module map: which file proves what, organised by paper section |
 | [`STATUS.md`](STATUS.md) | theorem-by-theorem paper ↔ Lean correspondence, trust bases, and modelling conventions |
@@ -42,6 +42,10 @@ lake build
 A green build **is** the verification: the development compiles with **zero
 `sorry` and zero warnings**.  `RequestProject/Main.lean` imports every module,
 so `lake build RequestProject.Main` elaborates the whole development.
+
+There is no unreachable scaffolding: every declaration is either used by one of
+the results below, or is itself a statement that its module's documentation
+lists as a result.
 
 ## What the formalisation assumes
 

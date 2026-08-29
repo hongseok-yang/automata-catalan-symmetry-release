@@ -19,9 +19,9 @@ instances `msoDefinableRel2_semilinear` and `rankOf_eq_dstar2_semilinear` are de
 theorems here, obtained by instantiating the general statements at `copiedSliceBLW`.  No
 project-specific axiom occurs in the inverse-zeta tower.
 -/
-import RequestProject.CopiedTieCounting
-import RequestProject.SliceCountGlobal
+import RequestProject.CopiedD4
 import RequestProject.RankTermGraph
+import RequestProject.SliceCountGlobal
 
 namespace CopiedTieSemilinear2
 
@@ -78,10 +78,6 @@ is *achieved* by a selected-`D` atom and *no* selected-`D` rank is `lexLt`-below
 is absent and `z = 0`.  This avoids any atom-vs-atom comparison and any tie-order: every
 rank is compared only against the fixed target `z`. -/
 
-/-- The strict lexicographic order on rank vectors is irreflexive. -/
-theorem lexLt_irrefl {d : ℕ} (x : Fin d → ℤ) : ¬ lexLt x x := by
-  rintro ⟨i, _, hi⟩; exact absurd hi (lt_irrefl _)
-
 /-- The strict lexicographic order on rank vectors is asymmetric. -/
 theorem lexLt_asymm {d : ℕ} (x y : Fin d → ℤ) (h : lexLt y x) : ¬ lexLt x y := by
   rintro ⟨i, hi_lt, hi⟩
@@ -110,11 +106,11 @@ theorem dstarRankGA'_eq_decodeZ_iff (P : WRP.Presentation Step Step) (hV : P.Val
       refine Or.inl ⟨⟨dstar, hsel, hD, hrd⟩, ?_⟩
       intro b hsb hDb
       rcases hmin b hsb hDb with hdb | hwdb
-      · rw [← hdb, hrd]; exact lexLt_irrefl _
+      · rw [← hdb, hrd]; exact SliceLexOrder.lexLt_irrefl _
       · unfold WRP.Presentation.wrpOrd at hwdb
         rcases hwdb with hlt | ⟨heqr, _⟩
         · rw [hrd] at hlt; exact lexLt_asymm _ _ hlt
-        · rw [← heqr, hrd]; exact lexLt_irrefl _
+        · rw [← heqr, hrd]; exact SliceLexOrder.lexLt_irrefl _
     · rintro (⟨⟨b0, hsb0, hDb0, hrb0⟩, hminall⟩ | ⟨hno, _⟩)
       · rw [hrank]
         rcases hmin b0 hsb0 hDb0 with hdb0 | hwdb0

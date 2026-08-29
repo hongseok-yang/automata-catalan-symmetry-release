@@ -9,11 +9,11 @@ This is the COMBINATORIAL HEART of the (WIP) arity-1 `fas` discharge piece (A)
 The `d*`-rank on `W_n` is the `≺`-min (lex on rank, tie by `χ`; on the rank layer
 just the lex-min of the rank vectors) over the SELECTED `D`-atoms.  Each
 (copy, region) family contributes, per residue class of the loop-index, a per-class
-boundary rank vector whose every coordinate is `AffineOnResiduesZ` in `n`
-(`lexBoundaryCoord_affineOnResiduesZ`), and selectedness is convolution-shaped hence
-constant per cell.  The cross-family/cross-residue lex-min is then a finite fold of
-`lexMin2_coord_affineOnResiduesZ`, each pairwise comparison `EventuallyPeriodic` (the
-hypothesis the caller supplies per residue via `lexLt_eventuallyPeriodic`).
+boundary rank vector whose every coordinate is `AffineOnResiduesZ` in `n`, and
+selectedness is convolution-shaped hence constant per cell.  The cross-family/cross-residue
+lex-min is then a finite fold (`lexMinList_coord_affineOnResiduesZ`) of the pairwise
+`lexMin2_coord_aff`, each comparison `EventuallyPeriodic` (the hypothesis the caller supplies
+per residue via `lexLt_eventuallyPeriodic`).
 
 This file VERIFIES that fold: given a nonempty list of vector families `Fs`, each
 coordinate `AffineOnResiduesZ`, and the pairwise-`lexLt`-EP hypothesis, the
@@ -28,7 +28,7 @@ import RequestProject.SliceVectorLexMin
 
 namespace SliceDstarCore
 
-open SliceThreshold SliceAffine SliceOrder SliceVectorLexMin
+open SliceThreshold SliceOrder SliceVectorLexMin
 open scoped Classical
 
 variable {d : ℕ}
