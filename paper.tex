@@ -4485,7 +4485,7 @@ presentations (Definition~\ref{def:polyregular}) and deterministic two-way
 transducers (Definition~\ref{def:2dft}); rank sources, prefix-additive rank
 functions, and the class $\WRP$ with its fragments $\RR$ and $\SWR$
 (Definitions~\ref{def:rank-source}--\ref{def:wrp}); and the two machine models
-of Section~\ref{sec:wrp-evaluation}.  On this base it proves the
+of Section~\ref{sec:wrp-evaluation}.  On this base, it proves the
 results of the paper.  Table~\ref{tab:lean} lists the headline theorems with
 their Lean names; the intermediate lemmas that support them are formalised as
 well.  In
@@ -4496,7 +4496,7 @@ closed forms behind the $\zeta$ and $H$ lower bounds
 regular-slice lemmas of Section~\ref{sec:slice-semilinearity} all have formal
 proofs, the last of these in two forms: instantiated at the family $W_n$, and
 in the general form of the paper, over an arbitrary slice $u\,v^n z$.  The single-count case of
-Lemma~\ref{lem:presburger-counting} is proved rather than assumed, by a route
+Lemma~\ref{lem:presburger-counting} is proved by a route
 different from the one taken in Section~\ref{sec:slice-semilinearity}; see the
 discussion of the trust base below.  Background results quoted from the literature are not re-proved; where the
 arguments need them, they enter through the admitted axioms below.
@@ -4504,8 +4504,8 @@ Theorem~\ref{thm:eh} is the exception: it is not one of those axioms, because
 the formal statements quantify directly over deterministic $\MSO$
 transductions, and it is used only to read them as statements about two-way
 machines; see the discussion of statement fidelity below.  The paper's numeric worked
-examples --- the $\area$, $\dinv$, and $\zeta$ computations, and the small
-sweep computations --- are certified by Lean's executable decision procedures;
+examples, such as the $\area$, $\dinv$, and $\zeta$ computations, and the small
+sweep computations, are certified by Lean's executable decision procedures;
 the paper's structural examples, such as the reverse-complement presented both
 as a 2DFT and as an $\MSO$ transduction, are not formalised.  Two
 documentation files in the repository map the numbered statements of the paper
