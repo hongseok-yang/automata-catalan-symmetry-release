@@ -244,8 +244,9 @@ axiom-clean), and the headline `thm:wrp-no-swap` —
 
 11. **Decidable examples.**  The paper's worked examples are verified by
     `decide`/`native_decide` rather than by hand (`Examples.lean`,
-    plus spot checks in `NarayanaSweep.lean`, `ZetaClassification.lean`, and
-    `HeightSweepTwoPyramid.lean`).
+    plus spot checks in `NarayanaSweep.lean`, `ZetaClassification.lean`,
+    `HeightSweepTwoPyramid.lean`, `WrappedFlat.lean`, and
+    `AdditiveSweep.lean`).
 
 ## Further deviations from the paper
 
@@ -260,9 +261,13 @@ fully delivered; *rendering* = same content in different formal vocabulary;
 
 * Lean permits copies of arity 0 and presentations with no copies, where the
   paper requires at least one copy of arity ≥ 1.  The conventions are proved to
-  differ only on the empty input, and the arity-0 freedom is used by the
-  concatenation witness, which emits its separator from an arity-0 copy.
-  (*superset*)
+  differ only on the empty input, and the arity-0 freedom is used by two
+  witnesses: the concatenation witness, which emits its separator from an
+  arity-0 copy, and the non-closure witness `D`, whose sentinel copy has arity
+  0 (`wncArity`, `WRPNotClosed.lean`).  The latter makes `compD ε = G#` where
+  the paper's arity-≥1 convention gives `D(ε) = ε`; both clauses of
+  `thm:wrp-not-closed` are insensitive to the difference, as
+  `WRPCompWitness.lean` records.  (*superset*)
 * A presentation must be well-formed on every input word; the paper's MSO
   string-transduction definition asks this only on the domain.  The paper's
   polyregular definition is itself global, so only the arity-1 class is
@@ -308,6 +313,17 @@ fully delivered; *rendering* = same content in different formal vocabulary;
   `r`, with a single-letter separator; restriction is stated with an
   MSO-definable language rather than a regular one, and no automaton-to-formula
   bridge exists.  (*weaker, on several counts*)
+* `thm:bounded-rank-collapse` carries one hypothesis beyond `WRP.IsWRP`:
+  besides `WRP.Presentation.Valid` it asks `Polyreg.Presentation.Valid` of the
+  underlying presentation, that the tie order `χ` is itself a strict total
+  order, which is what makes the surrogate `≺` valid off the domain.  The
+  paper's `def:wrp` requires this of every presentation, so the Lean theorem
+  delivers the paper's statement in full; the hypothesis bites only against
+  the relaxed working class, for which — the collapse being positive —
+  nothing is claimed.  The boundedness hypothesis is likewise stated at the
+  level of an exhibited rank term rather than of `WRP.Presentation.rank`,
+  which every presentation admits by its `WRP.Presentation.rankReg` field
+  (`IsRegularRankTerm`).  (*rendering*)
 * The complexity layer fixes the input alphabet to `{U, D}`, where the paper
   allows any finite alphabet; the strict-below-logspace statements also fix a
   five-letter output alphabet.  The generalisation is mechanical.  (*weaker as

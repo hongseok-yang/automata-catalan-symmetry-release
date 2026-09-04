@@ -159,7 +159,8 @@ are the ones worth knowing before reading either document.
   separates the two, so the inclusion is not known to be strict.
 * Lean permits copies of arity 0 where the paper requires arity ≥ 1.
   The two conventions are proved to differ only on the empty input, and the
-  extra freedom is genuinely used by one witness.
+  extra freedom is genuinely used by two witnesses — the concatenation
+  witness and the non-closure witness `D`.
 * "Deterministic two-way transducer" is rendered as the arity-1 MSO
   transduction class, with the machine equivalence quoted rather than proved.
 * The paper's prefix-additive rank functions and Lean's regular rank
